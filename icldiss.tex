@@ -1,0 +1,108 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% IMPERIAL COLLEGE LONDON DISSERTATION TEMPLATE 
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Copyright (c) 2008, Daniel Wagner, www.PrettyPrinting.net
+% http://www.prettyprinting.net/imperial/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[MSc,paper=a4,pagesize=auto, doublespacing]{icldt}
+%\usepackage{showframe}
+
+% Essential Setup
+\title{Seeing the Big Data: Virtual Reality Visualisations of Large Datasets}
+\author{Alexander Zawadzki (az2713)}
+\date{September 2014}
+\department{Computing}
+
+% Optional
+\supervisor{Professor Daniel Rueckert} 
+\dedication{
+My thanks to: 
+\newline
+Dr Paul Gass and Dr Ian Thompson, my bosses at Sharp Laboratories of Europe Ltd., for arranging for my funded sabbatical year at Imperial College London. 
+\newline
+Colleagues Dr Nathan Smith, Dr Graham Jones, Dr Jon Mather, and Dr Andrew Kay for sharing their passion for 3D display systems, and for bringing the strangest snack food back from business trips to Japan. Especial thanks to John Nonweiler, for setting an example of how development software \textit{should} be done.
+\newline
+Supporters Aashish Chaudhary at Kitware, and Brad Davis at ORIA for providing insight into VTK and the Oculus Rift SDK respectively.
+\newline
+Friends in the MCS Program, in particular coffee-break-buddies Moritz Schrenk and Tereza Drskova. 
+\newline
+And last, but not least, I am indebted to my supervisors Professor Daniel Ruckert and Dr Bernhard Kainz. You have provided freedom when I wanted it, and guidance when I needed it. I am deeply grateful to you both. 
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+%\textbf{A Zawadzki, Department of Computing, Imperial College London}
+%\\ \textbf{Abstract of Master's Thesis, submitted September 4th 2014}
+%\\ \textbf{Seeing the Big Data: Virtual Reality Visualisations of Large Datasets}
+A new pipeline is implemented for the visualisation of Human Connectome Project (HCP) data. An extension to the Visualisation Tool Kit (VTK) was developed to allow the rendering of stereographic 3D images to an Oculus Rift virtual reality headset. Sensors on the headset track the user's head position and dynamically update the rendered image. The system allows an immersive 3D display of data, and native access VTK functionality. A user study is conducted to evaluate the pipeline, and the resulting strengths and weaknesses are discussed.
+
+%\hfill --- Alexander Zawadzki
+
+\end{abstract}
+
+\makededication
+%\iffalse
+\tableofcontents
+
+\listoftables
+\listoffigures
+
+\chapter{Introduction}
+\section{Context}
+The growth of computing power and the volume of data available for analysis has far outpaced the development of visualisation hardware. In medical imaging multi-gigabyte datasets are common: as of June 2014 the Human Connectome Project has generated over 20 terrabytes of data on the three dimensional structure of the human brain. Courtesy of Moore's Law, the hardware available to process these data sets is growing exponentially. At the same time, display hardware has been constantly evolving. Unwieldy cathode-ray-tubes have morphed into slim LCSs less than one millimetre thick. Touch-screens became ubiquitous and tablet computers became commonplace. All of the dominant technologies share a common feature - they display 2D information for a user to look at.
+
+This situation may be set to change. Recent developments in virtual reality hardware offer a  paradigm shift in display technology. The change may see the popularity of displays that overlay information on top of the real world, so-called 'augmented reality', or displays that can provide a completely artificial 'virtual reality' experience. In either case, the displays will provide an immersive, three dimensional experience quite unlike any established technology today.
+
+This project investigates the use of consumer grade virtual reality hardware, specifically the Oculus Rift DK1, as a tool for visualising and interacting with medical image data. The project has worked to extend the open-source Visualisation Tool Kit (VTK), and to work with the excellent Oculus Rift In Action (ORIA) project. Anonymized medical data for the project were kindly provided by the Human Connectome Project (HCP).
+
+It is exhilarating and sometimes intimidating to be at the forefront of such a dynamic field. Since the project was initially planned, Oculus have significantly re-designed their Software Development Kit three times. In response to this, the ORIA project fundamentally revised their their book before it was even published. VTK continues to be developed and released on a daily basis, adding (and sometimes removing!) important features.
+\section{Contributions}
+\section{Structure of the Report}
+
+\chapter{Connectome Data}
+\section{This Is Your Brain}
+\section{This Is Your Brain on DTI-MRI}
+\section{HCP Data}
+
+\chapter{Post-Processing}
+\section{Choosing an Intermediate Format}
+\section{Importing Data to Blender}
+\section{Mesh Analysis and Simplification}
+
+\chapter{The Visualisation Tool Kit}
+\section{An Overview of the VTK Pipeline}
+\section{Basic Actor Manipulation}
+\section{Advanced Visualisation Tools}
+
+\chapter{Displaying Images on the Rift DK1}
+\section{Introducing the Rift DK1}
+\section{Collimating Optics and Software Compensation}
+\section{Integrated Sensors and the HMD}
+
+\chapter{Extending VTK}
+\section{The Need for Shaders}
+\section{Applying GLSL Shaders to Materials}
+\section{Applying GLSL Shaders to Objects}
+\section{Applying GLSL Shaders to Buffers}
+\section{Porting and Sub-Classing}
+
+\chapter{Results}
+\section{Automated Testing with CTest}
+\section{Hardware Limitations}
+\section{Software Limitations}
+\section{Human Factors}
+
+\chapter{Conclusion}
+\cite{Nobody06}
+
+\bibliography{bibtex/mybib}
+\bibliographystyle{plain}
+
+
+\end{document}
