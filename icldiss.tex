@@ -14,6 +14,10 @@
 \usepackage{graphicx}  % lets us import graphics nicely
 \usepackage[binary-units=true]{siunitx}   % and friendly SI unit shiz
 
+% next two lines supress 'underfull hbox" warnings caused by URLs in bib file
+\usepackage{etoolbox}
+\apptocmd{\sloppy}{\hbadness 10000\relax}{}{} 
+
 
 % Essential Setup
 \title{Seeing the Big Data: Virtual Reality Visualisations of Large Datasets}
@@ -78,7 +82,7 @@ The growth of computing power and the volume of data available for analysis has 
 Recent developments in virtual reality hardware offer a  paradigm shift in display technology. The change may see the popularity of displays that overlay information on top of the real world, so-called 'augmented reality', or displays that can provide a completely artificial 'virtual reality' experience. In either case, the displays will provide an immersive, three dimensional experience quite unlike any established technology today.
 
 It is exhilarating and sometimes intimidating to be at the forefront of such a dynamic field. Since the project was initially planned, Oculus have significantly re-designed their Software Development Kit three times. In response to this, the ORIA project fundamentally revised their their book before it was even published. VTK continues to be developed and released on a daily basis, adding (and sometimes removing!) important features.
-\iffalse
+
 \newpage
 \section{Contributions}
 This project has investigated the use of consumer grade virtual reality hardware, specifically the Oculus Rift DK1, as a tool for visualising and interacting with large datasets. The project has contributed to the open source community in a number of ways:
@@ -126,12 +130,13 @@ An understanding of the processes for generating connectome data is useful, as i
 \end{enumerate}
 
 \section{Storing Connectome Data}
-There are no standardised formats for storing connectome data, and the form of raw data depends on the experimental technique used to obtain it (EM, OM, DT-MRI) and the specific equipment used. Many tools such as NeuroneJ \cite{NeuronJ2014}, Imaris \cite{Imaris2014}, and Amia \cite{Amira2014} exist for manipulating connectome data in 2D and 3D but these tools can require data to be processed into a specific input format.
+There are no standardised formats for storing connectome data, and the form of raw data depends on the experimental technique used to obtain it (EM, OM, DT-MRI) and the specific equipment used. Many tools such as NeuroneJ \cite{NeuronJ2014}, Imaris \cite{Imaris2014}, and Amia \cite{Amira2014} have been developed for manipulating connectome data, but these tools can require a specific input data format. 
 
 Alternatively, it may be necessary to implement a custom data structure. Fast access to the data is essential when working interactively with high resolution images. Previous publications \cite{Jeong2010} have discussed working with a 75GB connectome dataset, stored as an octree in order to enable fast access to the desired parts of the dataset. They also store sub-sampled data at various resolutions in order to allow responsive zooming into the data set and cache data at GPU, CPU and process levels. 
 
 \section{Visualising Connecome Data}
 A number of common visualisations exist for connectome data. Visualisations can be divided into three types: structural, functional and multimodal. Some visualisations, connectivity matrices for example, are equally well suited to display structural or functional information. Other visualisations, such as tractographies, are best suited to displaying structural information. Multimodal visualisations show elements of both structural and functional data. Virtual reality is well suited to display structural information, and so the following visualisations discussed are primarily those for structural or multimodal data.
+
 \subsection{Connectivity Matrix}
 A connectivity matrix shows the physical or functional connectivity between different regions of the connectome \cite{Wang2011}. It allows a lot of information to be presented in a single 2D image. However, it does not represent the spatial relationship of the data, and the format in which the axes are ordered may introduce false patterns. 
 
@@ -166,7 +171,7 @@ Glyphs can be used to represent local diffusion tensors in DT-MRI data. The goal
 
 A spherical glyph represents isotropic diffusion properties, whereas various ellipsoids can represent a local bias towards linear or planar diffusion. Local diffusion can be represented as an ellipsoid or, due to the ambiguity in representing a 3D ellipsoid in a 2D image, as a hybrid shape.
 
-\begin{figure}[h]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=1\textwidth]{resources/hybrid_glyphs}
     \caption{Hybrid glyphs used to represent local diffusivity in DT-MRI data. \cite{Westin2002}}
@@ -243,12 +248,22 @@ The OculusRift DK1 was found to offer the highest performance at the lowest cost
 \section{Related Projects}
 There is no other known project using an Oculus Rift for the visualisation of connectome data. There have been a small number of projects on using Virtual Reality for connectome visualisation. 
 
+The most similar known projects are:
+\begin{itemize}
+  \item \textbf{The Dynamic Connectome}, part of the CEEDS project: real time, visualisation of neural activity \cite{ceeds2014}.
+  \item \textbf{The Glass Brain Project}: real time, visualisation of neural activity \cite{GlassBrain2014}.
+  \item Project work at Aachen University \cite{Rick2011}: using MOCAP and a CAVE virtual environment to interactively view a connectome with dynamic clipping \cite{ceeds2014}.
+  \item Project work at Purdue University \cite{Chen2011}: using a CAVE virtual environment to view a connectome.
+  \item \textbf{Brainder} \cite{brainder2014}, Dr Anderson Winkler’s excellent blog on FMRI and Blender rendering.
+\end{itemize}
+
 
 The Glass Brain Project uses a Unity 3D model of the brain, though it subsequently renders a 2D image from the model for display on LCD monitors. As such it does not obtain many of the benefits of the 3D model, nor have to face the challenges of displaying images in 3D.
 
 The Dynamic Connectome project and the Aachen University and Purdue University projects use computer assisted virtual environment (CAVE) virtual reality rooms with multiple projectors rather than a head mounted display (HMD) system as proposed here. Such a system removes the requirement to wear bulky headgear, but instead requires a multi-projector system and dedicated room of projection screens. In addition to these requirements, the CAVE systems do not typically show 3D, nor do they update the view based on the user’s precise head position.
 
 The Brainder project uses the open source ‘Blender’ 3D modeling software to ray trace brain models, primarily for use as 2D illustrations. Although the goals of Brainder are different from this project, the existence of (relatively) simple 3D brain models may be a useful asset. 
+
 
 
 \section{Introducing the Rift DK1}
@@ -268,11 +283,11 @@ The Brainder project uses the open source ‘Blender’ 3D modeling software to 
 \section{Software Limitations}
 \section{Human Factors}
 
-\fi
+
 \chapter{Conclusion}
 \nocite{Margulies2013}
 
-\bibliography{bibtex/connectome}
+\bibliography{bibtex/connectome}	
 \bibliographystyle{unsrt} % unsrt == order of appearance, != alphabetical
 
 
