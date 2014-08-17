@@ -12,6 +12,8 @@
 %\usepackage{showframe}
 %\usepackage{cleveref} % lets us use chapter references
 \usepackage{graphicx}  % lets us import graphics nicely
+\usepackage[binary-units=true]{siunitx}   % and friendly SI unit shiz
+
 
 % Essential Setup
 \title{Seeing the Big Data: Virtual Reality Visualisations of Large Datasets}
@@ -62,12 +64,21 @@ A new pipeline is implemented for the visualisation of Human Connectome Project 
 
 \chapter{Introduction}
 \section{Context}
+In order to better understand the functioning of the human brain, the neurology of the brain is very important. The Human Connectome Project (in the USA) and the Developing Human Connectome Project (in the UK) are ongoing projects dedicated to mapping and analysing the neural connections of developed and developing human brains. 
+
+The Connectome projects produce very large datasets giving information about the structural or functional connectivity of neurons in the brain. The volume of data produced, and 3D nature of the data makes it difficult to visualise in a 2D form. A typical functional connectome matrix, for example, may have 3,000 by 3,000 elements and in 2D form bears no resemblance to the physical shape of the fibres.
+
+This project aims to develop new visualisation techniques for looking at connectivity data in 3D by using commercial virtual reality tools. Specifically, the Oculus Rift will be used to display a 3D model of the brain, over which connectome data can be superimposed. This approach should be equally applicable to visualising structural and functional connectivity. 
+
+<TODO: Use elements of the following...>
+
 The growth of computing power and the volume of data available for analysis has far outpaced the development of visualisation hardware. In medical imaging multi-gigabyte datasets are common: as of June 2014 the Human Connectome Project has generated over 20 terrabytes of data on the three dimensional structure of the human brain. Courtesy of Moore's Law, the hardware available to process these data sets is growing exponentially. Display hardware has been constantly evolving. Unwieldy cathode-ray-tubes have morphed into slim LCSs less than one millimetre thick. Touch-screens became ubiquitous and tablet computers became commonplace. All of the dominant technologies share a common feature - they display 2D information for a user to look at. This situation may be set to change. 
 
 Recent developments in virtual reality hardware offer a  paradigm shift in display technology. The change may see the popularity of displays that overlay information on top of the real world, so-called 'augmented reality', or displays that can provide a completely artificial 'virtual reality' experience. In either case, the displays will provide an immersive, three dimensional experience quite unlike any established technology today.
 
 It is exhilarating and sometimes intimidating to be at the forefront of such a dynamic field. Since the project was initially planned, Oculus have significantly re-designed their Software Development Kit three times. In response to this, the ORIA project fundamentally revised their their book before it was even published. VTK continues to be developed and released on a daily basis, adding (and sometimes removing!) important features.
 
+\newpage
 \section{Contributions}
 This project has investigated the use of consumer grade virtual reality hardware, specifically the Oculus Rift DK1, as a tool for visualising and interacting with large datasets. The project has contributed to the open source community in a number of ways:
 
@@ -84,11 +95,11 @@ The academic impact of this project is more difficult to quantify. TODO: suggest
 
 \newpage
 \section{Structure of the Report}
-As the project dealt with implementing a pipeline, it seems natural for the report to follow the process from raw data acquisition to the final display image.
+As the project dealt with implementing a pipeline, illustrated in Figure~\ref{fig:the_full_pipeline}, it seems natural for the report to follow the process from raw data acquisition to the final display image. 
 
-Following this logic, Chapter~2 discusses the how the Human Connectome Project (HCP) maps the structure of the brain using DTI and fMRI imaging. This is important because the nature of the raw data affects all subsequent stages in the pipeline. Chapter~3 discusses the HCP data structure, and how it may be converted to intermediate formats. Chapter~4 shows how a Visualisation Tool Kit (VTK) pipeline can be constructed and HCP data can be processed for interaction and display on a standard 2D computer monitor. 
+Following this logic, Chapter~2 discusses the how the Human Connectome Project (HCP) maps human brain structures using DTI and fMRI imaging, and discusses existing visualisation techniques. Chapter~3 discusses the HCP data structure, and how it may be converted to intermediate formats. Chapter~4 shows how a Visualisation Tool Kit (VTK) pipeline can be constructed and HCP data can be processed for interaction and display on a standard 2D computer monitor. 
 
-Chapter~5 breaks from the sequential structure in order to introduce the Oculus Rift hardware, and shows how the collimating optics in the headset will distort images unless extra distortion shaders are used. The report then returns to the VTK pipeline in Chapter~6 to discuss the good, the bad and the ugly ways to apply shaders so that images can be rendered correctly to the Rift. 
+Chapter~5 breaks away from the sequential structure in order to introduce the Oculus Rift hardware, and shows how the collimating optics in the headset will distort images unless extra distortion shaders are used. The report then returns to the VTK pipeline in Chapter~6 to discuss the good, the bad and the ugly ways to apply shaders so that images can be rendered correctly to the Rift Virtual Reality (VR) headset. 
 
 \begin{figure}[h]
     \centering
@@ -98,14 +109,68 @@ Chapter~5 breaks from the sequential structure in order to introduce the Oculus 
 \end{figure}
 
 
-With a complete pipeline, Chapter~7 discusses how the system was evaluated. This evaluation identified numerous strengths and weaknesses, and suggestions for further work are explored.
+With a complete pipeline for VR, Chapter~7 discusses how the system was evaluated. This evaluation identified numerous strengths and weaknesses, and suggestions for further work are explored.
 
 Finally, Chapter~8 concludes by synthesizing findings from each stage in the project, and reviewing the most interesting learning outcomes.
 
 \chapter{Connectome Data}
-\section{This Is Your Brain}
-\section{This Is Your Brain on DTI-MRI}
-\section{HCP Data}
+\section{Motivation for using Connectome Data}
+Mapping and visualising the brain is of considerable academic and practical interest. The brain is thought to be composed of motor, sensory, behavioural state, and cognitive systems \cite{Swanson2003}. Better knowledge about the physiology of the brain can help in understanding these systems. Knowledge of the structure of an individual brain can also be very helpful when diagnosing medical conditions, or planning a surgical procedure \cite{Golby2011}. In either case, the interested parties need to have data, and to be able to draw useful inferences from it. This project aims to work on the second of these challenges: to develop new ways of displaying and interacting with existing connectome data. 
+
+\section{Sources of Connectome Data}
+An understanding of the processes for generating connectome data is useful, as it influences the resolution and format of the data. The most relevant methods:
+\begin{enumerate}
+\item Electron microscopy (EM) gives nanometer resolution images of neural structure. This is an ex vivo process, samples must be taken from the brain. EM techniques can give a resolution of \SI{5}{\nm} in the x-y plane, with a \SI{30}{\nm} slice thickness and generate an enormous amount of raw data, of the order of \SI{1}{\pebi\byte\per\mm\cubed} \cite{Jeong2010}.\footnote{That data density is greater than two hundred thousand DVDs per cubic milimeter or, in old money, more than eleven \textit{billion} floppy disks per cubic inch} Due to the high resolution and small sample sizes accommodated by EM techniques, the only connectome to have been completely mapped out by this technique is that of the nematode c.elegans \cite{White1986}.
+\item Optical microscopy (OM) techniques can be used in conjunction with fluorescent markers to selectively tag and examine brain matter. As with EM, this is done ex-vivo. This approach allows for much larger samples to be analysed, at a resolution of approximately \SI{0.35}{\um} in the x-y plane, and with a slice thickness of \SI{100}{\um}. This approach has recently been used to map the entire mouse connectome \cite{Oh2014}. 
+\item Magnetic Resonance Imaging (MRI) scans may be used in combination with Diffusion Tensor Imaging as an in-vivo technique for determining larger scale structure. Diffusion of water within the brain is influenced by the structure of the brain matter, since water can diffuse more easily along bundles of nerves than perpendicular to them, and so the diffusion patterns allow local structure to be inferred. The resolution of this technique is typically low, approximately \SI{1}{\mm} in the x-y plane \cite{Westin2002}.
+\end{enumerate}
+
+\section{Storing Connectome Data}
+There are no standardised formats for storing connectome data, and the form of raw data depends on the experimental technique used to obtain it (EM, OM, DT-MRI) and the specific equipment used. Many tools such as NeuroneJ, Imaris, and Amia exist for manipulating connectome data in 2D and 3D but these tools can require data to be processed into a specific input format.
+
+Alternatively, it may be necessary to implement a custom data structure. Fast access to the data is essential when working interactively with high resolution images. Jeong el al discuss working with a 75GB connectome dataset, stored as an octree in order to enable fast access to the desired parts of the dataset. They also store sub-sampled data at various resolutions in order to allow responsive zooming into the data set and cache data at GPU, CPU and process levels. 
+
+\section{Visualising Connecome Data}
+A number of common visualisations exist for connectome data. Visualisations can be divided into three types: structural, functional and multimodal. Some visualisations, connectivity matrices for example, are equally well suited to display structural or functional information. Other visualisations, such as tractographies, are best suited to displaying structural information. Multimodal visualisations show elements of both structural and functional data. Virtual reality is well suited to display structural information, and so the following visualisations discussed are primarily those for structural or multimodal data.
+\subsection{Connectivity Matrix}
+A connectivity matrix shows the physical or functional connectivity between different regions of the connectome. It allows a lot of information to be presented in a single 2D image. However, it does not represent the spatial relationship of the data, and the format in which the axes are ordered may introduce false patterns. 
+
+\subsection{Tractography}
+Tractography is the process of visualising nerve tracts, bundles of nerve cells. It can provide a very intuitive way of looking at nerve data. It can can require considerable manual editing of opacity, colour and shading in order to bring out the desired features in a tractography image. Without such editing, tractography images suffer from a surfeit of information and can obscure features of interest.
+
+Fiber Tractography (O’donnell, 2006)
+
+Various techniques have been developed for fiber tractography, including the use of tuboids, streamlines and streamtubes to represent the tracts. These techniques can offer a host of advantages including faster rendering times, aesthetically pleasing labelling of tracts, simplified tract junction rendering and good occlusion handling.
+
+\subsection{Glyph Images}
+Glyphs can be used to represent local diffusion tensors in DT-MRI data. The goal of glyph images is to show local diffusion properties as well as larger macroscopic structure. Various systems have been proposed to do this: using ellipsoids, colour coded arrows, opacity mapping, and hybrid geometric shapes. 
+
+A spherical glyph represents isotropic diffusion properties, whereas various ellipsoids can represent a local bias towards linear or planar diffusion. Local diffusion can be represented as an ellipsoid or, due to the ambiguity in representing a 3D ellipsoid in a 2D image, as a hybrid shape.
+
+
+Hybrid glyphs used to represent local diffusivity in DT-MRI data (Westin et al, 2002).
+
+The ordered placement of glyphs can introduce patterns not present in the data, prompting research into the positioning of the glyphs, and the use of particle systems to re-position glyphs as a function of interparticle forces. The benefit of this approach is that the sampling artefacts may be greatly reduced or completely removed from the final image. As can be seen from the figure below, this approach is not without drawbacks, new image artefacts, such at the hexagonal close packing structure, may be introduced by the particle field. 
+
+\subsection{Other Techniques}
+In addition to connection matrices, tractographies and glyph images there are a large number of other ways to display connectome data. Graph-based representations can present functional connectivity, but may do so at the cost of reduced anatomical accuracy. 
+
+Left: network structure and right: interconnection density maps (Hagmann, 2008).
+
+The Glass Brain project has developed a multimodal technique for combining structural and functional data. This type of representation may be useful as it gives anatomical context alongside functional information. 
+
+\section{Summary}
+For the purpose of this project, it is useful to note that, with the exception of the connection matrix, all of the visualisation techniques for connectome data attempt to represent 3D (or greater dimensionality) information in a 2D image. This is has two important consequences:
+\begin{enumerate}
+\item It shows that there is a need to display 3D data.
+\item It shows that, in many cases, three dimensional processing and rendering is already being done.
+\end{enumerate}
+
+2D representations have a number of advantages. The sampling methods used in measuring the connectome data gather 2D data, the full connectome structure being reconstructed from many planar slices. Relatively little processing is needed in order to convert an array of data into a viewable image, and so a 2D visualisation can be a very fast way to look at raw data. The ‘flat’ nature of 2D images makes them very simple to display or print, to transport and to store. 
+
+Pseudo-3D images are frequently used. These use either colours or symbols to represent out-of-plane structure. Alternatively, they may show a 3D representation of the connectome, rendered into a 2D picture. Using this definition of ‘pseudo-3D’, all of the above visualisation techniques (except the connection matrix) would fall into this category. 
+
+Full 3D images seem very well suited to visualising connectome data. Given that there is a need to display 3D data, and that much of the data is already processed and rendered as a 3D model, it seems natural to displaying it natively in 3D. If the only objections to 3D visualisations is the expense of current 3D hardware then a proliferation of cheap consumer hardware may remove this barrier in the near future. 
 
 \chapter{Post-Processing}
 \section{Choosing an Intermediate Format}
@@ -136,10 +201,9 @@ Finally, Chapter~8 concludes by synthesizing findings from each stage in the pro
 \section{Human Factors}
 
 \chapter{Conclusion}
-\cite{Nobody06}
 
-\bibliography{bibtex/mybib}
-\bibliographystyle{plain}
+\bibliography{bibtex/connectome}
+\bibliographystyle{unsrt} % unsrt == order of appearance, != alphabetical
 
 
 \end{document}
