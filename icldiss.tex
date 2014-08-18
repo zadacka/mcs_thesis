@@ -13,11 +13,11 @@
 %\usepackage{cleveref} % lets us use chapter references
 \usepackage{graphicx}  % lets us import graphics nicely
 \usepackage[binary-units=true]{siunitx}   % and friendly SI unit shiz
+\setcounter{tocdepth}{1} % don't show sub-sections in the TOC
 
 % next two lines supress 'underfull hbox" warnings caused by URLs in bib file
 \usepackage{etoolbox}
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{} 
-
 
 % Essential Setup
 \title{Seeing the Big Data: Virtual Reality Visualisations of Large Datasets}
@@ -126,7 +126,7 @@ An understanding of the processes for generating connectome data is useful, as i
 \begin{enumerate}
 \item Electron microscopy (EM) gives nanometer resolution images of neural structure. This is an ex vivo process, samples must be taken from the brain. EM techniques can give a resolution of \SI{5}{\nm} in the x-y plane, with a \SI{30}{\nm} slice thickness and generate an enormous amount of raw data, of the order of \SI{1}{\pebi\byte\per\mm\cubed} \cite{Jeong2010}.\footnote{That data density is greater than two hundred thousand DVDs per cubic milimeter or, in old money, more than eleven \textit{billion} floppy disks per cubic inch} Due to the high resolution and small sample sizes accommodated by EM techniques, the only connectome to have been completely mapped out by this technique is that of the nematode c.elegans \cite{White1986}.
 \item Optical microscopy (OM) techniques can be used in conjunction with fluorescent markers to selectively tag and examine brain matter. As with EM, this is done ex-vivo. This approach allows for much larger samples to be analysed, at a resolution of approximately \SI{0.35}{\um} in the x-y plane, and with a slice thickness of \SI{100}{\um}. This approach has recently been used to map the entire mouse connectome \cite{Oh2014}. 
-\item Magnetic Resonance Imaging (MRI) scans may be used in combination with Diffusion Tensor Imaging as an in-vivo technique for determining larger scale structure. Diffusion of water within the brain is influenced by the structure of the brain matter, since water can diffuse more easily along bundles of nerves than perpendicular to them, and so the diffusion patterns allow local structure to be inferred. The resolution of this technique is typically low, approximately \SI{1}{\mm} in the x-y plane \cite{Westin2002}.
+\item Magnetic Resonance Imaging (MRI) scans may be used in combination with Diffusion Tensor Imaging as an in-vivo technique for determining larger scale structure. Diffusion of water within the brain is influenced by the structure of the brain matter, since water can diffuse more easily along bundles of nerves than perpendicular to them, and so the diffusion patterns allow local structure to be inferred. The resolution of this technique is typically low, approximately \SI{1}{\mm} in the x-y plane \cite{Westin2002}. MRI techniques have been used to map hundreds of human connectomes. 
 \end{enumerate}
 
 \section{Storing Connectome Data}
@@ -150,18 +150,18 @@ A connectivity matrix shows the physical or functional connectivity between diff
 \subsection{Tractography}
 Tractography is the process of visualising nerve tracts, bundles of nerve cells. It can provide a very intuitive way of looking at nerve data. It can can require considerable manual editing of opacity, colour and shading in order to bring out the desired features in a tractography image. Without such editing, tractography images suffer from a surfeit of information and can obscure features of interest.
 
-\begin{figure}[htbp]
+\begin{figure}[htbp!]
     \centering
-    \includegraphics[width=1\textwidth]{resources/tractography}
+    \includegraphics[width=0.8\textwidth]{resources/tractography}
     \caption{Fiber Tractography. \cite{Odonnell2006}}
     \label{fig:tractography}
 \end{figure}
 
 Various techniques have been developed for fiber tractography, including the use of tuboids, streamlines and streamtubes to represent the tracts. These techniques can offer a host of advantages including faster rendering times, aesthetically pleasing labelling of tracts, simplified tract junction rendering and good occlusion handling \cite{Petrovic2007}.
 
-\begin{figure}[htbp]
+\begin{figure}[htbp!]
     \centering
-    \includegraphics[width=1\textwidth]{resources/tuboids}
+    \includegraphics[width=0.8\textwidth]{resources/tuboids}
     \caption{A tractography image using tuboids. \cite{Petrovic2007}}
     \label{fig:tuboids}
 \end{figure}
@@ -171,18 +171,18 @@ Glyphs can be used to represent local diffusion tensors in DT-MRI data. The goal
 
 A spherical glyph represents isotropic diffusion properties, whereas various ellipsoids can represent a local bias towards linear or planar diffusion. Local diffusion can be represented as an ellipsoid or, due to the ambiguity in representing a 3D ellipsoid in a 2D image, as a hybrid shape.
 
-\begin{figure}[htbp]
+\begin{figure}[htbp!]
     \centering
-    \includegraphics[width=1\textwidth]{resources/hybrid_glyphs}
-    \caption{Hybrid glyphs used to represent local diffusivity in DT-MRI data. \cite{Westin2002}}
+    \includegraphics[width=0.6\textwidth]{resources/hybrid_glyphs}
+    \caption{Hybrid glyphs representing local diffusivity in DT-MRI data. \cite{Westin2002}}
     \label{fig:hybrid_glyphs}
 \end{figure}
 
 The ordered placement of glyphs can introduce patterns not present in the data, prompting research into the positioning of the glyphs, and the use of particle systems to re-position glyphs as a function of interparticle forces \cite{Kindlmann2006}. The benefit of this approach is that the sampling artefacts may be greatly reduced or completely removed from the final image. As can be seen from the figure below, this approach is not without drawbacks, new image artefacts, such at the hexagonal close packing structure, may be introduced by the particle field. 
 
-\begin{figure}[htbp]
+\begin{figure}[htbp!]
     \centering
-    \includegraphics[width=1\textwidth]{resources/glyph_packing}
+    \includegraphics[width=0.6\textwidth]{resources/glyph_packing}
     \caption{Glyph packing. \cite{Kindlmann2006}}
     \label{fig:glyph_packing}
 \end{figure}
@@ -190,16 +190,16 @@ The ordered placement of glyphs can introduce patterns not present in the data, 
 \subsection{Other Techniques}
 In addition to connection matrices, tractographies and glyph images there are a large number of other ways to display connectome data. Graph-based representations can present functional connectivity \cite{Hagmann2008}, but may do so at the cost of reduced anatomical accuracy \cite{Margulies2013}. 
 
-\begin{figure}[htbp]
+\begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/connectome_graphs}
-    \caption{Left: network structure and right: interconnection density maps. \cite{Hagmann2005}}
+    \caption{Network structure and interconnection density maps. \cite{Hagmann2005}}
     \label{fig:connectome_graphs}
 \end{figure}
 
 The Glass Brain project has developed a multimodal technique for combining structural and functional data \cite{GlassBrain2014}. This type of representation may be useful as it gives anatomical context alongside functional information. 
 
-\begin{figure}[htbp]
+\begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/glass_brain}
     \caption{A Glass Brain visualisation. \cite{GlassBrain2014}}
@@ -220,8 +220,22 @@ Pseudo-3D images are frequently used. These use either colours or symbols to rep
 Full 3D images seem very well suited to visualising connectome data. Given that there is a need to display 3D data, and that much of the data is already processed and rendered as a 3D model, it seems natural to displaying it natively in 3D. If the only objections to 3D visualisations is the expense of current 3D hardware \cite{Margulies2013} then a proliferation of cheap consumer hardware may remove this barrier in the near future. 
 
 \chapter{Post-Processing}
+Data-wrangling was an important component for this project. The HCP dataset contains a lot of data that is irrelevant to this project, as shown in Figure~\ref{fig:hcp_full_data_set}, so a decision was made to pick a structural example.  The format of that structural data was then awkward: nifti, cifti and gifti aren't perfectly suited for parsing into a graphics program. So a number of alternatives were evaluated for parsing the data. On a pragmatic basis, mitk was used to select a cortical region and export it as an intermediate format (vtk) which is beautifully simple and contains structural information in plain text (hooray!). An import plugin was written for Blender in order to allow this data to be imported and cleaned with some of Blender's excellent mesh manipulation tools. The chapter concludes with the data in a suitable format for VTK input. The (optional) ability to run data through Blender is a bonus, but not necessary for the pipeline.
+
+\section{The Structure of HCP Data}
+The HCP data is intended to be a standard format, allowing for comparison between hundreds, eventually thousands, of individual human connectomes. Chapter 2 discussed the different types of experimental data used to measure the connectome structure, and this knowledge quickly helps narrow down the search space. Figure~\ref shows that the small fraction of the HCP data set: minimally processed MRI data.  
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/hcp_full_data_set}
+    \caption{Components of a sample HCP Data Set.}
+    \label{fig:hcp_full_data_set}
+\end{figure}
+
 \section{Choosing an Intermediate Format}
+
 \section{Importing Data to Blender}
+
 \section{Mesh Analysis and Simplification}
 
 \chapter{The Visualisation Tool Kit}
