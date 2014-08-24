@@ -348,6 +348,7 @@ The Brainder project uses the open source ‘Blender’ 3D modeling software to 
 At the end of Chapter 4, the VTK pipeline had been configured so that connectome data could be loaded, manipulated using interactors, and rendered as a stereo-pair. Chapter 5 then noted that the collimating lenses in the Rift would distort any images sent to the rift. This chapter describes how image processing in software can be used to compensate for optical artefacts, and how GLSL shaders can be used with VTK in order to apply the image correction in real time. 
 
 \section{The Need for Shaders}
+\label{sec:need_for_shaders}
 Why use shaders?
 Discuss the problems of correcting optical artefacts using optics.
 Discuss the problems of correcting optical artefacts using CPU. 
@@ -388,10 +389,41 @@ The Saliency pass is derived from previous work by Dr Bernhard Kainz, and uses r
     \label{fig:vtk_saliency}
 \end{figure}
 
-This high-level description 
+TODO: This high-level description neatly side-steps the various issues of loading shaders, upgrading from glARB classes to modern glCore functions, ensuring that GLSL 440 was supported, upgrading the drivers, and the operating system, in order to get sufficiently recent NVIDIA support, and then dealing with the OpenGL bugs that recent versions of the NVIDIA drivers contain!! Though none of that was 'news-worthy', it took a great deal of time and patience to identify and fix. 
+
+\section{The Shaders Themselves}
+GLSL shaders are (ab)used to perform three functions in this project. They shift the image in order to align the camera viewpoint centre with the lens centre. They apply a pincushion deformation of the entire image in order to compensate for the barrel deformation of the Rift's lenses.  They also mask the edges of the screen where the OpenGL 340.x drivers leave image artefacts. 
+
+It is assumed that the reader is familiar with the nature of shaders, and so the discussion here will not introduce the concept but rather will focus on the unusual way in which they are being employed. 
+
+Figure~\ref{fig:rift_screen} shows how the lens positions, aligned with the user's eyes, are not aligned with the centre of the screen. This presents a problem, as the VTK cameras produce a viepoint that does not align with the user's eyes. The fragment shader code is executed for every pixel in the screen. Focussing first on the left-eye image, every fragment shader position is laterally offset by the lens centre to screen centre displacement. For the rift DK1 this involves a y-adjustment of 48 pixels. So when the shader is called for a pixel at (0, 0) the offset is applied and all subsequent calculations are made for a pixel at (48, 0). This is somewhat of a brute force solution, and will require revision for new hardware with different screen offsets. But given the hardware differences between the DK1 and DK2, it is likely that the shader code would need to be completely re-written.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/rift_screen}
+    \caption{Lens and Screen Centres on the Rift Display}
+    \label{fig:rift_screen}
+\end{figure}
+
+After correcting for the lens centre displacement, the shader then needs to pre-emptively correct for the barrel distortion of the Rift lenses. This is achieved using a polynomial function of the pixel's radial displacement from the lens centre. The polynomial function is based on reverse engineering of the Rift SDK TODO: cite shader forum, and with parameters obtained from Dr Stephan Rogge TODO: another citation. 
+
+TODO: Ask Daniel if there should be some maths in here. It all seems a little bland!
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/distortions}
+    \caption{Distortions Applied to a Reference Grid}
+    \label{fig:distortions}
+\end{figure}
+
+After correcting for the lens distortion, it is desirable to apply a chromatic aberration factor in order to mitigate the dispersive effect of the Rift's lenses as mentioned in Section~\ref{sec:need_for_shaders}. The parameters for the chromatic aberration correction were not available, and so approximate parameters were chosen based on empirical testing. TODO: give this a go. 
 
 \section{Practical notes}
-\section{Porting and Sub-Classing}
+I *want* to complain here about how frustrating some of the driver problems were. Particularly the bug in NVIDIA 331.32 that "could prevent OpenGL Framebuffer Objects (FBOs) from being properly redrawn after a modeswitch.". Yes, NVIDIA, that bug certainly could! It took a long time to confirm that the problem was not due to my FBO rendering process, but rather due to driver problems.
+
+
+\section{Other Approaches}
+In theory, the Rift SDK can apply deformations directly, and since v0.3 Oculus have stated the SDK-rendering is the preferred approach. All of the example code for SDK-rendering was for a Windows system with DirectX rather than OpenGL, and it was decided that directly using GLSL shaders would be a more feasible approach given the project time frame. 
 
 \chapter{Results}
 \section{Automated Testing with CTest}
