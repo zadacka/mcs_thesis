@@ -89,10 +89,10 @@ It is exhilarating and sometimes intimidating to be at the forefront of such a d
 This project has investigated the use of consumer grade virtual reality hardware, specifically the Oculus Rift DK1, as a tool for visualising and interacting with large datasets. The project has contributed to the open source community in a number of ways:
 
 \begin{itemize}
-  \item A plug-in was developed for Blender in order to allow the import of .vtk format data.
+  \item A plug-in was developed for Blender in order to allow the import of legacy .vtk format data.
   \item The excellent Oculus Rift in Action (ORIA) project was forked on GitHub, at the suggestion of the project owner Brad Davis, to share bug-fixes with the community.
   \item Source code was ported from Paraview with encouragement from lead developer Aashish Chaudhary in order to bring Rift functionality to VTK.
-  \item When relevant, assorted software problems were documented on Stack Overflow in 'Question and Answer' format. The response to these posts has been very positive, bumping my account "\textit{GnomeDePlume}" to the top 24\% of contributors in 2014.  
+  \item When relevant, assorted software problems were documented on Stack Overflow in 'Question and Answer' format. The response to these posts has been very positive, bumping my account "\textit{GnomeDePlume}" to the top quartile of contributors in 2014.  
 \end{itemize}
 
 In comparison to the size and scope of these established projects, this project has made only incremental contributions. Nevertheless, these contributions have been contributed in the spirit of open source collaboration and have have incrementally advanced the state-of-the-art.
@@ -107,7 +107,7 @@ Following this logic, Chapter~2 discusses the how the Human Connectome Project (
 
 Chapter~5 breaks away from the sequential structure in order to introduce the Oculus Rift hardware, and shows how the collimating optics in the headset will distort images unless extra distortion shaders are used. The report then returns to the VTK pipeline in Chapter~6 to discuss the good, the bad and the ugly ways to apply shaders so that images can be rendered correctly to the Rift Virtual Reality (VR) headset. 
 
-\begin{figure}[htbp]
+\begin{figure}[htbp!]
     \centering
     \includegraphics[scale=0.5]{resources/data_pipeline_overview}
     \caption{The Full Pipeline}
@@ -141,7 +141,7 @@ A number of common visualisations exist for connectome data. Visualisations can 
 \subsection{Connectivity Matrix}
 A connectivity matrix shows the physical or functional connectivity between different regions of the connectome \cite{Wang2011}. It allows a lot of information to be presented in a single 2D image. However, it does not represent the spatial relationship of the data, and the format in which the axes are ordered may introduce false patterns. 
 
-\begin{figure}[htbp]
+\begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.5\textwidth]{resources/connectivity_matrix}
     \caption{An alphabetically ordered connectivity matrix. \cite{Wang2011}}
@@ -289,13 +289,19 @@ Loading and rendering connectome data can be relatively straightforward. Compati
 \end{figure}
 
 
-VTK can read in a large number of file formats including NIfTI (.nii) and VTK's own '.vtk' extension. During testing, a cortical surface data set was used, stored as a \SI{107}{\mebi\byte} '.vtk' file. This was easily read with a vtkReader object and mapped in as polydata. The 
-
-
+VTK can read in a large number of file formats including NIfTI (.nii) and VTK's own '.vtk' extension. During testing, a cortical surface data set was used, stored as a \SI{107}{\mebi\byte} '.vtk' file. This was easily read with a vtkReader object and mapped in as polydata. The impact of the large file size, or more accurately the complexity of the object to render, on rendering speed should not have been sufficient to cause visible latency.
 
 \section{Interaction and Callbacks}
+Rendering a scene in a continuous loop is a very computationally inefficient technique. It is much better to only re-render the scene in response to a trigger such as a keypress or mouse movement event. Mouse movement is such a common interaction style that it is implemented in VTK using the vtkInteractor object, and even comes with a number of default styles including 'trackball' and 'joystick' modes. Responding to key presses was implemented using a listener  / callback paradigm. VTK conveniently deals with all aspects of logging and queuing the key press, and can trigger a function in response to the event. 
+
+A virtual reality system is a little more demanding than a normal 2D interface since the viewpoint may be continuously moving as the user's head changes position. Ideally the scene would be re-rendered in response to very small changes in head position. The sensors in the HMD report the head position in floating point units, and the precision is so high that any two position queries show some difference. It would be trivial to set thresholds for the pitch, roll, and yaw that would trigger a re-render of the viewpoint but this solution contains it's own problems. Most significantly, if a \SI{5}{\degree} change in head pitch is required to trigger a re-render of the scene, then the scene is always going to jump a minimum of \SI{5}{\degree} in response to changing head position. An attractive alternative solution is to use a clock timer in order to re-render at a fixed frame rate, irrespective of the user's head position. If the system can cope with rendering imagery at \SI{60}{\Hz} then a \SI{16}{\ms} timer should result in smooth scene movements independent of the user's movements.
+
+Interaction for a naive stereo system holds one additional terror. VTK's automatic mouse interactors operate per-renderer, but a the stereo cameras need to be updated simultaneously to prevent the user going cross-eyed. Fortunately, VTK provide a snippet of Python code illustrating how to work around this restriction. The trick is to ensure that the active mouse interaction affects all cameras in the scene, using temporary variables to store each interactor id. 
 
 \section{Rendering Stereo Images}
+Rendering stereo images is beautifully intuitive. Stereoscopic 3D involves viewing different images with each eye in order to get an impression of depth. Using VTK, it is possible to create two cameras and position them as if they were eyes viewing objects in the scene. For comfort, the images should be generated using a camera spacing similar to that of the user's Inter-Pupillary Distance (IPD)\footnote{for most of the population this can be safely approximated as \SI{62}{\mm}} although nearby objects in a scene can cause discomfort even when the camera separation is set correctly. The reason for this is that the human visual system copes badly with extreme vergence - it is difficult to focus on an object very close between the eyes\footnote{and for exactly the same reason it is uncomfortable when 3D movies insist on bringing things too close to the audience!}. 
+
+VTK does contain a 'stereo camera' class, but the documentation for this is rare, and implementation usually involves colour anaglyph or interlaced stereographic image systems. The rift needs stereo input to be available in a 'side-by-side' format, and the most basic method of implementing this was to use two separate renderers, each of which was associated with an independent monoscopic camera 
 
 \chapter{Displaying Images on the Rift DK1}
 \section{An Introduction to Virtual Reality}
@@ -305,7 +311,7 @@ VR is an attractive way of getting stereoscopic 3D. The current generation of vi
 
 Various VR and AR systems were investigated, as shown in the Mind Map below. Many of the products investigated have been designed for consumers to watch films or play games. These systems do not include any positional feedback, since they are not designed to give an immersive experience but rather to act as a personal cinema screen. Another sub-set of the systems were designed for industrial or military use. These systems would potentially provide the desired performance, but were either prohibitively expensive or completely unavailable for purchase. 
 
-\begin{figure}[htbp]
+\begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/vr_headsets}
     \caption{AR and VR Products (an incomplete set)}
@@ -339,10 +345,52 @@ The Brainder project uses the open source ‘Blender’ 3D modeling software to 
 \section{Integrated Sensors and the HMD}
 
 \chapter{Extending VTK}
+At the end of Chapter 4, the VTK pipeline had been configured so that connectome data could be loaded, manipulated using interactors, and rendered as a stereo-pair. Chapter 5 then noted that the collimating lenses in the Rift would distort any images sent to the rift. This chapter describes how image processing in software can be used to compensate for optical artefacts, and how GLSL shaders can be used with VTK in order to apply the image correction in real time. 
+
 \section{The Need for Shaders}
+Why use shaders?
+Discuss the problems of correcting optical artefacts using optics.
+Discuss the problems of correcting optical artefacts using CPU. 
+Discuss the suitability of using shaders to do these calculations!
+
 \section{Applying GLSL Shaders to Materials}
+One drawback of large open source projects is that the most widely available documentation for the project can quickly become outdated. In this regard, VTK is a victim of it's own success. When setting out to integrate GLSL shaders with VTK a lot of the documentation suggests that the shader can be encapsulated within an XML file and then applied to an object as a material. This is also the approach suggested by some of the official documentation, where "To Do" and "In progress" comments create the deceptive appearance that these features are cutting edge. \textbf{Do not be fooled!} This use of shaders is deprecated, and has not been possible in 'recent' VTK versions for most of the last decade. Due to the size of the project it can be difficult to find documentation for every feature of interest\footnote{If there is one thing harder than finding a needle in a haystack, it is finding a needle in a haystack where the needle was removed in 2006.}. 
+Applying GLSL Shaders to VTK scenes via material properties is not feasible in current versions of VTK.
+
+%http://www.vtk.org/Wiki/Shader_In_VTK
+
 \section{Applying GLSL Shaders to Objects}
+Having learned to ignore shader documentation pre-dating 2008, it transpired that shaders can be applied directly to VTK objects. This option approach contains  significant flaws. 
+
+Firstly, if the fragment shader operates per material then it must be added to every material in the scene. This is not, by itself, a significant problem though it does mean that backgrounds cannot be distorted. Figure~TODO shows the effect of a simple fragment shader applied to a cone primitive. The shader is set to modify the colour of any cone fragment, with the result that all of the visible cone surface is modified.
+
+Secondly, and more seriously, applying shaders per-object means that deformations are applied relative to the object's coordinates relative to it's renderer. The Rift, however, requires that the deformation to every screen pixel is applied as a function of that pixel's position on screen. VTK allows renderers to be placed within 'viewports' (TODO: need an image describing what a 'viewport' is...) in a renderwindow, and when the individual renderers are rendered each renderer only knows about its own relative size. The render window conceals information about the overall window size and location. (TODO: double check this). This problem could be addressed by using a different shader for each renderer.
+
+
 \section{Applying GLSL Shaders to Buffers}
+In order to achieve the desired shader deformation, two different approaches need to be combined. Default rendering passes need to be defined explicitly and combined into a Sequence Pass, and then a new rendering pass needs to be derived to perform the desire deformation to the entire render scene at once. The full system is represented in Figure~\ref{fig:vtk_extended_pipeline}.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=1\textwidth]{resources/vtk_extended_pipeline}
+    \caption{The Extended VTK Pipeline}
+    \label{fig:vtk_extended_pipeline}
+\end{figure}
+
+Specifying the default rendering passes is necessary as VTK stops automatically defining them once the user manually configure any aspect of rendering. As shown in Figure~\ref{fig:vtk_extended_pipeline}, the default pass initializes the colour and depth buffers of the scene and the lighting pass sets up the scene lighting. VTK needs to apply these passes sequentially, and so they are grouped as a collection and then packaged into a Sequence Pass. The camera pass is applied after that sequence, and then the custom-made Saliency pass is applied. This is the point at which things start to get interesting.
+
+The Saliency pass is derived from previous work by Dr Bernhard Kainz, and uses raw OpenGL code to perform off-screen rendering to a texture. This process, in effect, means that the scene is rendered to an area of memory on the graphics card instead of to pixels on the screen. The texture memory can be accessed very quickly by OpenGL functions, and is perfectly positioned for subsequent GLSL renderers.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{resources/vtk_saliency}
+    \caption{The New VTK Saliency Pass}
+    \label{fig:vtk_saliency}
+\end{figure}
+
+This high-level description 
+
+\section{Practical notes}
 \section{Porting and Sub-Classing}
 
 \chapter{Results}
