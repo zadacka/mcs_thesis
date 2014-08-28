@@ -76,7 +76,7 @@ These Connectome projects produce very large datasets giving information about t
 
 Advances in computing power and display technology offer the capability to visualise these data sets in new ways. The dominant display technology today is the LCD computer monitor: large, high resolution, but a 2D format. Recent developments in virtual reality technology, in particular the mass-market launch of Oculus Rift development kits, offer new and exciting opportunities.
 
-But do researchers want to view data in 3D? What data is suited to this type of display? Is the performance of current VR display systems good for practical purposes? This project has sought to answer these questions by developing a demonstration system for the virtual reality display of medical image data. The demonstration system was used to conduct a survey in the Biomedical Image Analysis Group, and gather expert feedback. Results showed a significant interest in the use of Virtual Reality visualisation tools, and suggestions provided many ideas for further development.
+But, do researchers want to view data in 3D? What data is suited to this type of display? Is the performance of current VR display systems good for practical purposes? This project has sought to answer these questions by developing a demonstration system for the virtual reality display of medical image data. The demonstration system was used to conduct a survey in the Biomedical Image Analysis Group, and gather expert feedback. Results showed a significant interest in the use of Virtual Reality visualisation tools, and suggestions provided many ideas for further development.
 
 \newpage
 \section{Contributions}
@@ -94,14 +94,15 @@ In comparison to the size and scope of the VTK, Blender and ORIA projects, the c
 The academic impact of this work has been modest: numerous demonstrations within the Biomedical Image Analysis Group, and a formal presented to my employers at Sharp Laboratories of Europe\footnote{Following which they offered me a raise, so some good has come of it.}. Although this MCS thesis will be the main academic publication resulting from the project, it is hoped that the documented source code, image content and demonstration system will be a useful resource for future project work.
 
 \newpage
-\section{Structure of the Report}
+\section{Structure of the Report} 
+\label{sec:structure_of_the_report}
 As the project dealt with implementing a pipeline, illustrated in Figure~\ref{fig:the_full_pipeline}, it seems natural for the report to follow the process from raw data acquisition to the final display image. 
 
 Following this logic, Chapter~2 discusses the how the Human Connectome Project (HCP) maps human brain structures using DTI and fMRI imaging, and discusses existing visualisation techniques. Chapter~3 discusses the HCP data structure, and how it may be converted to intermediate formats. Chapter~4 shows how a Visualisation Tool Kit (VTK) pipeline can be constructed and HCP data can be processed for interaction and display on a standard 2D computer monitor. 
 
 Chapter~5 breaks away from the sequential structure in order to introduce the Oculus Rift hardware, and shows how the collimating optics in the headset will deform images unless extra distortion shaders are used. The report then returns to the VTK pipeline in Chapter~6 to discuss the good, the bad and the ugly ways to apply shaders so that images can be rendered correctly to the Rift Virtual Reality (VR) headset. 
 
-\begin{figure}[htbp!]
+\begin{figure}[htbp!]l
     \centering
     \includegraphics[scale=0.5]{resources/data_pipeline_overview}
     \caption{The Full Pipeline}
@@ -113,22 +114,30 @@ With a complete pipeline for VR, Chapter~7 discusses how the system was evaluate
 Finally, Chapter~8 concludes by synthesizing findings from each stage in the project, and reviewing the most interesting learning outcomes.
 
 \chapter{Connectome Data}
+
+This chapter discusses why visualising brain data is so important, and why connectome data is suitable source of content for this project. Different experimental techniques for gathering data are compared, with particular attention paid to the type of data that each technique produces. Current data visualisation systems are introduced, with the conclusion that the tractography is particularly well suited to be displayed in 3D. 
+
 \section{Motivation for using Connectome Data}
 Mapping and visualising the brain is of considerable academic and practical interest. The brain is thought to be composed of motor, sensory, behavioural state, and cognitive systems \cite{Swanson2003}. Better knowledge about the physiology of the brain can help in understanding these systems. Knowledge of the structure of an individual brain can also be very helpful when diagnosing medical conditions, or planning a surgical procedure \cite{Golby2011}. In either case, the interested parties need to have data, and to be able to draw useful inferences from it. This project aims to work on the second of these challenges: to develop new ways of displaying and interacting with existing connectome data. 
 
+The high quality and availability of connectome data makes it an excellent source of content for visualisation. The Human Connectome Project is a world-class source of data, and thanks to the Open Access Data license terms \cite{HCPAccess2014} all of this content can be obtained free of charge. Imperial College has a great deal of local expertise in medical imaging, and the project has benefited greatly form access to friendly local expertise. As an illustration of this good fortune, Imperial College is one of only four UK universities involved in the Developing Human Connectome Project \cite{DHCPPartners2014}, and over half of the experts\footnote{Kevin Kerdauren, Lisa Koch, Dr Sarah Parisot, and especially Dr Bernhard  Kainz} in the Imperial College team have directly assisted this project. 
+
 \section{Sources of Connectome Data}
-An understanding of the processes for generating connectome data is useful, as it influences the resolution and format of the data. The most relevant methods:
-\begin{enumerate}
-\item Electron microscopy (EM) gives nanometer resolution images of neural structure. This is an ex vivo process, samples must be taken from the brain. EM techniques can give a resolution of \SI{5}{\nm} in the x-y plane, with a \SI{30}{\nm} slice thickness and generate an enormous amount of raw data, of the order of \SI{1}{\pebi\byte\per\mm\cubed} \cite{Jeong2010}.\footnote{That data density is greater than two hundred thousand DVDs per cubic milimeter or, in old money, more than eleven \textit{billion} floppy disks per cubic inch} Due to the high resolution and small sample sizes accommodated by EM techniques, the only connectome to have been completely mapped out by this technique is that of the nematode c.elegans \cite{White1986}.
-\item Optical microscopy (OM) techniques can be used in conjunction with fluorescent markers to selectively tag and examine brain matter. As with EM, this is done ex-vivo. This approach allows for much larger samples to be analysed, at a resolution of approximately \SI{0.35}{\um} in the x-y plane, and with a slice thickness of \SI{100}{\um}. This approach has recently been used to map the entire mouse connectome \cite{Oh2014}. 
-\item Magnetic Resonance Imaging (MRI) scans may be used in combination with Diffusion Tensor Imaging as an in-vivo technique for determining larger scale structure. Diffusion of water within the brain is influenced by the structure of the brain matter, since water can diffuse more easily along bundles of nerves than perpendicular to them, and so the diffusion patterns allow local structure to be inferred. The resolution of this technique is typically low, approximately \SI{1}{\mm} in the x-y plane \cite{Westin2002}. MRI techniques have been used to map hundreds of human connectomes. 
-\end{enumerate}
+An understanding of the processes for generating connectome data is useful, as it influences the resolution and format of the data obtained. 
+
+\subsection{Electron microscopy (EM)} 
+EM gives nanometer resolution images of neural structure. This is an ex vivo process, samples must be taken from the brain. EM techniques can give a resolution of \SI{5}{\nm} in the x-y plane, with a \SI{30}{\nm} slice thickness and generate an enormous amount of raw data, of the order of \SI{1}{\pebi\byte\per\mm\cubed} \cite{Jeong2010}.\footnote{That data density is greater than two hundred thousand DVDs per cubic milimeter or, in old money, more than eleven \textit{billion} floppy disks per cubic inch} Due to the high resolution and small sample sizes accommodated by EM techniques, the only connectome to have been completely mapped out by this technique is that of the nematode c.elegans \cite{White1986}.
+
+\subsection{Optical microscopy (OM)} 
+OM techniques can be used in conjunction with fluorescent markers to selectively tag and examine brain matter. As with EM, this is done ex-vivo. This approach allows for much larger samples to be analysed, at a resolution of approximately \SI{0.35}{\um} in the x-y plane\footnote{Fluorescent markers allow resolution beyond the Abbé limit without needing metamaterial lenses.}, and with a slice thickness of \SI{100}{\um}. This approach has recently been used to map the entire mouse connectome \cite{Oh2014}. 
+
+\subsection{Magnetic Resonance Imaging (MRI)} 
+MRI scans may be used in combination with Diffusion Tensor Imaging (DTI-MRI) as an in-vivo technique for determining larger scale structure. Diffusion of water within the brain is influenced by the structure of the brain matter, since water can diffuse more easily along bundles of nerves than perpendicular to them, and so the diffusion patterns allow local structure to be inferred. The resolution of this technique is typically low, approximately \SI{1}{\mm} in the x-y plane \cite{Westin2002}. A related technique is to detect neural activity, determined as a function MRI measurements of blood-oxygen changes in the brain (fMRI) \cite{Huettel2004}. MRI techniques have been used to map hundreds of human connectomes. 
+
 
 \section{Storing Connectome Data}
-There are no standardised formats for storing raw connectome data, as the form of the data depends on the experimental technique used to obtain it (EM, OM, DT-MRI) and the specific equipment used. Fortunately, HCP do standardise their data, as well as de-noising and normalising it.
+There are no standardised formats for storing raw connectome data, as the form of the data depends on the experimental technique used to obtain it (EM, OM, MRI) and the specific equipment used. Fortunately, the HCP project does have a set of conventions as to the format and structure of their data. The HCP includes DT-MRI and fMRI measurements from multiple institutions and multiple different scanners, and has been careful to ensure that different data samples may be compared in a valid way \cite{HCP_Logistics_2014}.  In addition to a standard format and organizational structure, the HCP do de-noising and normalising operations. The topic of HCP data is covered in more depth in Section~\ref{sec:the_structure_of_hcp_data}.
 
-\subsection{NIfTI Data}
-The main format of the HCP data is Neuroimaging Informatics Technology Initiative (NIfTI) format. Recent data is likely to be in NIfTI-2 format, an extension that uses \SI{64}{bit} storage and addressing to allow for larger data sets with more precision. To the explorer browsing an HCP data set, these are the $\ast.nii$ files \footnote{or sometimes compressed (gnu-zipped) $\ast.nii.gz$ or tar-archived $\ast.nii.tar$ files.}. The NIfTI format holds data as a 4D matrix (x, y, z and time), as well as containing meta-data in a header. Conceptually, data can be extracted from NIfTI format by taking a 3D matrix 'slice' out of the set, to get voxel data for a specific point in time. 
 
 Many tools such as NeuroneJ \cite{NeuronJ2014}, Imaris \cite{Imaris2014}, and Amia \cite{Amira2014} have been developed for manipulating connectome data, but these tools can require a specific input data format. 
 
@@ -220,9 +229,13 @@ Pseudo-3D images are frequently used. These use either colours or symbols to rep
 Full 3D images seem very well suited to visualising connectome data. Given that there is a need to display 3D data, and that much of the data is already processed and rendered as a 3D model, it seems natural to displaying it natively in 3D. If the only objections to 3D visualisations is the expense of current 3D hardware \cite{Margulies2013} then a proliferation of cheap consumer hardware may remove this barrier in the near future. 
 
 \chapter{Post-Processing}
-Data-wrangling was an important component for this project. The HCP dataset contains a lot of data that is irrelevant to this project, as shown in Figure~\ref{fig:hcp_full_data_set}, so a decision was made to pick a structural example.  The format of that structural data was then awkward: nifti, cifti and gifti aren't perfectly suited for parsing into a graphics program. So a number of alternatives were evaluated for parsing the data. On a pragmatic basis, mitk was used to select a cortical region and export it as an intermediate format (vtk) which is beautifully simple and contains structural information in plain text (hooray!). An import plugin was written for Blender in order to allow this data to be imported and cleaned with some of Blender's excellent mesh manipulation tools. The chapter concludes with the data in a suitable format for VTK input. The (optional) ability to run data through Blender is a bonus, but not necessary for the pipeline.
 
-\section{The Structure of HCP Data}
+This chapter discusses the the data-wrangling necessary to convert HCP data into a suitable input format for the VTK pipeline. The HCP dataset is examined using ITK-SNAP, and the DTI-MRI data selected as a starting point. The format of the HCP data is explained, and an intermediate data format (legacy vtk) is chosen. The HCP data is then processed using Camino, ITK-SNAP, MITK, and MATLAB in order to obtain a tractography, and a cortical surface and dense surface mesh. A Blender plugin is developed in order to import and examine the VTK mesh, and the relative benefits of each post-processed content are discussed.  
+
+\textbf{ToDo: Delete the following notes}
+The contains a lot of data that is irrelevant to this project, as shown in Figure~\ref{fig:hcp_full_data_set}, so a decision was made to pick a structural example.  The format of that structural data was then awkward: nifti, cifti and gifti aren't perfectly suited for parsing into a graphics program. So a number of alternatives were evaluated for parsing the data. On a pragmatic basis, mitk was used to select a cortical region and export it as an intermediate format (vtk) which is beautifully simple and contains structural information in plain text (hooray!). An import plugin was written for Blender in order to allow this data to be imported and cleaned with some of Blender's excellent mesh manipulation tools. The chapter concludes with the data in a suitable format for VTK input. The (optional) ability to run data through Blender is a bonus, but not necessary for the pipeline.
+
+\section{The Structure of HCP Data} \label{sec:the_structure_of_hcp_data}
 The HCP data is intended to be a standard format, allowing for comparison between hundreds, eventually thousands, of individual human connectomes. Chapter 2 discussed the different types of experimental data used to measure the connectome structure, and this knowledge quickly helps narrow down the search space. Figure~\ref{fig:hcp_full_data_set} shows that the small fraction of the HCP data set: minimally processed MRI data.  
 
 \begin{figure}[htbp!]
@@ -231,6 +244,9 @@ The HCP data is intended to be a standard format, allowing for comparison betwee
     \caption{Components of a sample HCP Data Set.}
     \label{fig:hcp_full_data_set}
 \end{figure}
+
+\subsection{NIfTI Data}
+The main format of the HCP data is Neuroimaging Informatics Technology Initiative (NIfTI) format. Recent data is likely to be in NIfTI-2 format, an extension that uses \SI{64}{bit} storage and addressing to allow for larger data sets with more precision. To the explorer browsing an HCP data set, these are the $\ast.nii$ files \footnote{or sometimes compressed (gnu-zipped) $\ast.nii.gz$ or tar-archived $\ast.nii.tar$ files.}. The NIfTI format holds data as a 4D matrix (x, y, z and time), as well as containing meta-data in a header. Conceptually, data can be extracted from NIfTI format by taking a 3D matrix 'slice' out of the set, to get voxel data for a specific point in time. 
 
 \section{Choosing an Intermediate Format}
 A number of different 3rd party programs were investigated for reading and converting HCP data. These included MeshLab "(http://meshlab.sourceforge.net/)", Medinria "(http://med.inria.fr/)", Mint Medical "(http://www.mint-medical.de/productssolutions/mitk3m3/mitk3m3/downloads)", 
@@ -306,6 +322,8 @@ Rendering stereo images is beautifully intuitive. Stereoscopic 3D involves viewi
 VTK does contain a 'stereo camera' class, but the documentation for this is rare, and implementation usually involves colour anaglyph or interlaced stereographic image systems. The rift needs stereo input to be available in a 'side-by-side' format, and the most basic method of implementing this was to use two separate renderers, each of which was associated with an independent monoscopic camera 
 
 \chapter{Displaying Images on the Rift DK1}
+This chapter provides a very short introduction to the concept of virtual reality in order to provide context for the Oculus Rift DK1. The hardware of the DK1 is introduced and then the key areas are examined. The first of these is the head-mounted sensors, which enable position tracking and viewpoint interaction. The second key area is the lens system, and the optical deformation that must be corrected for during the render process in order to display content to the user. 
+
 \section{An Introduction to Virtual Reality}
 Virtual Reality (VR) refers to the visualisation of an artificial environment. This distinguishes it from Augmented Reality (AR) where the user simultaneously experiences real and virtual environments. The Oculus Rift is a VR device since it completely shuts out any view of the real world, whilst Google Glass is an AR device since it shows information as an overlay of the real world.
 
@@ -428,6 +446,8 @@ I *want* to complain here about how frustrating some of the driver problems were
 In theory, the Rift SDK can apply deformations directly, and since v0.3 Oculus have stated the SDK-rendering is the preferred approach. All of the example code for SDK-rendering was for a Windows system with DirectX rather than OpenGL, and it was decided that directly using GLSL shaders would be a more feasible approach given the project time frame. 
 
 \chapter{Results}
+The results section can talk about specifications of the final system, and the outcomes of the survey. This is looking quite promising. In particular, several people have had some interesting suggestions for future work. 
+
 \section{Automated Testing with CTest}
 \section{Hardware Limitations}
 \section{Software Limitations}
@@ -435,7 +455,7 @@ In theory, the Rift SDK can apply deformations directly, and since v0.3 Oculus h
 
 
 \chapter{Conclusion}
-\nocite{Margulies2013}
+Eeek!
 
 \bibliography{bibtex/connectome}	
 \bibliographystyle{unsrt} % unsrt == order of appearance, != alphabetical
