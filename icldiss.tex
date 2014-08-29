@@ -369,7 +369,34 @@ At the end of Chapter 4, the VTK pipeline had been configured so that connectome
 
 \section{The Need for Shaders}
 \label{sec:need_for_shaders}
-Why use shaders?
+Before diving into the details of implementation, it is useful to understand the motivation for using image processing, and shaders in particular. 
+
+\subsection{Using optics to correct for distortions}
+The undesirable deformations introduced by the Rift lenses could be corrected by using additional optics. Two corrections would be required: firstly to compensate for the barrel deformation whilst maintaining the extended field of view, and secondly to reduce the chromatic aberrations caused by dispersion of light in the lens glass. The barrel distortion could be eliminated by using a lens doublet, and a central aperture \cite{Brainerd2004}. The problem of chromatic aberration could be dealt with by means of achromatic lenses or by using extra-low (EL) dispersion glass in the lens system \cite{Davis2014}. These solutions would be appropriate for high-end camera lenses, as shown in Figure \ref{fig:camera_lens}, but are completely impractical for the Rift headset. The lenses in the Rift, shown in Figure \ref{fig:rift_lens}, are designed to be small, cheap and robust. Any optical correction system would involve multiple lenses (increased weight), spacing (increased size), require rigid positioning (increased fragility) and require expensive EL glass (cost).
+
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[width=0.4\linewidth]{resources/camera_lens}
+    \caption{A camera lens cross-section, from lenstip.com}
+	\label{fig:camera_lens}
+\end{subfigure}%
+\centering
+\begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[width=0.4\linewidth]{resources/placeholder}
+    \caption{An Oculus Rift DK1 lens.}
+	\label{fig:rift_lens}
+\end{subfigure}    
+    \caption{Comparison of lens complexity.}
+    \label{fig:lens_comparison}
+\end{figure}
+
+\subsection{Using software to correct for distortions}
+By comparison with an optical distortion correction system, software offers the attractive property of requiring no additional physical components, and so no additional hardware cost\footnote{Experience working for a consumer electronics company strongly suggests to me that this exact argument was used.}. A remarkable property of barrel and pincushion deformations is although the geometric shape has been distorted, \textit{the image is in perfect focus}. This means that the distortion can be corrected for by moving pixels around in the original image, specifically by moving every pixel a certain distance towards the optical axis of the lens. The amount of movement required is a function of the radial distance from the optic axis \cite{Brunelli2009} In order to correct for this geometric distortion, the geometry in the original image pixels in the original image can be moved. The barrel distortion in Figure \ref{fig:distortions} could be corrected by re-arranging pixel data, moving each pixel towards the centre of the lens. The 
+
+
 Discuss the problems of correcting optical artefacts using optics.
 Discuss the problems of correcting optical artefacts using CPU. 
 Discuss the suitability of using shaders to do these calculations!
