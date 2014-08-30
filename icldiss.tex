@@ -15,10 +15,43 @@
 \usepackage{subcaption}  % lets us use subfigure
 \usepackage[binary-units=true]{siunitx}   % and friendly SI unit shiz
 \setcounter{tocdepth}{1} % don't show sub-sections in the TOC
-
 % next two lines supress 'underfull hbox" warnings caused by URLs in bib file
 \usepackage{etoolbox}
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{} 
+
+\usepackage{scrhack}  % to avoid the warning that \float@addtolists is deprecated
+\usepackage{listings} % lets us insert software code and highlight
+\usepackage{color}    % required to set background colour
+\lstset{
+	language=[Visual]C++,
+	keywordstyle=\bfseries\ttfamily\color[rgb]{0,0,1},
+	identifierstyle=\ttfamily,
+	commentstyle=\color[rgb]{0.133,0.545,0.133},
+	stringstyle=\ttfamily\color[rgb]{0.627,0.126,0.941},
+	showstringspaces=false,
+	basicstyle=\small,
+	numberstyle=\footnotesize,
+	numbers=left,
+	stepnumber=1,
+	numbersep=5pt,
+	tabsize=2,
+	breaklines=true,
+	prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+	breakatwhitespace=true,
+	aboveskip={1.5\baselineskip},
+  columns=fixed,
+  extendedchars=true,
+  backgroundcolor=\color{white},
+%  title=\lstname
+}
+
+\usepackage{caption} % to go with lstlisting
+%\usepackage[usenames,dvipsnames]{color} % know about colours
+\definecolor{grey}{RGB}{102,102,102}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{grey}{\parbox{0.95\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+
 
 % Essential Setup
 \title{Seeing the Big Data: Virtual Reality Visualisations of Large Datasets}
@@ -249,11 +282,11 @@ The HCP data is intended to be a standard format, allowing for comparison betwee
 The main format of the HCP data is Neuroimaging Informatics Technology Initiative (NIfTI) format. Recent data is likely to be in NIfTI-2 format, an extension that uses \SI{64}{bit} storage and addressing to allow for larger data sets with more precision. To the explorer browsing an HCP data set, these are the $\ast.nii$ files \footnote{or sometimes compressed (gnu-zipped) $\ast.nii.gz$ or tar-archived $\ast.nii.tar$ files.}. The NIfTI format holds data as a 4D matrix (x, y, z and time), as well as containing meta-data in a header. Conceptually, data can be extracted from NIfTI format by taking a 3D matrix 'slice' out of the set, to get voxel data for a specific point in time. 
 
 \section{Choosing an Intermediate Format}
-A number of different 3rd party programs were investigated for reading and converting HCP data. These included MeshLab "(http://meshlab.sourceforge.net/)", Medinria "(http://med.inria.fr/)", Mint Medical "(http://www.mint-medical.de/productssolutions/mitk3m3/mitk3m3/downloads)", 
+% A number of different 3rd party programs were investigated for reading and converting HCP data. These included MeshLab "(http://meshlab.sourceforge.net/)", Medinria "(http://med.inria.fr/)", Mint Medical "(http://www.mint-medical.de/productssolutions/mitk3m3/mitk3m3/downloads)", 
 
 
 \section{Importing Data to Blender}
-A VTK-Blender integration system exists "(http://www.ualberta.ca/AICT/RESEARCH/Vis/VTKBlender/)" 
+A VTK-Blender integration system exists %"(http://www.ualberta.ca/AICT/RESEARCH/Vis/VTKBlender/)" 
 
 \section{Mesh Analysis and Simplification}
 
@@ -372,20 +405,20 @@ At the end of Chapter 4, the VTK pipeline had been configured so that connectome
 Before diving into the details of implementation, it is useful to understand the motivation for using image processing, and shaders in particular. 
 
 \subsection{Using optics to correct for distortions}
-The undesirable deformations introduced by the Rift lenses could be corrected by using additional optics. Two corrections would be required: firstly to compensate for the barrel deformation whilst maintaining the extended field of view, and secondly to reduce the chromatic aberrations caused by dispersion of light in the lens glass. The barrel distortion could be eliminated by using a lens doublet, and a central aperture \cite{Brainerd2004}. The problem of chromatic aberration could be dealt with by means of achromatic lenses or by using extra-low (EL) dispersion glass in the lens system \cite{Davis2014}. These solutions would be appropriate for high-end camera lenses, as shown in Figure \ref{fig:camera_lens}, but are completely impractical for the Rift headset. The lenses in the Rift, shown in Figure \ref{fig:rift_lens}, are designed to be small, cheap and robust. Any optical correction system would involve multiple lenses (increased weight), spacing (increased size), require rigid positioning (increased fragility) and require expensive EL glass (cost).
+The undesirable deformations introduced by the Rift lenses could be corrected by using additional optics. Two corrections would be required: firstly to compensate for the pincushion deformation whilst maintaining the extended field of view, and secondly to reduce the chromatic aberrations caused by dispersion of light in the lens glass. The pincushion distortion could be eliminated by using a lens doublet, and a central aperture \cite{Brainerd2004}. The problem of chromatic aberration could be dealt with by means of achromatic lenses or by using extra-low (EL) dispersion glass in the lens system \cite{Davis2014}. These solutions would be appropriate for high-end camera lenses, as shown in Figure \ref{fig:camera_lens}, but are completely impractical for the Rift headset. The lenses in the Rift, shown in Figure \ref{fig:rift_lens}, are designed to be small, cheap and robust. Any optical correction system would involve multiple lenses (increased weight), spacing (increased size), require rigid positioning (increased fragility) and require expensive EL glass (cost).
 
 \begin{figure}[htbp!]
 \centering
 \begin{subfigure}{0.5\textwidth}
     \centering
-    \includegraphics[width=0.4\linewidth]{resources/camera_lens}
+    \includegraphics[width=0.5\linewidth]{resources/camera_lens}
     \caption{A camera lens cross-section, from lenstip.com}
 	\label{fig:camera_lens}
 \end{subfigure}%
 \centering
 \begin{subfigure}{0.5\textwidth}
     \centering
-    \includegraphics[width=0.4\linewidth]{resources/placeholder}
+    \includegraphics[width=0.5\linewidth]{resources/placeholder}
     \caption{An Oculus Rift DK1 lens.}
 	\label{fig:rift_lens}
 \end{subfigure}    
@@ -394,20 +427,62 @@ The undesirable deformations introduced by the Rift lenses could be corrected by
 \end{figure}
 
 \subsection{Using software to correct for distortions}
-By comparison with an optical distortion correction system, software offers the attractive property of requiring no additional physical components, and so no additional hardware cost\footnote{Experience working for a consumer electronics company strongly suggests to me that this exact argument was used.}. A remarkable property of barrel and pincushion deformations is although the geometric shape has been distorted, \textit{the image is in perfect focus}. This means that the distortion can be corrected for by moving pixels around in the original image, specifically by moving every pixel a certain distance towards the optical axis of the lens. The amount of movement required is a function of the radial distance from the optic axis \cite{Brunelli2009} In order to correct for this geometric distortion, the geometry in the original image pixels in the original image can be moved. The barrel distortion in Figure \ref{fig:distortions} could be corrected by re-arranging pixel data, moving each pixel towards the centre of the lens. The 
+By comparison with an optical distortion correction system, software offers the attractive property of requiring no additional physical components, and so no additional hardware cost\footnote{Experience working for a consumer electronics company strongly suggests to me that this exact argument was used.}. A remarkable property of barrel and pincushion distortions is that the geometric shape has been distorted but \textit{the image is still in perfect focus}. This means that the distortion can be corrected for by moving pixel data around in the original image. The amount of movement required is a function of the radial distance from the optic axis \cite{Brunelli2009}. The barrel distortion in Figure \ref{fig:appearance_unprocessed} could be corrected by re-arranging pixel data, moving each pixel towards the centre of the lens to achieve the result shown in Figure \ref{fig:appearance_processed}.
+
+The image processing required for this geometric correction can be done pixel-by-pixel. Given the size of the rift display, it must be computed for $1280 \times 800 = 1,024,000$ times per frame. If content is to be rendered at \SI{60}{Hz} then the total render time, of which the distortion step is only part, needs to take place in less than \SI{16}{ms}. Fortunately, the individual pixel calculations are entirely independent of one another, making the operation perfectly suited to parallel processing on a graphics card. 
 
 
-Discuss the problems of correcting optical artefacts using optics.
-Discuss the problems of correcting optical artefacts using CPU. 
-Discuss the suitability of using shaders to do these calculations!
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.8\textwidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{resources/appearance_unprocessed}
+    \caption{The appearance of native content to the Rift's user.}
+	\label{fig:appearance_unprocessed}
+\end{subfigure}
+\centering
+\begin{subfigure}{0.8\textwidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{resources/appearance_processed}
+    \caption{The appearance of processed content to the Rift's user.}
+	\label{fig:appearance_processed}
+\end{subfigure}    
+    \caption{Correcting distortion by modifying image content.}
+    \label{fig:processing_content}
+\end{figure}
 
-\section{Applying GLSL Shaders to Materials}
+\subsection{Using shaders to correct for distortions}
+Modern 3D computer graphics make heavy use of Graphical Processor Units (GPUs), processors designed especially for the parallel execution of thousands or millions of independent calculations on pixel data. The image deformation problem is perfectly suited to be solved with a GPU. 
+
+Two companies dominate the market for graphics cards: Nvidia and ATI. Graphics drivers are notorious for driver problems \footnote{When discussing problems in the department, the first question was frequently "What graphics card are you using". Using a moderately powerful Nvidia card with the latest drivers was a pragmatic way to avoid exotic hardware issues.}. The project chose to use a NVidia GeForce GTX 480 graphics card on the basis that it would support the most recent version of OpenGL (4.4 at the time of writing). Nvidia provide good driver support, and have created the CUDA parallel computing platform in case it was necessary to use the graphics hardware directly for calculations.
+
+Similar to the division of the graphics card market, two main application programming interfaces (APIs) exist to make use of graphics hardware. These are Direct3D and OpenGL. The project chose to use OpenGL as it had previously been used in the MSC Graphics lectures, it is an open standard, and it is cross platform. By contrast, Direct3D appeared to be unfamiliar and would lock the project to the Windows operating system.
+
+Once the pragmatic decisions regarding the choice of hardware and API were made, the practical work could begin: designing and implementing a graphics shader program to perform pixel-wise calculations.
+
+\section{Designing a Test Shader}
+Graphics shaders are executed on graphics hardware, not on the CPU. OpenGL shaders are written in the Graphics Library Shader Language (GLSL), a C-like language with the occasional surprise. They are massively parallel and difficult to debug, though some third party debugging tools do exist \cite{glslDevil}. There are no ways to print statements in GLSL \footnote{And in any case, if a per-pixel shader script is executed over a million times per frame, and at sixty frames per second, then print statements would not be a practical debugging tool}. For these reasons, the chosen approach for shader development was to start small, and gradually add complexity. 
+
+In a graphics pipeline there are vertex shaders and fragment shaders \footnote{Geometry shaders were added in OpenGL3.2 and and tessellation shaders added in OpenGL4, but these shaders are mainly intended to do geometric mesh adjustments and aren't relevant to the processing pipeline in this project.}. Vertex shaders are executed at every vertex in a scene, approximately thirty two thousand vertices in the case of the cortical surface content. Fragment shaders are executed at every fragment, the projection of an area of an object polygon onto a pixel in the screen. The final value of one screen pixel may be the combination of values of a number of fragments, combined as a function of their depth, opacity and position.
+
+Listing \ref{simple_vert} shows the most basic vertex shader, where vertices are simply passed through the pipeline. The graphics pipeline is a state machine, so the variables \texttt{gl\_ModelViewProjectionMatrix} and \texttt{gl\_Vertex} are automatically set by the system, and the result of the calculation \texttt{gl\_Position} is automatically passed on to the next part of the pipeline.
+
+\lstinputlisting
+  [label=simple_vert, caption=A Simple Vertex Shader]{code/my_first_shader.vs}
+
+Listing \ref{simple_frag} is almost as simple as the example vertex shader. It sets the colour of every fragment to red. If this fragment shader works, every polygon in the rendered object should be bright red and the background should not be altered. This sort of shader may seem excessively simple, but lots of simple checks were necessary to confirm that basic OpenGL functionality was achievable before moving on to more complicated things.
+
+\lstinputlisting
+  [label=simple_frag, caption=A Simple Frament Shader]{code/my_first_shader.fs}
+
+\section{Applying Shaders in VTK}
+\subsection{Applying GLSL Shaders to Materials}
 One drawback of large open source projects is that the most widely available documentation for the project can quickly become outdated. In this regard, VTK is a victim of it's own success. When setting out to integrate GLSL shaders with VTK a lot of the documentation suggests that the shader can be encapsulated within an XML file and then applied to an object as a material. This is also the approach suggested by some of the official documentation, where "To Do" and "In progress" comments create the deceptive appearance that these features are cutting edge. \textbf{Do not be fooled!} This use of shaders is deprecated, and has not been possible in 'recent' VTK versions for most of the last decade. Due to the size of the project it can be difficult to find documentation for every feature of interest\footnote{If there is one thing harder than finding a needle in a haystack, it is finding a needle in a haystack where the needle was removed in 2006.}. 
 Applying GLSL Shaders to VTK scenes via material properties is not feasible in current versions of VTK.
 
 %http://www.vtk.org/Wiki/Shader_In_VTK
 
-\section{Applying GLSL Shaders to Objects}
+\subsection{Applying GLSL Shaders to Objects}
 Having learned to ignore shader documentation pre-dating 2008, it transpired that shaders can be applied directly to VTK objects. This option approach contains  significant flaws. 
 
 Firstly, if the fragment shader operates per material then it must be added to every material in the scene. This is not, by itself, a significant problem though it does mean that backgrounds cannot be distorted. Figure~TODO shows the effect of a simple fragment shader applied to a cone primitive. The shader is set to modify the colour of any cone fragment, with the result that all of the visible cone surface is modified.
@@ -415,7 +490,7 @@ Firstly, if the fragment shader operates per material then it must be added to e
 Secondly, and more seriously, applying shaders per-object means that deformations are applied relative to the object's coordinates relative to it's renderer. The Rift, however, requires that the deformation to every screen pixel is applied as a function of that pixel's position on screen. VTK allows renderers to be placed within 'viewports' (TODO: need an image describing what a 'viewport' is...) in a renderwindow, and when the individual renderers are rendered each renderer only knows about its own relative size. The render window conceals information about the overall window size and location. (TODO: double check this). This problem could be addressed by using a different shader for each renderer.
 
 
-\section{Applying GLSL Shaders to Buffers}
+\subsection{Applying GLSL Shaders to Buffers}
 In order to achieve the desired shader deformation, two different approaches need to be combined. Default rendering passes need to be defined explicitly and combined into a Sequence Pass, and then a new rendering pass needs to be derived to perform the desire deformation to the entire render scene at once. The full system is represented in Figure~\ref{fig:vtk_extended_pipeline}.
 
 \begin{figure}[htbp!]
@@ -438,8 +513,16 @@ The Saliency pass is derived from previous work by Dr Bernhard Kainz, and uses r
 
 TODO: This high-level description neatly side-steps the various issues of loading shaders, upgrading from glARB classes to modern glCore functions, ensuring that GLSL 440 was supported, upgrading the drivers, and the operating system, in order to get sufficiently recent NVIDIA support, and then dealing with the OpenGL bugs that recent versions of the NVIDIA drivers contain!! Though none of that was 'news-worthy', it took a great deal of time and patience to identify and fix. 
 
-\section{The Shaders Themselves}
-GLSL shaders are (ab)used to perform three functions in this project. They shift the image in order to align the camera viewpoint centre with the lens centre. They apply a pincushion deformation of the entire image in order to compensate for the barrel deformation of the Rift's lenses.  They also mask the edges of the screen where the OpenGL 340.x drivers leave image artefacts. 
+\section{Rift Deformation Shaders}
+GLSL shaders are (ab)used to perform three functions in this project. They shift the image in order to align the camera viewpoint centre with the lens centre. They apply a barrel deformation of the entire image in order to compensate for the pincushion deformation of the Rift's lenses.  They also mask the edges of the screen where the OpenGL 340.x drivers leave image artefacts. 
+
+\lstinputlisting
+  [label=distortion_vert, caption=The Vertex Distortion Shader]
+  {code/Distortion.vs}
+  
+\lstinputlisting
+  [label=distortion_frag, caption=The Frament Distortion Shader]
+  {code/Distortion.fs}
 
 It is assumed that the reader is familiar with the nature of shaders, and so the discussion here will not introduce the concept but rather will focus on the unusual way in which they are being employed. 
 
@@ -452,7 +535,7 @@ Figure~\ref{fig:rift_screen} shows how the lens positions, aligned with the user
     \label{fig:rift_screen}
 \end{figure}
 
-After correcting for the lens centre displacement, the shader then needs to pre-emptively correct for the barrel distortion of the Rift lenses. This is achieved using a polynomial function of the pixel's radial displacement from the lens centre. The polynomial function is based on reverse engineering of the Rift SDK TODO: cite shader forum, and with parameters obtained from Dr Stephan Rogge TODO: another citation. 
+After correcting for the lens centre displacement, the shader then needs to pre-emptively correct for the pincushion distortion of the Rift lenses. This is achieved using a polynomial function of the pixel's radial displacement from the lens centre. The polynomial function is based on reverse engineering of the Rift SDK TODO: cite shader forum, and with parameters obtained from Dr Stephan Rogge TODO: another citation. 
 
 TODO: Ask Daniel if there should be some maths in here. It all seems a little bland!
 
@@ -466,6 +549,11 @@ TODO: Ask Daniel if there should be some maths in here. It all seems a little bl
 After correcting for the lens distortion, it is desirable to apply a chromatic aberration factor in order to mitigate the dispersive effect of the Rift's lenses as mentioned in Section~\ref{sec:need_for_shaders}. The parameters for the chromatic aberration correction were not available, and so approximate parameters were chosen based on empirical testing. TODO: give this a go. 
 
 \section{Practical notes}
+
+\lstinputlisting
+  [label=distortion_debugging, caption=Useful Code for Debugging Fragment Shaders]
+  {code/Debugging.fs}
+  
 I *want* to complain here about how frustrating some of the driver problems were. Particularly the bug in NVIDIA 331.32 that "could prevent OpenGL Framebuffer Objects (FBOs) from being properly redrawn after a modeswitch.". Yes, NVIDIA, that bug certainly could! It took a long time to confirm that the problem was not due to my FBO rendering process, but rather due to driver problems.
 
 
