@@ -153,7 +153,7 @@ This chapter discusses why visualising brain data is so important, and why conne
 \section{Motivation for using Connectome Data}
 Mapping and visualising the brain is of considerable academic and practical interest. The brain is thought to be composed of motor, sensory, behavioural state, and cognitive systems \cite{Swanson2003}. Better knowledge about the physiology of the brain can help in understanding these systems. Knowledge of the structure of an individual brain can also be very helpful when diagnosing medical conditions, or planning a surgical procedure \cite{Golby2011}. In either case, the interested parties need to have data, and to be able to draw useful inferences from it. This project aims to work on the second of these challenges: to develop new ways of displaying and interacting with existing connectome data. 
 
-The high quality and availability of connectome data makes it an excellent source of content for visualisation. The Human Connectome Project is a world-class source of data, and thanks to the Open Access Data license terms \cite{HCPAccess2014} all of this content can be obtained free of charge. Imperial College has a great deal of local expertise in medical imaging, and the project has benefited greatly form access to friendly local expertise. As an illustration of this good fortune, Imperial College is one of only four UK universities involved in the Developing Human Connectome Project \cite{DHCPPartners2014}, and over half of the experts\footnote{Kevin Kerdauren, Lisa Koch, Dr Sarah Parisot, and especially Dr Bernhard  Kainz} in the Imperial College team have directly assisted this project. 
+The high quality and availability of connectome data makes it an excellent source of content for visualisation. The Human Connectome Project is a world-class source of data, and thanks to the Open Access Data license terms \cite{HCPAccess2014} all of this content can be obtained free of charge. Imperial College has an active research program in the medical imaging field, and the project has benefited greatly form access to friendly local expertise. As an illustration of this good fortune, Imperial College is one of only four UK universities involved in the Developing Human Connectome Project \cite{DHCPPartners2014}, and over half of the experts\footnote{Kevin Kerdauren, Lisa Koch, Dr Sarah Parisot, and especially Dr Bernhard  Kainz} in the Imperial College team have directly assisted this project. 
 
 \section{Sources of Connectome Data}
 An understanding of the processes for generating connectome data is useful, as it influences the resolution and format of the data obtained. 
@@ -169,12 +169,14 @@ MRI scans may be used in combination with Diffusion Tensor Imaging (DTI-MRI) as 
 
 
 \section{Storing Connectome Data}
-There are no standardised formats for storing raw connectome data, as the form of the data depends on the experimental technique used to obtain it (EM, OM, MRI) and the specific equipment used. Fortunately, the HCP project does have a set of conventions as to the format and structure of their data. The HCP includes DT-MRI and fMRI measurements from multiple institutions and multiple different scanners, and has been careful to ensure that different data samples may be compared in a valid way \cite{HCP_Logistics_2014}.  In addition to a standard format and organizational structure, the HCP do de-noising and normalising operations. The topic of HCP data is covered in more depth in Section~\ref{sec:the_structure_of_hcp_data}.
+There are no standardised formats for storing raw connectome data, as the form of the data depends on the experimental technique used to obtain it (EM, OM, MRI) and the specific equipment used. For this reason, many imaging tools such as NeuroneJ \cite{NeuronJ2014}, Imaris \cite{Imaris2014}, and Amia \cite{Amira2014} have been developed to work with specific input data formats. Although there is some inter-operability, there is no universal standard data format for imaging data. 
 
+Fortunately, the HCP project does have a set of conventions as to the format and structure of their data. The HCP includes DT-MRI and fMRI measurements from multiple institutions and multiple different scanners, and has been careful to ensure that different data samples may be compared in a valid way \cite{HCP_Logistics_2014}.  In addition to a standard format and organizational structure, the HCP runs de-noising and normalising algorithms on the data. The topic of HCP data is covered in more depth in Section~\ref{sec:the_structure_of_hcp_data}.
 
-Many tools such as NeuroneJ \cite{NeuronJ2014}, Imaris \cite{Imaris2014}, and Amia \cite{Amira2014} have been developed for manipulating connectome data, but these tools can require a specific input data format. 
+Given the large size of connectome datasets, it is sometimes necessary to implement a custom data structure to support certain visualisations. In particular, fast access to the data is essential when working interactively with high resolution images. Previous publications \cite{Jeong2010} have discussed working with a 75GB connectome dataset, stored as an octree in order to enable fast access to the desired parts of the dataset. They also store sub-sampled data at various resolutions in order to allow responsive zooming into the data set and cache data at GPU, CPU and process levels. 
 
-Alternatively, it may be necessary to implement a custom data structure. Fast access to the data is essential when working interactively with high resolution images. Previous publications \cite{Jeong2010} have discussed working with a 75GB connectome dataset, stored as an octree in order to enable fast access to the desired parts of the dataset. They also store sub-sampled data at various resolutions in order to allow responsive zooming into the data set and cache data at GPU, CPU and process levels. 
+Fortunately, the pre-processing techniques described in Chapter 3 could be used to produce structures with simple geometric structures, and consequently small file sizes. With file sizes less than \SI{10}{\mega\byte}, it is perfectly possible to store the structure in RAM or even in video memory. In the future it may be necessary to investigate more exotic dataset options in order to support more complex content and higher-resolution VR displays.
+
 
 \section{Visualising Connecome Data}
 A number of common visualisations exist for connectome data. Visualisations can be divided into three types: structural, functional and multimodal. Some visualisations, connectivity matrices for example, are equally well suited to display structural or functional information. Other visualisations, such as tractographies, are best suited to displaying structural information. Multimodal visualisations show elements of both structural and functional data. Virtual reality is well suited to display structural information, and so the following visualisations discussed are primarily those for structural or multimodal data.
@@ -249,7 +251,9 @@ The Glass Brain project has developed a multimodal technique for combining struc
 \end{figure}
 
 \section{Summary}
-For the purpose of this project, it is useful to note that, with the exception of the connection matrix, all of the visualisation techniques for connectome data attempt to represent 3D (or greater dimensionality) information in a 2D image. This is has two important consequences:
+Human DTI-MRI data from the Human Connectome Project was chosen for use in this project due to it's availability, quality, and the importance of the subject matter \footnote{With apologies to the nematode c.elegans, and the various mouse-brain connectomes that were candidates for this role.}. 
+
+The choice of visualisation system was a more complex issue. For the purpose of this project, it is useful to note that, with the exception of the connection matrix, all of the visualisation techniques for connectome data attempt to represent 3D (or greater dimensionality) information in a 2D image. This is has two important consequences:
 \begin{enumerate}
 \item It shows that there is a need to display 3D data.
 \item It shows that, in many cases, three dimensional processing and rendering is already being done.
@@ -259,7 +263,9 @@ For the purpose of this project, it is useful to note that, with the exception o
 
 Pseudo-3D images are frequently used. These use either colours or symbols to represent out-of-plane structure. Alternatively, they may show a 3D representation of the connectome, rendered into a 2D picture. Using this definition of ‘pseudo-3D’, all of the above visualisation techniques (except the connection matrix) would fall into this category. 
 
-Full 3D images seem very well suited to visualising connectome data. Given that there is a need to display 3D data, and that much of the data is already processed and rendered as a 3D model, it seems natural to displaying it natively in 3D. If the only objections to 3D visualisations is the expense of current 3D hardware \cite{Margulies2013} then a proliferation of cheap consumer hardware may remove this barrier in the near future. 
+Full 3D images seem very well suited to visualising connectome data. Given that there is a need to display 3D data, and that much of the data is already processed and rendered as a 3D model, it seems natural to displaying it natively in 3D. If the only objections to 3D visualisations is the expense of current 3D hardware \cite{Margulies2013} then a proliferation of cheap consumer hardware may remove this barrier in the near future.
+
+Given these considerations, all of the 3D visualisation styles were candidates for the project. The tractography was selected due to it's intuitive and elegant nature. Of all of the styles discussed, it is the one most easily understood by non-experts, and so suitable content for a wide target audience.
 
 \chapter{Post-Processing}
 
@@ -279,7 +285,20 @@ The HCP data is intended to be a standard format, allowing for comparison betwee
 \end{figure}
 
 \subsection{NIfTI Data}
-The main format of the HCP data is Neuroimaging Informatics Technology Initiative (NIfTI) format. Recent data is likely to be in NIfTI-2 format, an extension that uses \SI{64}{bit} storage and addressing to allow for larger data sets with more precision. To the explorer browsing an HCP data set, these are the $\ast.nii$ files \footnote{or sometimes compressed (gnu-zipped) $\ast.nii.gz$ or tar-archived $\ast.nii.tar$ files.}. The NIfTI format holds data as a 4D matrix (x, y, z and time), as well as containing meta-data in a header. Conceptually, data can be extracted from NIfTI format by taking a 3D matrix 'slice' out of the set, to get voxel data for a specific point in time. 
+The main format of the HCP data is Neuroimaging Informatics Technology Initiative (NIfTI) format. Recent data is in the NIfTI-2 format, an extension that uses \SI{64}{bit} storage and addressing to allow for larger data sets with more precision. To the explorer browsing an HCP data set, these are the $\ast.nii$ files \footnote{or sometimes compressed (gnu-zipped) $\ast.nii.gz$ or tar-archived $\ast.nii.tar$ files.}. The NIfTI format holds data as a 4D matrix (x, y, z and time), as well as containing meta-data in a header. Conceptually, data can be extracted from NIfTI format by taking a 3D matrix 'slice' out of the set, to get voxel data for a specific point in time. 
+
+\subsection{GIFTI Data}
+Following widespread adoption and success of the NIfTI format, the Geometry Informatics Technology Initiative were set up to create a new standard format to store geometrical surfaces. The result was the GIFTI format, designed to store a variety of data types including surfaces, measurements and labels \cite{Harwell2011}. These are the $\ast.gii$ files in the HCP dataset, and they mostly represent surfaces. Figure~\ref{fig:connectome_gifti} shows the native, midthickness, inflated and very inflated cortical GIFTI surface files from HCP data, viewed in The Connectome Workbench.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/connectome_gifti}
+    \caption{Components of a sample HCP Data Set.}
+    \label{fig:connectome_gifti}
+\end{figure}
+
+\subsection{CIFTI Data}
+CIFTI is a related data format to NIfTI,  
 
 \section{Choosing an Intermediate Format}
 % A number of different 3rd party programs were investigated for reading and converting HCP data. These included MeshLab "(http://meshlab.sourceforge.net/)", Medinria "(http://med.inria.fr/)", Mint Medical "(http://www.mint-medical.de/productssolutions/mitk3m3/mitk3m3/downloads)", 
@@ -542,7 +561,7 @@ TODO: Ask Daniel if there should be some maths in here. It all seems a little bl
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/distortions}
-    \caption{Distortions Applied to a Reference Grid}
+    \caption{Lens distortions illustrated using a square grid.}
     \label{fig:distortions}
 \end{figure}
 
