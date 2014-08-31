@@ -18,6 +18,7 @@
 % next two lines supress 'underfull hbox" warnings caused by URLs in bib file
 \usepackage{etoolbox}
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{} 
+\usepackage{todonotes}  % TODO
 
 \usepackage{scrhack}  % to avoid the warning that \float@addtolists is deprecated
 \usepackage{listings} % lets us insert software code and highlight
@@ -543,7 +544,7 @@ Several problems were overcome as these classes were adapted to work in the desi
 
 Firstly, the \texttt{vtkRenderer->SetPass()} method, central to the entire approach, was quietly deprecated in VTK 6.x. Once identified,  the decision was made to work VTK 5.10, on the basis that it was the latest, and best version of VTK to be released where the \texttt{SetPass} could be found.
 
-Next, the \texttt{SaliencyPass} code made use of a \textbf{glsl} library to load, compile and run \textbf{GLSL} shaders. This library worked with GLSL \texttt{#version 110} but was incompatible with recent versions of GLSL. Certain functions in OpenGL 4.4 required GLSL \texttt{#version 440} compatibility, and this in turn required that the glsl shader management class be updated. Fortunately, many of the deprecated functions had been implemented in recent OpenGL versions, and so many of the previously "experimental" ARB-functions could simply be replaced by modern "core" functions.
+Next, the \texttt{SaliencyPass} code made use of a \textbf{glsl} library to load, compile and run \textbf{GLSL} shaders. This library worked with GLSL \texttt{\#version 110} but was incompatible with recent versions of GLSL. Certain functions in OpenGL 4.4 required GLSL \texttt{\#version 440} compatibility, and this in turn required that the glsl shader management class be updated. Fortunately, many of the deprecated functions had been implemented in recent OpenGL versions, and so many of the previously "experimental" ARB-functions could simply be replaced by modern "core" functions.
 
 \begin{figure}[htbp!]
     \centering
@@ -554,13 +555,14 @@ Next, the \texttt{SaliencyPass} code made use of a \textbf{glsl} library to load
 
 Once the derived class could compile, the debugging moved to look at GLErrors. OpenGL appears to follow the "Silence is golden" design philosophy \cite{the_art_of_unix_programming}, and a programmer query OpenGL state to discover whether anything has gone wrong. 
 
-Implementing OpenGL
-Fun with Uniforms
-Viewport Sizes
-Fun with transformation matrices
-Matrix stacks, pushing and popping
-FBOs, RBOs and textures (oh my!)
-Do you suffer from premature optimisation?
+
+%Implementing OpenGL
+%Fun with Uniforms
+%Viewport Sizes
+%Fun with transformation matrices
+%Matrix stacks, pushing and popping
+%FBOs, RBOs and textures (oh my!)
+%Do you suffer from premature optimisation?
 
 
 
