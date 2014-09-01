@@ -31,18 +31,19 @@
 	stringstyle=\ttfamily\color[rgb]{0.627,0.126,0.941},
 	showstringspaces=false,
 	basicstyle=\tiny, %small,
-	numberstyle=\footnotesize,
-	numbers=left,
-	stepnumber=1,
-	numbersep=5pt,
+%	numberstyle=\footnotesize,
+%	numbers=left,
+%	stepnumber=1,
+%	numbersep=5pt,
 	tabsize=2,
 	breaklines=true,
 	prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
 	breakatwhitespace=true,
 	aboveskip={1.5\baselineskip},
+%	captionpos=b,
   columns=fixed,
   extendedchars=true,
-  backgroundcolor=\color{white},
+  backgroundcolor=\color[rgb]{0.9,0.9,0.9},%\color{white},
 %  title=\lstname
 }
 
@@ -50,7 +51,7 @@
 %\usepackage[usenames,dvipsnames]{color} % know about colours
 \definecolor{grey}{RGB}{102,102,102}
 \DeclareCaptionFont{white}{\color{white}}
-\DeclareCaptionFormat{listing}{\colorbox{grey}{\parbox{0.95\textwidth}{#1#2#3}}}
+\DeclareCaptionFormat{listing}{\colorbox{grey}{\parbox{0.97\textwidth}{#1#2#3}}}
 \captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
 
 
@@ -485,8 +486,10 @@ Once the pragmatic decisions regarding the choice of hardware and API were made,
 \section{Designing a Test Shader}
 Graphics shaders are executed on graphics hardware, not on the CPU. OpenGL shaders are written in the Graphics Library Shader Language (GLSL), a C-like language with the occasional surprise. They are massively parallel and difficult to debug, though some third party debugging tools do exist \cite{glslDevil}. There are no ways to print statements in GLSL \footnote{And in any case, if a per-pixel shader script is executed over a million times per frame, and at sixty frames per second, then print statements would not be a practical debugging tool}. For these reasons, the chosen approach for shader development was to start with a very simple shader, and gradually add complexity in a series of iterative steps. 
 
+\subsection{Different types of shader: vertex and fragment}
 In a graphics pipeline there are vertex shaders and fragment shaders \footnote{Geometry shaders were added in OpenGL3.2 and and tessellation shaders added in OpenGL4, but these shaders are mainly intended to do geometric mesh adjustments and aren't relevant to the processing pipeline in this project.}. Vertex shaders are executed at every vertex in a scene, approximately thirty two thousand vertices in the case of the cortical surface content. Fragment shaders are executed at every fragment, the projection of an area of an object polygon onto a pixel in the screen. The final value of one screen pixel may be the combination of values of a number of fragments, combined as a function of their depth, opacity and position.
 
+\subsection{Simple test shader design}
 Listing \ref{simple_vert} shows the most basic vertex shader, where vertices are simply passed through the pipeline. The graphics pipeline is a state machine, so the variables \texttt{gl\_ModelViewProjectionMatrix} and \texttt{gl\_Vertex} are automatically set by the system, and the result of the calculation \texttt{gl\_Position} is automatically passed on to the next part of the pipeline.
 
 \lstinputlisting
@@ -496,11 +499,24 @@ Listing \ref{simple_frag} is almost as simple as the example vertex shader. It s
 
 \lstinputlisting
   [label=simple_frag, caption=A Simple Frament Shader]{code/my_first_shader.fs}
- 
+
+\subsection{Including and compiling shaders}
+
+As might be expected from the C-like form of GLSL, shaders need to be compiled before they can be executed on the GPU. Martin Christian's libglsl library was used to manage shaders, though the library needed to be adjusted to allow compatibility with current OpenGL and GLSL. 
+
+Three different methods for using GLSL shaders were tried during the project. 
+\begin{itemize}
+\item Shaders can be written a separate plain text file and given an extension that helps to explain their content. It is conventional to give a vertex shader a .vs extension, and a fragment shader a .fs extension\footnote{or sometimes a .ps extension for 'pixel shader', as used in the ORIA project}. The shader file can then be opened and loaded at runtime. This is convenient as it means that altering the shader does not require re-compilation of the main body of source code. It also means that errors in the shader code do not generate compile errors and may only appear at runtime. 
+\item In a similar way to reading in a plain text file, the shader may be defined as a string inside the source code. This can be useful for testing purposes, when checking that the program does indeed have access to the shader source at runtime. It also cuts down the number of files in the project, though at the expense of clarity! As the shader code is in string format, it is still not checked by the debugger and so is equally liable to runtime problems as if it were a separate file.
+\item A sophisticated\footnote{translation: terrifying} third option is to load a compiled shader program as a binary file. This approach means that no shader compilation is required, but it means that the shader is no longer human-readable. Given the simplicity of the shaders in this project, and the need to frequently adjust their contents, this optimisation was unnecessary.
+\end{itemize}
+
+All three approaches to the use of GLSL shaders were used during the project. In-line shader code was used during early stage testing, whilst the libglsl shader was being upgraded to work with GLSL 440. Some publicly available Rift deformation shaders were in binary format, and were tested but could not be subsequently modified. The preferred approach, for elegance and practicality, was to have fragment and vertex shader files and load these at run-time.
+
 
 \section{Applying Shaders in VTK}
 
-Using this basic test shader, the next step was to use it in the VTK image processing pipeline. A number of potential options presented themselves, and a number of challenges were encountered.
+Using a basic test shader, the next step was to use it in the VTK image processing pipeline. A number of potential options presented themselves, and a number of challenges were encountered.
 
 \subsection{Applying GLSL Shaders to Materials}
 Investigation revealed that applying GLSL Shaders to VTK scenes via material properties is not feasible in current versions of VTK.
@@ -553,7 +569,13 @@ Next, the \texttt{SaliencyPass} code made use of a \textbf{glsl} library to load
     \label{fig:cpu_gpu_domains}
 \end{figure}
 
-Once the derived class could compile, the debugging moved to look at GLErrors. OpenGL appears to follow the "Silence is golden" design philosophy \cite{the_art_of_unix_programming}, and a programmer query OpenGL state to discover whether anything has gone wrong. 
+Once the derived class could compile, a number of OpenGL problems needed to be solved. OpenGL appears to follow the "Silence is golden" design philosophy \cite{the_art_of_unix_programming}, and a programmer query OpenGL state to discover GLErrors. In the absence of diligent checks, these errors otherwise manifest themselves in terms of a blank render screen or segmentation fault at runtime. 
+
+\lstinputlisting
+  [label=gl_check_error, caption=Checking OpenGL error state]{code/gl_check_error.cpp}
+
+Listing \ref{gl_check_error} shows how a simple helper function can be used to report error state. In order to pinpoint problems, the GL error state should be checked every time a non-trivial gl function call is made.
+
 
 
 %Implementing OpenGL
@@ -643,14 +665,67 @@ In theory, the Rift SDK can apply deformations directly, and since v0.3 Oculus h
 \chapter{Results}
 The results section can talk about specifications of the final system, and the outcomes of the survey. This is looking quite promising. In particular, several people have had some interesting suggestions for future work. 
 
-\section{Automated Testing with CTest}
-\section{Hardware Limitations}
-\section{Software Limitations}
-\section{Human Factors}
+\section{Final System Specification}
 
+\section{Objective Performance Metrics}
+
+The most important metrics for the Rift display system are the resolution of the display, and the render speed of the image processing.
+
+The resolution of the display is a little more complex an issue than it may at first appear. The Rift DK1 display is 1280 pixels wide, by 800 pixels high and each pixel is comprised of red, green and blue subpixels in an RGB stripe format\footnote{The DK2 uses Samsung's proprietary PenTile pixel layout, which complicates the issue of effective resolution even further}. The screen is \SI{149.76}{cm} by \SI{93.6}{cm} in size\footnote{or \SI{7}{inches} diagnonal} meaning that the pixel size is \SI{117}{\um} square. The results in a resolution of \SI{217}{pixels per inch}\footnote{Again, display dimensions are measured in inches. It is a strange industry.}
+
+
+
+Quantifying display technology performance of high-quality displays is notoriously difficult and leads to the development of remarkable metrics such as "Just noticeable difference"\cite{Zhang2008} \footnote{Or manufacturing claims about "Retina" displays...}. The most important objective there are often easily quantifiable metrics to measure, in this case the render time and display resolution.
+
+Early testing involved a Brain Surface object created from  
+
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/render_times}
+    \caption{Times to render a primitive and \SI{100}{\mega\byte} Connectome Mesh.}
+    \label{fig:render_times}
+\end{figure}
+
+
+\section{User Survey of the Biomedical Imaging Department}
+
+\section{Automated Testing with CTest and CDash}
+Early in the project, the decision was made to postpone testing until the structure of the application was known. The project was frequently required to adapt to new constraints\footnote{The operating system used for development changed twice times and the main programming language changed three times}, so this was approach was pragmatic though inelegant approach. Once the rendering system was capable of generating content, an automated testing system was implemented.
+
+Of the non-imaging products developed by Kitware Inc, the most famous is probably CMake. This utility allows the automatic generation of configuration files like Makefiles and VisualStudio project files. It also allows automatic dependency management and smart configuration of common libraries and headers. A lesser known Kitware product is CDash, which works in conjunction with CMake to allow the automated testing, uploading of results and Dashboard display via a web-broswer. Listing \ref{configuring_ctest} shows the the simplicity of enabling CTest from within the project's top-level CMake file. Specific tests are configured as shown in Listing \ref{setting_a_test}, from the CMakeLists file containing the binary build settings.
+
+\begin{lstlisting}[label=configuring_ctest, caption=Enabling CTest in the CMakeLists]
+# Set up dashboard and testing
+include(CTest)
+enable_testing()
+# CTestConfig.cmake is specific to the CDash web service
+include(${CMAKE_CURRENT_SOURCE_DIR}/CTestConfig.cmake)
+\end{lstlisting}
+
+\begin{lstlisting}[label=setting_a_test, caption=Configuring a specific test]
+# Add test format(test_name executable_name)
+add_test( test_cone cone )
+\end{lstlisting}
+
+Using CDash for a project of this size is, admittedly, overkill. The product is designed to be used with large, complex projects where small changes can cause unexpected and subtle bugs unless automated testing is used. The argument in favour of using CDash was the elegance of automatic testing, and given that CDash was the only Kitware platform that \textit{wasn't} already used in the project\footnote{Paraview was used to view tractographies during content conversion, and ITK was used indirectly by ITK-SNAP.}, it needed to be used to complete the set!
+
+CTest allows the creation of automatic test scripts that can be configured to run with command line parameters and options. These test scripts can be set to run at a pre-determined day, and can upload a log of test results to a remote server. For convenience, the kitware's free CDash server was used to receive and display the result of the testing. The results of one day's testing is shown in Figure \ref{fig:cdash_testing}. 
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{resources/cdash_testing}
+    \caption{Daily testing results via the CDash web interface.}
+    \label{fig:cdash_testing}
+\end{figure}
 
 \chapter{Conclusion}
-Eeek!
+The project fulfilled it's goal of providing a full content conversion and rendering pipeline for medical image content. A number of significant technical challenges were encountered, but with the support of experienced computer graphics and medical imaging experts all of these were overcome. The final implementation could generate cortical surface or tractography models from a Human Connectome Project dataset and display these models in a 3D virtual reality environment. 
+
+Survey participants evaluating the virtual reality system showed a strong interest in the interactive and 3D nature of the content, although they also highlighted numerous practical problems of the current system. Many of the practical problems reported by users may be solvable with further development: issues of tracking latency and image quality may already be fixed in the newly released Oculus Rift DK2. Issues of representing and interacting with image data have been discussed, and further work suggested. The demonstration system should serve as a useful starting point for any future development.
+
+The success of this project will ultimately be measured in terms of its impact on other people. Demonstrations thus far have been well received, and the quality of insightful feedback shows that there are . It is hoped that the project has been a useful example of how state-of-the-art consumer VR technology can be applied, and that it will help to foster further ideas and developments. 
+ 
 
 \bibliography{bibtex/connectome}	
 \bibliographystyle{unsrt} % unsrt == order of appearance, != alphabetical
