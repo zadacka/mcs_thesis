@@ -12,6 +12,7 @@
 %\usepackage{showframe}
 %\usepackage{cleveref} % lets us use chapter references
 \usepackage{graphicx}  % lets us import graphics nicely
+\usepackage{caption}   % to go with lstlisting
 \usepackage{subcaption}  % lets us use subfigure
 \usepackage[binary-units=true]{siunitx}   % and friendly SI unit shiz
 \setcounter{tocdepth}{1} % don't show sub-sections in the TOC
@@ -19,6 +20,7 @@
 \usepackage{etoolbox}
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{} 
 \usepackage{todonotes}  % TODO
+\usepackage{dirtree}    % directory structure
 
 \usepackage{scrhack}  % to avoid the warning that \float@addtolists is deprecated
 \usepackage{listings} % lets us insert software code and highlight
@@ -47,7 +49,6 @@
 %  title=\lstname
 }
 
-\usepackage{caption} % to go with lstlisting
 %\usepackage[usenames,dvipsnames]{color} % know about colours
 \definecolor{grey}{RGB}{102,102,102}
 \DeclareCaptionFont{white}{\color{white}}
@@ -375,6 +376,8 @@ Rendering stereo images is beautifully intuitive. Stereoscopic 3D involves viewi
 
 VTK does contain a 'stereo camera' class, but the documentation for this is rare, and implementation usually involves colour anaglyph or interlaced stereographic image systems. The rift needs stereo input to be available in a 'side-by-side' format, and the most basic method of implementing this was to use two separate renderers, each of which was associated with an independent monoscopic camera 
 
+\todo{blender scene image of the stereo rendering layout}
+
 \chapter{Displaying Images on the Rift DK1}
 This chapter provides a very short introduction to the concept of virtual reality in order to provide context for the Oculus Rift DK1. The hardware of the DK1 is introduced and then the key areas are examined. The first of these is the head-mounted sensors, which enable position tracking and viewpoint interaction. The second key area is the lens system, and the optical deformation that must be corrected for during the render process in order to display content to the user. 
 
@@ -547,7 +550,7 @@ The third and most significant problem of the per-object shader approach can als
 These problems, in particular the third problem, led to the conclusion that object-shaders would not provide a viable method for performing image distortion suitable for Rift display.
 
 \subsection{Applying GLSL Shaders to Buffers}
-Given the requirement to apply a deformation across an entire screen, the the VTK multipass-rendering framework looked to be a good place to start. This framework allows users to specify custom rendering passes to a vtk renderer. Even better, Dr Bernhard Kainz, one of the members of the Biomedical Imaging Department, had previously written a custom rendering pass that could apply saliency filtering to image data.
+Given the requirement to apply a deformation across an entire screen, the the VTK multipass-rendering framework looked to be a good place to start. This framework allows users to specify custom rendering passes to a vtk renderer. Even better, Dr Bernhard Kainz, one of the members of the Biomedical Image Analysis Group, had previously written a custom rendering pass that could apply saliency filtering to image data.
 
 \begin{figure}[htbp!]
     \centering
@@ -666,6 +669,74 @@ In theory, the Rift SDK can apply deformations directly, and since v0.3 Oculus h
 The results section can talk about specifications of the final system, and the outcomes of the survey. This is looking quite promising. In particular, several people have had some interesting suggestions for future work. 
 
 \section{Final System Specification}
+The VR system developed in this project consists of two parts: a methodology for converting HCP data to a suitable form for importing into the VTK pipeline, and software that can load the generated data and render it to the rift display. 
+
+The latter software consists of a C++ project requiring CMake, CTest, VTK5.10, GLEW and OpenGL. In addition, the GL, GLU, pthread, udev, rt, ncurses and X-Windows management libraries (Xinerama, Xrandr, Xxf86vm, Xi, X11) are required. The project directory structure is shown in Figure \ref{fig:project_directory_structure}. Although currently running on Linux, the project has been kept as small and neat as possible in order to assist future development work. The dependencies listed are specific to Linux, but small modifications will allow it to run on MacOS\footnote{Mainly the removal of rt timer dependency, which is only used for latency measurements.}. Porting the project to Windows should also be fairly straightforward, and the project has already been run on a Windows system to when debugging Nvdia driver problems.
+
+\begin{figure}
+\centering
+\framebox[\textwidth]{%
+\begin{minipage}{0.9\textwidth}
+	\dirtree{%
+	.1 vtkRift/.
+ 	.2 CmakeLists.txt.
+	.2 CTestCofig.cmake.
+	.2 .git.
+	.2 .gitignore.
+	.2 build/. 
+	.3 \ldots all built code. 
+	.2 cmake/.
+	.3 FindGLEW.cmake.
+	%.2 documents/.
+	%.3 rendertimes.xlsx.
+	%.3 README.txt. % TODO
+	.2 resources/.
+	%.3 btain.vtk.
+	.3 CCTracts.vtk.
+	.3 FullBrain.vtk.
+	.3 FullBrain2.vtk.
+	.3 simple.fs.
+	.3 simple.vs.
+	.3 Distortion.fs.
+	.3 Distortion.vs.
+	.2 src/.
+	.3 CmakeLists.txt.
+	%.3 brain.cpp.
+	%.3 cone.cpp.
+	%.3 cone\_interactor.cpp.
+	.3 main.cpp.             % TODO: rename multipass_vtk.cpp.
+	.3 vtkRiftRenderPass.cpp. % TODO: rename vtk_SaliencyPass.cpp.
+	.3 vtkRiftRenderPass.h.   % TODO: rename vtkSaliencyPass.h.
+	.3 OculusSDK.
+	.4 \ldots library files from SDK 0.3.2.
+	.3 fbo.
+	.4 \ldots fbo management library from Lefohn et al..
+	%.4 framebufferObject.cpp.
+	%.4 glErrorUtil.cpp.
+	%.4 renderbuffer.cpp.
+	%.4 framebufferObject.h.
+	%.4 glErrorUtil.h.
+	%.4 renderbuffer.h.
+	.3 glsl.
+	.4 \ldots libglsl from Christen, modified for OpenGL 4.4 compatibility.
+	%.4 glinfo.cpp.
+	%.4 glsl.cpp.
+	%.4 glutils.cpp.
+	%.4 textureInfo.h.
+	%.4 glinfo.h.
+	%.4 glsl.h.
+	%.4 glutils.h.
+	.3 riftclass.
+	.4 riftclass.h.
+	.4 riftclass.cxx.
+	}
+\end{minipage}
+}
+\caption{Project directory content and structure}
+\label{fig:project_directory_structure}
+\end{figure}
+
+
 
 \section{Objective Performance Metrics}
 
@@ -688,7 +759,9 @@ Early testing involved a Brain Surface object created from
 \end{figure}
 
 
-\section{User Survey of the Biomedical Imaging Department}
+\section{User Survey of the Biomedical Image Analysis Group}
+
+
 
 \section{Automated Testing with CTest and CDash}
 Early in the project, the decision was made to postpone testing until the structure of the application was known. The project was frequently required to adapt to new constraints\footnote{The operating system used for development changed twice times and the main programming language changed three times}, so this was approach was pragmatic though inelegant approach. Once the rendering system was capable of generating content, an automated testing system was implemented.
