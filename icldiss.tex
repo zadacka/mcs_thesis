@@ -55,6 +55,41 @@
 \DeclareCaptionFormat{listing}{\colorbox{grey}{\parbox{0.97\textwidth}{#1#2#3}}}
 \captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
 
+% Questionairre definitions based on Sven Hartenstein's examples
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{wasysym}% provides \ocircle and \Box
+\usepackage{enumitem}% easy control of topsep and leftmargin for lists
+\usepackage{forloop}% used for \Qrating and \Qlines
+\usepackage{ifthen}% used for \Qitem and \QItem
+\usepackage{typearea}
+
+\newcommand{\Qq}[1]{\textbf{#1}}
+\newcommand{\QO}{$\Box$}% or: $\ocircle$
+\newcounter{qr}
+\newcommand{\Qrating}[1]{\QO\forloop{qr}{1}{\value{qr} < #1}{---\QO}}
+\newcommand{\Qline}[1]{\noindent\rule{#1}{0.6pt}}
+\newcounter{ql}
+\newcommand{\Qlines}[1]{\forloop{ql}{0}{\value{ql}<#1}{\vskip0em\Qline{\linewidth}}}
+\newenvironment{Qlist}{%
+
+\renewcommand{\labelitemi}{\QO}
+	\begin{itemize}[leftmargin=1.5em,topsep=-.5em]}{ \end{itemize} 
+}	
+\newlength{\qt}
+\newcommand{\Qtab}[2]{
+	\setlength{\qt}{\linewidth}
+	\addtolength{\qt}{-#1}
+	\hfill\parbox[t]{\qt}{\raggedright #2}
+}
+\newcounter{itemnummer}
+\newcommand{\Qitem}[2][]{% #1 optional, #2 notwendig
+	\ifthenelse{\equal{#1}{}}{\stepcounter{itemnummer}}{}
+	\ifthenelse{\equal{#1}{a}}{\stepcounter{itemnummer}}{}
+	\begin{enumerate}[topsep=2pt,leftmargin=2.8em]
+	\item[\textbf{\arabic{itemnummer}#1.}] #2
+	\end{enumerate}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Essential Setup
 \title{Seeing the Big Data: Virtual Reality Visualisations of Large Datasets}
@@ -671,7 +706,7 @@ The results section can talk about specifications of the final system, and the o
 \section{Final System Specification}
 The VR system developed in this project consists of two parts: a methodology for converting HCP data to a suitable form for importing into the VTK pipeline, and software that can load the generated data and render it to the rift display. 
 
-The latter software consists of a C++ project requiring CMake, CTest, VTK5.10, GLEW and OpenGL. In addition, the GL, GLU, pthread, udev, rt, ncurses and X-Windows management libraries (Xinerama, Xrandr, Xxf86vm, Xi, X11) are required. The project directory structure is shown in Figure \ref{fig:project_directory_structure}. Although currently running on Linux, the project has been kept as small and neat as possible in order to assist future development work. The dependencies listed are specific to Linux, but small modifications will allow it to run on MacOS\footnote{Mainly the removal of rt timer dependency, which is only used for latency measurements.}. Porting the project to Windows should also be fairly straightforward, and the project has already been run on a Windows system to when debugging Nvdia driver problems.
+The latter software consists of a C++ project requiring CMake, CTest, VTK5.10, GLEW and OpenGL. In addition, using the Rift requires linking with the GL, GLU, pthread, udev, rt, ncurses and X-Windows management libraries (Xinerama, Xrandr, Xxf86vm, Xi, X11) libraries. The project directory structure is shown in Figure \ref{fig:project_directory_structure}. Although currently running on Linux, the project has been kept as small and neat as possible in order to assist future development work. The dependencies listed are specific to Linux, but small modifications will allow it to run on MacOS\footnote{Mainly the removal of rt timer dependency, which is only used for latency measurements.}. Porting the project to Windows should also be fairly straightforward, and the project has already been run on a Windows system to when debugging Nvdia driver problems.
 
 \begin{figure}
 \centering
@@ -803,5 +838,109 @@ The success of this project will ultimately be measured in terms of its impact o
 \bibliography{bibtex/connectome}	
 \bibliographystyle{unsrt} % unsrt == order of appearance, != alphabetical
 
+\appendix
+\chapter{User Experience Survey}
+
+\noindent \textit{Users completed a Google Form survey, and responses were automatically collated into a spreadsheet. An ellipsis is used here to indicate where participants provided verbal answers. Questions, suggestions and constructive criticism arising during the demonstratino were also recorded.}
+
+\section*{1 Introductory Questions}
+
+\Qitem{ \Qq{Name}: \hskip0.5cm\ldots }
+
+\Qitem{ \Qq{Status:} 
+\vskip0.1cm 
+\QO{} MSc Student
+\hskip0.5cm 
+\QO{} PhD Student 
+\hskip0.5cm 
+\QO{} PostDoc
+\hskip0.5cm 
+\QO{} Other}
+
+\Qitem{ \Qq{Commonly used medical imaging software:} 
+\vskip0cm \QO{} VTK			\Qtab{4cm}{ \QO{} XMedcon }
+\vskip0cm \QO{} ITK	 		\Qtab{4cm}{ \QO{} ImageJ }
+\vskip0cm \QO{} IRTK			\Qtab{4cm}{ \QO{} Amide }
+\vskip0cm \QO{} ITK-SNAP		\Qtab{4cm}{ \QO{} 3D Slicer }
+\vskip0cm \QO{} MITK			\Qtab{4cm}{ \QO{} OSIRIX }
+\vskip0cm \QO{} DTI-TK		\Qtab{4cm}{ \QO{} imagemagick }
+\vskip0cm \QO{} Paraview		\Qtab{4cm}{ \QO{} SimpleDICOM }
+\vskip0cm \QO{} RView		\Qtab{4cm}{ \QO{} Connectome Workbench }
+\vskip0cm \QO{} Camino		\Qtab{4cm}{ \QO{} Other \hskip0.5cm\ldots }
+}
+
+\Qitem{ \Qq{Functionality desired in a visualisation tool:} 
+\hskip0.5cm\ldots }
+\clearpage
+
+\section*{2 Demonstration Feedback}
+
+\Qitem{ \Qq{Previous experience with VR Technology:} 
+\vskip0.1cm \QO{} None 
+\hskip0.5cm \QO{} A little 
+\hskip0.5cm \QO{} A lot 
+\hskip0.5cm \QO{} Developer
+}
+
+\Qitem{ \Qq{Immediate reaction to the VR demonstration:} 
+\vskip0.1cm \QO{} Enthusiastic
+\hskip0.5cm \QO{} Positive
+\hskip0.5cm \QO{} Indifferent
+\hskip0.5cm \QO{} Hated it
+}
+
+\Qitem{ \Qq{Viewing problems specific to the lenses:} 
+\vskip0.1cm \QO{} None
+\hskip0.5cm \QO{} Some
+\hskip0.5cm \QO{} Significant
+\hskip0.5cm \QO{} Intolerable
+}
+
+\Qitem{ \Qq{Can you see stereo 3D?} 
+\vskip0.1cm \QO{} Yes. \hskip0.5cm \QO{} No.
+}
+
+\Qitem{ \Qq{Demo experience:} 
+\vskip0.1cm \QO{} Fun and enjoyable
+\vskip0.1cm \QO{} Fun, quickly became acclimatized
+\vskip0.1cm \QO{} Initial disorientation but got used to it
+\vskip0.1cm \QO{} Severe disorientation / nausea
+}
+
+\Qitem{ \Qq{Did anything specific trigger the disorientation?}
+\hskip0.5cm\ldots }
+
+\Qitem{ \Qq{How did you attempt to manage the disorientation?}
+\hskip0.5cm\ldots }
+
+\Qitem{ \Qq{Overall Experience} 
+\vskip0.1cm horrible \Qrating{10} fantastic}
+\clearpage
+
+\section*{3 Technical Feedback}
+
+\minisec{Please evaluate the following:}
+\vskip.5em
+\Qitem[a]{ \Qq{Latency} 
+	\vskip0.1cm fine \Qrating{10} unusable}
+\Qitem[b]{ \Qq{Screen resolution} 
+	\vskip0.1cm fine \Qrating{10} unusable}
+\Qitem[c]{ \Qq{Interaction tools} 
+	\vskip0.1cm fine \Qrating{10} unusable}
+\Qitem[d]{ \Qq{Stereoscopic depth} 
+	\vskip0.1cm fine \Qrating{10} unusable}
+\Qitem[e]{ \Qq{Image artefacts} 
+	\vskip0.1cm fine \Qrating{10} unusable}
+
+
+\Qitem{ \Qq{Preferred use type?} 
+\vskip0.1cm \QO{} Monoscopic. \hskip0.5cm \QO{} Stereoscopic.
+}
+
+\Qitem{ \Qq{Would 'real world' cues be useful in the scene?} 
+	\vskip0.1cm undesirable \Qrating{10} essential}
+
+\Qitem{ \Qq{Other comments:}
+\hskip0.5cm\ldots }
 
 \end{document}
