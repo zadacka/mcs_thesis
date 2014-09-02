@@ -382,10 +382,14 @@ After learning more about the HCP data structure, it was understood that certain
 Converting GIFTI format data to vtk proved to be a challenge. Shortly after the idea had been abandoned, Dr. Sarah Parisot returned from a vacation and insisted to me that such a conversion must be possible. With her support, and her access to MATLAB, we were able to use Professor Chris Rorden's MATcro conversion tools to convert the HCP GIFTI surface files into VTK polydata meshes. These mesh files were only \SI{6}{MB} in size, compared with the \SI{100}{MB} size of MITK-conversions, which translated into quick rendering and a high frame rate when displaying the content on the Rift.
 
 \section{Data conversion using CAMINO}
-The initial aim of the project had been to display complex
+As mentioned in Chapter 2, the project had a particular interest in the tractography connectome representation. With this in mind, new tractographies were generated from CIFTI connectome data, and saved in vtk format for display on the Rift. 
+
+CAMINO kept having memory issues until I gave it TEN GIGABYTES of RAM. Good thing that I've got my own PC with 12...
 
 
 \section{Bonus: Developing a Blender Plug-in}
+
+
 
 \chapter{The Visualisation Tool Kit}
 This chapter introduces the Visualisation Tool Kit (VTK), explaining why VTK is an appropriate tool for the project. A simple VTK rendering pipeline is then described, to provide context for subsequent developments. The simple pipeline is modified to work with real connectome data, and additional manipulation tools are added. Finally, the pipeline is modified so that it can produce stereoscopic image pairs.
