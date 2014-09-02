@@ -309,11 +309,9 @@ Given these considerations, all of the 3D visualisation styles were candidates f
 
 This chapter discusses the the data-wrangling necessary to convert HCP data into a suitable input format for the VTK pipeline. The HCP dataset is examined using ITK-SNAP, and the DTI-MRI data selected as a starting point. The format of the HCP data is explained, and an intermediate data format (legacy vtk) is chosen. The HCP data is then processed using Camino, ITK-SNAP, MITK, and MATLAB in order to obtain a tractography, and a cortical surface and dense surface mesh. A Blender plugin is developed in order to import and examine the VTK mesh, and the relative benefits of each post-processed content are discussed.  
 
-\textbf{ToDo: Delete the following notes}
-The contains a lot of data that is irrelevant to this project, as shown in Figure~\ref{fig:hcp_full_data_set}, so a decision was made to pick a structural example.  The format of that structural data was then awkward: nifti, cifti and gifti aren't perfectly suited for parsing into a graphics program. So a number of alternatives were evaluated for parsing the data. On a pragmatic basis, mitk was used to select a cortical region and export it as an intermediate format (vtk) which is beautifully simple and contains structural information in plain text (hooray!). An import plugin was written for Blender in order to allow this data to be imported and cleaned with some of Blender's excellent mesh manipulation tools. The chapter concludes with the data in a suitable format for VTK input. The (optional) ability to run data through Blender is a bonus, but not necessary for the pipeline.
 
 \section{The Structure of HCP Data} \label{sec:the_structure_of_hcp_data}
-The HCP data is intended to be a standard format, allowing for comparison between hundreds, eventually thousands, of individual human connectomes. Chapter 2 discussed the different types of experimental data used to measure the connectome structure, and this knowledge quickly helps narrow down the search space. Figure~\ref{fig:hcp_full_data_set} shows that the small fraction of the HCP data set: minimally processed MRI data.  
+HCP data is intended to be a standard format, allowing for comparison between hundreds, eventually thousands, of individual human connectomes. Chapter 2 discussed the different types of connectome data, and concluded that the project should use MRI-DTI data. Figure~\ref{fig:hcp_full_data_set} shows that much of the HCP dataset contains a wide variety of different experimental data, and that the decision to focus on MRI data narrows the search space down considerably.
 
 \begin{figure}[htbp!]
     \centering
@@ -322,8 +320,13 @@ The HCP data is intended to be a standard format, allowing for comparison betwee
     \label{fig:hcp_full_data_set}
 \end{figure}
 
+The project needs access to structural information in a format that can be imported in VTK. The MRI data in the HCP dataset cannot be directly imported as desired. The following section describes how the HCP data is stored, and consequently how it can be processed into a useful intermediate format. This is done in two ways: a tractography is generated from the structural MRI-DTI CIFTT data, and a cortical surface is obtained by converting a GIFTI surface file. 
+
 \subsection{NIfTI Data}
 The main format of the HCP data is Neuroimaging Informatics Technology Initiative (NIfTI) format. Recent data is in the NIfTI-2 format, an extension that uses \SI{64}{bit} storage and addressing to allow for larger data sets with more precision. To the explorer browsing an HCP data set, these are the $\ast.nii$ files \footnote{or sometimes compressed (gnu-zipped) $\ast.nii.gz$ or tar-archived $\ast.nii.tar$ files.}. The NIfTI format holds data as a 4D matrix (x, y, z and time), as well as containing meta-data in a header. Conceptually, data can be extracted from NIfTI format by taking a 3D matrix 'slice' out of the set, to get voxel data for a specific point in time. 
+
+\subsection{CIFTI Data}
+CIFTI is a related data format to NIfTI, more of a \textit{flavour} of NIfTI than a separate file format and so has the same file extensions. CIFTI files reference other files, frequently GIFTI surfaces, to specify relative vertex and voxel positions. CIFTI files can contain dense or sparse matrices, and are often used to store many different volumes that each correspond to a different anatomical region \cite{WorkbenchGlossary2014}. 
 
 \subsection{GIFTI Data}
 Following widespread adoption and success of the NIfTI format, the Geometry Informatics Technology Initiative were set up to create a new standard format to store geometrical surfaces. The result was the GIFTI format, designed to store a variety of data types including surfaces, measurements and labels \cite{Harwell2011}. These are the $\ast.gii$ files in the HCP dataset, and they mostly represent surfaces. Figure~\ref{fig:connectome_gifti} shows the native, midthickness, inflated and very inflated cortical GIFTI surface files from HCP data, viewed in The Connectome Workbench.
@@ -335,17 +338,54 @@ Following widespread adoption and success of the NIfTI format, the Geometry Info
     \label{fig:connectome_gifti}
 \end{figure}
 
-\subsection{CIFTI Data}
-CIFTI is a related data format to NIfTI,  
-
 \section{Choosing an Intermediate Format}
-% A number of different 3rd party programs were investigated for reading and converting HCP data. These included MeshLab "(http://meshlab.sourceforge.net/)", Medinria "(http://med.inria.fr/)", Mint Medical "(http://www.mint-medical.de/productssolutions/mitk3m3/mitk3m3/downloads)", 
+\label{sec:choosing_an_intermediate_format}
+Before an intermediate format had been chosen, a number of 3rd party programs were investigated for reading and converting HCP data. MeshLab \cite{MeshLab2014} was found to be an excellent mesh conversion tool, but could not load any of the GIFTI or NIFTI data sets. Medinria \cite{MedInria2014} could work with the available data sets but was better suited to viewing content than converting it. With assistance from Dr Kainz, MITK \cite{MITK2014} was used to select a region in a CIFTI file using an image intensity threshold, and then outputting the selection as a vtk mesh. This was a significant step forward: the vtk data format was perfectly compatible with the Visualisation Tool Kit, and the resulting mesh was the first 'real' connectome data visualised on the Rift.
+
+The vtk data format proved to be very suitable for this project for a number of reasons. On a practical basis, it was known to work with VTK, and so could provide the Rift with suitable content for demonstrations. Further research showed that it was a well established format \cite{VTK_file_formats}, and the it's wide support made it a suitable intermediate format. In addition to these points, the 'legacy' VTK format holds data in a simple, plain text structure. This was a very strong reason for using the format, as it allowed human inspection of the mesh data. 
+
+\begin{lstlisting}[label=vtk_data_structure, caption=The structure of data in a legacy .vtk file.]
+# vtk DataFile Version 2.0  // # vtk DataFile Version 3.0
+Really cool data            // vtk output
+ASCII | BINARY              // ASCII
+DATASET type                // DATASET POLYDATA
+...
+POINT_DATA n                // POINTS <number> float
+...
+CELL_DATA n
+\end{lstlisting}
+
+Listing shows the header specification from \cite{VTK_file_formats} with comments illustrating vtk parameter values in a real dataset. Information such as the number of points in the mesh proved to be very useful when debugging the VTK render output.
+
+\section{Data conversion using MITK}
+As mentioned in Section \ref{sec:choosing_an_intermediate_format}, MITK was used to export a region of a CIFTI cortical data file as a 3D mesh. This process is shown in Figure \ref{fig:MITK_conversion}. The process involved selecting a volume in the original data file using a thresholding function, and then creating a mesh from the selected region. Once that was done, the mesh could be exported as a vtk file.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/MITK_conversion}
+    \caption{Converting CIFTI data to vtk using MITK.}
+    \label{fig:MITK_conversion}
+\end{figure}
+
+This approach had two significant problems. Firstly, with little experience in working with this type of content it was difficult to choose a meaningful threshold and the resulting mesh was correspondingly arbitrary. Worse still, this approach produced a noisy, complex mesh that took approximately \SI{100}{MB} of ASCII vertex positions to fully express. Due to the noise in the image, the size of the mesh did not add any information, but it did cause significant problems with the render-speed. These problems are discussed in the Results Chapter.
+
+\section{Data conversion using MATLAB}
+After learning more about the HCP data structure, it was understood that certain GIFTI files in the HCP data set already contained cortical surface representations. This would be perfect demonstration content and would have none of the size or noise issues of the MITK-converted data-set. 
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/placeholder}
+    \caption{Converting GIFTI data to vtk using MATLAB.}
+    \label{fig:MATLAB_conversion}
+\end{figure}
+
+Converting GIFTI format data to vtk proved to be a challenge. Shortly after the idea had been abandoned, Dr. Sarah Parisot returned from a vacation and insisted to me that such a conversion must be possible. With her support, and her access to MATLAB, we were able to use Professor Chris Rorden's MATcro conversion tools to convert the HCP GIFTI surface files into VTK polydata meshes. These mesh files were only \SI{6}{MB} in size, compared with the \SI{100}{MB} size of MITK-conversions, which translated into quick rendering and a high frame rate when displaying the content on the Rift.
+
+\section{Data conversion using CAMINO}
+The initial aim of the project had been to display complex
 
 
-\section{Importing Data to Blender}
-A VTK-Blender integration system exists %"(http://www.ualberta.ca/AICT/RESEARCH/Vis/VTKBlender/)" 
-
-\section{Mesh Analysis and Simplification}
+\section{Bonus: Developing a Blender Plug-in}
 
 \chapter{The Visualisation Tool Kit}
 This chapter introduces the Visualisation Tool Kit (VTK), explaining why VTK is an appropriate tool for the project. A simple VTK rendering pipeline is then described, to provide context for subsequent developments. The simple pipeline is modified to work with real connectome data, and additional manipulation tools are added. Finally, the pipeline is modified so that it can produce stereoscopic image pairs.
@@ -524,7 +564,7 @@ Once the pragmatic decisions regarding the choice of hardware and API were made,
 \section{Designing a Test Shader}
 Graphics shaders are executed on graphics hardware, not on the CPU. OpenGL shaders are written in the Graphics Library Shader Language (GLSL), a C-like language with the occasional surprise. They are massively parallel and difficult to debug, though some third party debugging tools do exist \cite{glslDevil}. There are no ways to print statements in GLSL \footnote{And in any case, if a per-pixel shader script is executed over a million times per frame, and at sixty frames per second, then print statements would not be a practical debugging tool}. For these reasons, the chosen approach for shader development was to start with a very simple shader, and gradually add complexity in a series of iterative steps. 
 
-\subsection{Different types of shader: vertex and fragment}
+\subsection{Vertex and Fragment Shaders}
 In a graphics pipeline there are vertex shaders and fragment shaders \footnote{Geometry shaders were added in OpenGL3.2 and and tessellation shaders added in OpenGL4, but these shaders are mainly intended to do geometric mesh adjustments and aren't relevant to the processing pipeline in this project.}. Vertex shaders are executed at every vertex in a scene, approximately thirty two thousand vertices in the case of the cortical surface content. Fragment shaders are executed at every fragment, the projection of an area of an object polygon onto a pixel in the screen. The final value of one screen pixel may be the combination of values of a number of fragments, combined as a function of their depth, opacity and position.
 
 \subsection{Simple test shader design}
@@ -656,13 +696,7 @@ TODO: This high-level description neatly side-steps the various issues of loadin
 \section{Rift Deformation Shaders}
 GLSL shaders are (ab)used to perform three functions in this project. They shift the image in order to align the camera viewpoint centre with the lens centre. They apply a barrel deformation of the entire image in order to compensate for the pincushion deformation of the Rift's lenses.  They also mask the edges of the screen where the OpenGL 340.x drivers leave image artefacts. 
 
-\lstinputlisting
-  [label=distortion_vert, caption=The Vertex Distortion Shader]
-  {code/Distortion.vs}
-  
-\lstinputlisting
-  [label=distortion_frag, caption=The Frament Distortion Shader]
-  {code/Distortion.fs}
+\todo{discuss chroma issues}
 
 It is assumed that the reader is familiar with the nature of shaders, and so the discussion here will not introduce the concept but rather will focus on the unusual way in which they are being employed. 
 
@@ -942,5 +976,16 @@ The success of this project will ultimately be measured in terms of its impact o
 
 \Qitem{ \Qq{Other comments:}
 \hskip0.5cm\ldots }
+
+\chapter{Final Rift Shaders}
+
+\lstinputlisting
+  [label=distortion_vert, caption=The Vertex Distortion Shader]
+  {code/Distortion.vs}
+  
+
+\lstinputlisting
+  [label=distortion_frag, caption=The Frament Distortion Shader]
+  {code/Distortion.fs}
 
 \end{document}
