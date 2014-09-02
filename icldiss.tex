@@ -162,7 +162,7 @@ This project has investigated the use of consumer grade virtual reality hardware
 
 In comparison to the size and scope of the VTK, Blender and ORIA projects, the contributions to these projects have been very small. Nevertheless, contributions were made in the spirit of open source collaboration and have have incrementally advanced the state-of-the-art.
 
-The academic impact of this work has been modest: numerous demonstrations within the Biomedical Image Analysis Group, and a formal presented to my employers at Sharp Laboratories of Europe\footnote{Following which they offered me a raise, so some good has come of it.}. Although this MCS thesis will be the main academic publication resulting from the project, it is hoped that the documented source code, image content and demonstration system will be a useful resource for future project work.
+The academic impact of this work has been modest: demonstrations within the Biomedical Image Analysis Group, and a formal presentation to my employers at Sharp Laboratories of Europe\footnote{Following which they offered me a raise, so some good has come of it.}. Although this MCS thesis will be the main academic publication resulting from the project, it is hoped that the documented source code, image content and demonstration system will be a useful resource for future project work.
 
 \newpage
 \section{Structure of the Report} 
@@ -382,14 +382,54 @@ After learning more about the HCP data structure, it was understood that certain
 Converting GIFTI format data to vtk proved to be a challenge. Shortly after the idea had been abandoned, Dr. Sarah Parisot returned from a vacation and insisted to me that such a conversion must be possible. With her support, and her access to MATLAB, we were able to use Professor Chris Rorden's MATcro conversion tools to convert the HCP GIFTI surface files into VTK polydata meshes. These mesh files were only \SI{6}{MB} in size, compared with the \SI{100}{MB} size of MITK-conversions, which translated into quick rendering and a high frame rate when displaying the content on the Rift.
 
 \section{Data conversion using CAMINO}
-As mentioned in Chapter 2, the project had a particular interest in the tractography connectome representation. With this in mind, new tractographies were generated from CIFTI connectome data, and saved in vtk format for display on the Rift. 
+As mentioned in Chapter 2, the project had a particular interest in the tractography connectome representation. With this in mind, new tractographies were generated from NIfTI connectome data, and saved in vtk format for display on the Rift.
 
-CAMINO kept having memory issues until I gave it TEN GIGABYTES of RAM. Good thing that I've got my own PC with 12...
+The generating a tractography is more complex than converting a surface mesh from one format to another. It involves fitting a diffusion tensor to the NIfTI data, and filtering this by fractional anisotropy to bring out the connected nature of anisotropic, and hence fibrous regions. This is shown in Figure \ref{fig:CAMINO_tensors}. Once a structural connectivity is established, the connectivity of a region of interest can then be tracked throughout the connectome to generate a tractography.
 
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/CAMINO_tensors}
+    \caption{A per-voxel tensor map, created using CAMINO.}
+    \label{fig:CAMINO_tensors}
+\end{figure}
+
+Very fortunately, researchers at UCL have developed an open source toolkit called CAMINO that can perform most of these tasks. With some adjustments\footnote{The CAMINO cache needed to given \SI{10}{GB} of RAM!}, this process was used to generate vtk tractographes of HCP data. 
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/CAMINO_roi_selection}
+    \caption{Creating a region of interest volume using ITK-SNAP.}
+    \label{fig:CAMINO_roi_selection}
+\end{figure}
+
+Figure \ref{fig:CAMINO_roi_selection} illustrates how a region of interest\footnote{I'm no neurosurgeon, but I think that I mostly managed to hit the corpus callosum.} can be 'painted' onto a GIfTI dataset, and the selected volume can then be saved in GIfTI format.
+
+The final tractography, in vtk format, can be viewed in Paraview, as shown in Figure \ref{fig:CAMINO_paraview}. This visualisation is reassuring, as Paraview uses VTK to manipulate and render the tractography. If it works in Paraview, it must be feasible to display it directly in VTK and, hence, on the Rift!
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/CAMINO_paraview}
+    \caption{Viewing the tractography in Paraview}
+    \label{fig:CAMINO_paraview}
+\end{figure}
 
 \section{Bonus: Developing a Blender Plug-in}
+Previous experience with the open source Blender 3D software made it an tempting tool to use for mesh-refinement of the cumbersome MITK-converted data. Blender offers excellent mesh refinement tools, as well as convenient ways of visualising and interacting with 3D object data.
 
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/blender_brain}
+    \caption{The remarkably dense btain.vtk mesh, in blender.}
+    \label{fig:blender_brain}
+\end{figure}
 
+Blender did not previously handle the vtk data format, and so it was necessary to write a small plug-in to parse the data. Blender uses Python plug-ins, and it was a relatively simple to add this funcionality. Figure \ref{fig:blender_brain} is the result of using the new plug-in to import btain.vtk data into Blender.  
+
+\todo{Code for Blender vtk parser}
+%\lstinputlisting
+%  [label=gl_check_error, caption=Checking OpenGL error state]{code/%gl_check_error.cpp}
+
+Unfortunately, it was subsequently discovered that the VTK data generated by MITK does not comply with the VTK style guide \cite{VTK_file_formats}. The plugin had been made to work with this specific data, and so will need additional work before it complies with the VTK specification. 
 
 \chapter{The Visualisation Tool Kit}
 This chapter introduces the Visualisation Tool Kit (VTK), explaining why VTK is an appropriate tool for the project. A simple VTK rendering pipeline is then described, to provide context for subsequent developments. The simple pipeline is modified to work with real connectome data, and additional manipulation tools are added. Finally, the pipeline is modified so that it can produce stereoscopic image pairs.
@@ -817,7 +857,8 @@ The most important metrics for the Rift display system are the resolution of the
 
 The resolution of the display is a little more complex an issue than it may at first appear. The Rift DK1 display is 1280 pixels wide, by 800 pixels high and each pixel is comprised of red, green and blue subpixels in an RGB stripe format\footnote{The DK2 uses Samsung's proprietary PenTile pixel layout, which complicates the issue of effective resolution even further}. The screen is \SI{149.76}{cm} by \SI{93.6}{cm} in size\footnote{or \SI{7}{inches} diagnonal} meaning that the pixel size is \SI{117}{\um} square. The results in a resolution of \SI{217}{pixels per inch}\footnote{Again, display dimensions are measured in inches. It is a strange industry.}
 
-
+\todo{Retina Rift calculations}
+\todo{Suggest super-resolution / sub-sampling image}
 
 Quantifying display technology performance of high-quality displays is notoriously difficult and leads to the development of remarkable metrics such as "Just noticeable difference"\cite{Zhang2008} \footnote{Or manufacturing claims about "Retina" displays...}. The most important objective there are often easily quantifiable metrics to measure, in this case the render time and display resolution.
 
