@@ -141,13 +141,13 @@ A new pipeline is implemented for the visualisation of Human Connectome Project 
 
 \chapter{Introduction}
 \section{Context}
-In order to better understand the functioning of the human brain, the neurology of the brain is very important. The ongoing Human Connectome Project (in the USA) and the Developing Human Connectome Project (in the UK) are dedicated to mapping and analysing the neural connections of developed and developing human brains. 
+Mapping the structure of the human brain is key to understanding its function. The ongoing Human Connectome Project (in the USA) and the Developing Human Connectome Project (in the UK) are dedicated to mapping and analysing the neural connections of developed and developing human brains. 
 
-These Connectome projects produce very large datasets giving information about the structural and functional connectivity of neurons in the brain. Multi-gigabyte datasets are common, as of June 2014 the Human Connectome Project has generated over 20 terrabytes of data. The volume of data produced, and 3D nature of the data can make it difficult to visualise in 2D form. A typical functional connectome matrix, for example, may have 3,000 by 3,000 elements and in 2D form bears no resemblance to the physical shape of the fibres.
+These Connectome projects produce very large datasets giving information about the structural and functional connectivity of neurons in the brain. Multi-gigabyte datasets are common, as of June 2014 the Human Connectome Project has generated over 20 terrabytes of data. The volume of data produced, and 3D nature of the data make it difficult to visualise in 2D form. A typical functional connectome matrix, for example, may have 3,000 by 3,000 elements and in 2D form bears no resemblance to the physical shape of the fibres.
 
 Advances in computing power and display technology offer the capability to visualise these data sets in new ways. The dominant display technology today is the LCD computer monitor: large, high resolution, but a 2D format. Recent developments in virtual reality technology, in particular the mass-market launch of Oculus Rift development kits, offer new and exciting opportunities.
 
-But, do researchers want to view data in 3D? What data is suited to this type of display? Is the performance of current VR display systems good for practical purposes? This project has sought to answer these questions by developing a demonstration system for the virtual reality display of medical image data. The demonstration system was used to conduct a survey in the Biomedical Image Analysis Group, and gather expert feedback. Results showed a significant interest in the use of Virtual Reality visualisation tools, and suggestions provided many ideas for further development.
+But, do researchers want to view data in 3D? What data is suited to this type of display? Is the performance of current VR display systems adequate for practical purposes? This project has sought to answer these questions by developing a demonstration system for the virtual reality display of medical image data. The demonstration system was used to conduct a survey in the Biomedical Image Analysis Group, and gather expert feedback. Results showed a significant interest in the use of Virtual Reality visualisation tools, and suggestions provided ideas for further development.
 
 \newpage
 \section{Contributions}
@@ -162,7 +162,7 @@ This project has investigated the use of consumer grade virtual reality hardware
 
 In comparison to the size and scope of the VTK, Blender and ORIA projects, the contributions to these projects have been very small. Nevertheless, contributions were made in the spirit of open source collaboration and have have incrementally advanced the state-of-the-art.
 
-The academic impact of this work has been modest: demonstrations within the Biomedical Image Analysis Group, and a formal presentation to my employers at Sharp Laboratories of Europe\footnote{Following which they offered me a raise, so some good has come of it.}. Although this MCS thesis will be the main academic publication resulting from the project, it is hoped that the documented source code, image content and demonstration system will be a useful resource for future project work.
+The academic impact of this work has been modest: demonstrations within the Biomedical Image Analysis Group, and a formal presentation to my employers at Sharp Laboratories of Europe\footnote{Following which they offered me a raise, so some good has come of it.}. This MCS thesis will be the main academic publication resulting from the project, and it is hoped that the documented source code, image content and demonstration system will be a useful resource for future project work.
 
 \newpage
 \section{Structure of the Report} 
@@ -180,27 +180,27 @@ Chapter~5 breaks away from the sequential structure in order to introduce the Oc
     \label{fig:the_full_pipeline}
 \end{figure}
 
-With a complete pipeline for VR, Chapter~7 discusses how the system was evaluated. This evaluation identified numerous strengths and weaknesses, and suggestions for further work are explored.
+With a complete pipeline for VR, Chapter~7 discusses how the system was evaluated. This evaluation identified strengths and weaknesses, and suggestions for further work are explored.
 
-Finally, Chapter~8 concludes by synthesizing findings from each stage in the project, and reviewing the most interesting learning outcomes.
+Finally, Chapter~8 concludes by synthesizing findings from each stage in the project, and reviewing interesting learning outcomes.
 
 \chapter{Connectome Data}
 
-This chapter discusses why visualising brain data is so important, and why connectome data is suitable source of content for this project. Different experimental techniques for gathering data are compared, with particular attention paid to the type of data that each technique produces. Current data visualisation systems are introduced, with the conclusion that the tractography is particularly well suited to be displayed in 3D. 
+This chapter discusses why visualising brain data is important, and the suitability of connectome data for this project. Different experimental techniques for gathering data are compared, with particular attention paid to the type of data that each technique produces. Current data visualisation systems are introduced, with the conclusion that the tractography is particularly well suited to be displayed in 3D. 
 
 \section{Motivation for using Connectome Data}
-Mapping and visualising the brain is of considerable academic and practical interest. The brain is thought to be composed of motor, sensory, behavioural state, and cognitive systems \cite{Swanson2003}. Better knowledge about the physiology of the brain can help in understanding these systems. Knowledge of the structure of an individual brain can also be very helpful when diagnosing medical conditions, or planning a surgical procedure \cite{Golby2011}. In either case, the interested parties need to have data, and to be able to draw useful inferences from it. This project aims to work on the second of these challenges: to develop new ways of displaying and interacting with existing connectome data. 
+Mapping and visualising the brain is of considerable academic and practical interest. The brain is thought to be composed of motor, sensory, behavioural state, and cognitive systems \cite{Swanson2003}. Better knowledge about the physiology of the brain can help in understanding these systems. Knowledge of the structure of an individual brain can be helpful when diagnosing medical conditions, or planning a surgical procedure \cite{Golby2011}. In either case, the interested parties need to have data, and be able to draw useful inferences from this data. This project aims to work on the second of these challenges: developing new ways of displaying and interacting with existing connectome data. 
 
-The high quality and availability of connectome data makes it an excellent source of content for visualisation. The Human Connectome Project is a world-class source of data, and thanks to the Open Access Data license terms \cite{HCPAccess2014} all of this content can be obtained free of charge. Imperial College has an active research program in the medical imaging field, and the project has benefited greatly form access to friendly local expertise. As an illustration of this good fortune, Imperial College is one of only four UK universities involved in the Developing Human Connectome Project \cite{DHCPPartners2014}, and over half of the experts\footnote{Kevin Kerdauren, Lisa Koch, Dr Sarah Parisot, and especially Dr Bernhard  Kainz} in the Imperial College team have directly assisted this project. 
+The high quality and availability of connectome data makes it an excellent source of content for visualisation. The Human Connectome Project is a world-class source of data, and thanks to the Open Access Data license terms \cite{HCPAccess2014} all of this content can be obtained free of charge. Imperial College has an active research program in the medical imaging field, and the project has benefited greatly from access to friendly local expertise. As an illustration of this good fortune, Imperial College is one of only four UK universities involved in the Developing Human Connectome Project \cite{DHCPPartners2014}, and numerous experts\footnote{Kevin Kerdauren, Lisa Koch, Dr Sarah Parisot, and especially Dr Bernhard  Kainz} from the Imperial College team have directly assisted this project. 
 
 \section{Sources of Connectome Data}
 An understanding of the processes for generating connectome data is useful, as it influences the resolution and format of the data obtained. 
 
 \subsection{Electron microscopy (EM)} 
-EM gives nanometer resolution images of neural structure. This is an ex vivo process, samples must be taken from the brain. EM techniques can give a resolution of \SI{5}{\nm} in the x-y plane, with a \SI{30}{\nm} slice thickness and generate an enormous amount of raw data, of the order of \SI{1}{\pebi\byte\per\mm\cubed} \cite{Jeong2010}.\footnote{That data density is greater than two hundred thousand DVDs per cubic milimeter or, in old money, more than eleven \textit{billion} floppy disks per cubic inch} Due to the high resolution and small sample sizes accommodated by EM techniques, the only connectome to have been completely mapped out by this technique is that of the nematode c.elegans \cite{White1986}.
+EM gives nanometer resolution images of neural structure. This is an ex vivo process, samples must be taken from the brain. EM techniques can give a resolution of \SI{5}{\nm} in the x-y plane, with a \SI{30}{\nm} slice thickness and generate an enormous amount of raw data, of the order of \SI{1}{\pebi\byte\per\mm\cubed} \cite{Jeong2010}.\footnote{That data density is greater than two hundred thousand DVDs per cubic milimeter or, in old money, more than eleven \textit{billion} floppy disks per cubic inch} Due to the high resolution and small sample sizes accommodated by EM techniques, the only connectome to have been completely mapped out using this technique is that of the nematode c.elegans \cite{White1986}.
 
 \subsection{Optical microscopy (OM)} 
-OM techniques can be used in conjunction with fluorescent markers to selectively tag and examine brain matter. As with EM, this is done ex-vivo. This approach allows for much larger samples to be analysed, at a resolution of approximately \SI{0.35}{\um} in the x-y plane\footnote{Fluorescent markers allow resolution beyond the Abbé limit without needing metamaterial lenses.}, and with a slice thickness of \SI{100}{\um}. This approach has recently been used to map the entire mouse connectome \cite{Oh2014}. 
+OM techniques can be used in conjunction with fluorescent markers to selectively tag and examine brain matter. As with EM, this is done ex-vivo. This approach allows for much larger samples to be analysed, at a resolution of approximately \SI{0.35}{\um} in the x-y plane\footnote{Fluorescent markers allow resolution beyond the Abbe limit without needing metamaterial lenses.}, and with a slice thickness of \SI{100}{\um}. This approach has recently been used to map the entire mouse connectome \cite{Oh2014}. 
 
 \subsection{Magnetic Resonance Imaging (MRI)} 
 MRI scans may be used in combination with Diffusion Tensor Imaging (DTI-MRI) as an in-vivo technique for determining larger scale structure. Diffusion of water within the brain is influenced by the structure of the brain matter, since water can diffuse more easily along bundles of nerves than perpendicular to them, and so the diffusion patterns allow local structure to be inferred. The resolution of this technique is typically low, approximately \SI{1}{\mm} in the x-y plane \cite{Westin2002}. A related technique is to detect neural activity, determined as a function MRI measurements of blood-oxygen changes in the brain (fMRI) \cite{Huettel2004}. MRI techniques have been used to map hundreds of human connectomes. 
@@ -213,7 +213,7 @@ Fortunately, the HCP project does have a set of conventions as to the format and
 
 Given the large size of connectome datasets, it is sometimes necessary to implement a custom data structure to support certain visualisations. In particular, fast access to the data is essential when working interactively with high resolution images. Previous publications \cite{Jeong2010} have discussed working with a 75GB connectome dataset, stored as an octree in order to enable fast access to the desired parts of the dataset. They also store sub-sampled data at various resolutions in order to allow responsive zooming into the data set and cache data at GPU, CPU and process levels. 
 
-Fortunately, the pre-processing techniques described in Chapter 3 could be used to produce structures with simple geometric structures, and consequently small file sizes. With file sizes less than \SI{10}{\mega\byte}, it is perfectly possible to store the structure in RAM or even in video memory. In the future it may be necessary to investigate more exotic dataset options in order to support more complex content and higher-resolution VR displays.
+Fortunately, the pre-processing techniques described in Chapter 3 could be used to produce structures with simple geometric structures, and consequently small file sizes. With file sizes less than \SI{10}{\mega\byte}, it is possible to store the structure in RAM or even in video memory. In the future it may be necessary to investigate more exotic dataset options in order to support more complex content and higher-resolution VR displays.
 
 
 \section{Visualising Connecome Data}
@@ -235,11 +235,11 @@ Tractography is the process of visualising nerve tracts, bundles of nerve cells.
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/tractography}
-    \caption{Fiber Tractography. \cite{Odonnell2006}}
+    \caption{Fibre Tractography. \cite{Odonnell2006}}
     \label{fig:tractography}
 \end{figure}
 
-Various techniques have been developed for fiber tractography, including the use of tuboids, streamlines and streamtubes to represent the tracts. These techniques can offer a host of advantages including faster rendering times, aesthetically pleasing labelling of tracts, simplified tract junction rendering and good occlusion handling \cite{Petrovic2007}.
+Various techniques have been developed for fibre tractography, including the use of tuboids, streamlines and streamtubes to represent the tracts. Advantages of these techniques include faster rendering times, aesthetically pleasing labelling of tracts, simplified tract junction rendering, and good occlusion handling \cite{Petrovic2007}.
 
 \begin{figure}[htbp!]
     \centering
@@ -270,7 +270,7 @@ The ordered placement of glyphs can introduce patterns not present in the data, 
 \end{figure}
 
 \subsection{Other Techniques}
-In addition to connection matrices, tractographies and glyph images there are a large number of other ways to display connectome data. Graph-based representations can present functional connectivity \cite{Hagmann2008}, but may do so at the cost of reduced anatomical accuracy \cite{Margulies2013}. 
+In addition to connection matrices, tractographies and glyph images there are many other ways to display connectome data. Graph-based representations can present functional connectivity \cite{Hagmann2008}, but may do so at the cost of reduced anatomical accuracy \cite{Margulies2013}. 
 
 \begin{figure}[htbp!]
     \centering
@@ -294,14 +294,14 @@ Human DTI-MRI data from the Human Connectome Project was chosen for use in this 
 The choice of visualisation system was a more complex issue. For the purpose of this project, it is useful to note that, with the exception of the connection matrix, all of the visualisation techniques for connectome data attempt to represent 3D (or greater dimensionality) information in a 2D image. This is has two important consequences:
 \begin{enumerate}
 \item It shows that there is a need to display 3D data.
-\item It shows that, in many cases, three dimensional processing and rendering is already being done.
+\item It shows that, in many cases, three dimensional processing and rendering is already being carried out.
 \end{enumerate}
 
-2D representations have a number of advantages. The sampling methods used in measuring the connectome data gather 2D data, the full connectome structure being reconstructed from many planar slices. Relatively little processing is needed in order to convert an array of data into a viewable image, and so a 2D visualisation can be a very fast way to look at raw data. The ‘flat’ nature of 2D images makes them very simple to display or print, to transport and to store. 
+2D representations have a number of advantages. The sampling methods used in measuring the connectome data gather 2D data, the full connectome structure being reconstructed from many planar slices. Relatively little processing is needed in order to convert an array of data into a viewable image, and so a 2D visualisation can be a very fast way to look at raw data. The ‘flat’ nature of 2D images is convenient for printing, transportation, and storage. 
 
 Pseudo-3D images are frequently used. These use either colours or symbols to represent out-of-plane structure. Alternatively, they may show a 3D representation of the connectome, rendered into a 2D picture. Using this definition of ‘pseudo-3D’, all of the above visualisation techniques (except the connection matrix) would fall into this category. 
 
-Full 3D images seem very well suited to visualising connectome data. Given that there is a need to display 3D data, and that much of the data is already processed and rendered as a 3D model, it seems natural to displaying it natively in 3D. If the only objections to 3D visualisations is the expense of current 3D hardware \cite{Margulies2013} then a proliferation of cheap consumer hardware may remove this barrier in the near future.
+Full 3D images seem well suited to visualising connectome data. Given that there is a need to display 3D data, and that much of the data is already processed and rendered as a 3D model, it seems natural to display it natively in 3D. If the only objections to 3D visualisations is the expense of current 3D hardware \cite{Margulies2013} then a proliferation of cheap consumer hardware may remove this barrier in the near future.
 
 Given these considerations, all of the 3D visualisation styles were candidates for the project. The tractography was selected due to it's intuitive and elegant nature. Of all of the styles discussed, it is the one most easily understood by non-experts, and so suitable content for a wide target audience.
 
@@ -323,7 +323,7 @@ HCP data is intended to be a standard format, allowing for comparison between hu
 The project needs access to structural information in a format that can be imported in VTK. The MRI data in the HCP dataset cannot be directly imported as desired. The following section describes how the HCP data is stored, and consequently how it can be processed into a useful intermediate format. This is done in two ways: a tractography is generated from the structural MRI-DTI CIFTT data, and a cortical surface is obtained by converting a GIFTI surface file. 
 
 \subsection{NIfTI Data}
-The main format of the HCP data is Neuroimaging Informatics Technology Initiative (NIfTI) format. Recent data is in the NIfTI-2 format, an extension that uses \SI{64}{bit} storage and addressing to allow for larger data sets with more precision. To the explorer browsing an HCP data set, these are the $\ast.nii$ files \footnote{or sometimes compressed (gnu-zipped) $\ast.nii.gz$ or tar-archived $\ast.nii.tar$ files.}. The NIfTI format holds data as a 4D matrix (x, y, z and time), as well as containing meta-data in a header. Conceptually, data can be extracted from NIfTI format by taking a 3D matrix 'slice' out of the set, to get voxel data for a specific point in time. 
+The main format of the HCP data is Neuroimaging Informatics Technology Initiative (NIfTI) format. Recent data is in the NIfTI-2 format, an extension that uses \SI{64}{bit} storage and addressing to allow for larger data sets with greater precision. To the explorer browsing an HCP data set, these are the $\ast.nii$ files \footnote{or sometimes compressed (gnu-zipped) $\ast.nii.gz$ or tar-archived $\ast.nii.tar$ files.}. The NIfTI format holds data as a 4D matrix (x, y, z and time), as well as containing meta-data in a header. Conceptually, data can be extracted from NIfTI format by taking a 3D matrix `slice' out of the set, to get voxel data for a specific point in time. 
 
 \subsection{CIFTI Data}
 CIFTI is a related data format to NIfTI, more of a \textit{flavour} of NIfTI than a separate file format and so has the same file extensions. CIFTI files reference other files, frequently GIFTI surfaces, to specify relative vertex and voxel positions. CIFTI files can contain dense or sparse matrices, and are often used to store many different volumes that each correspond to a different anatomical region \cite{WorkbenchGlossary2014}. 
@@ -342,7 +342,7 @@ Following widespread adoption and success of the NIfTI format, the Geometry Info
 \label{sec:choosing_an_intermediate_format}
 Before an intermediate format had been chosen, a number of 3rd party programs were investigated for reading and converting HCP data. MeshLab \cite{MeshLab2014} was found to be an excellent mesh conversion tool, but could not load any of the GIFTI or NIFTI data sets. Medinria \cite{MedInria2014} could work with the available data sets but was better suited to viewing content than converting it. With assistance from Dr Kainz, MITK \cite{MITK2014} was used to select a region in a CIFTI file using an image intensity threshold, and then outputting the selection as a vtk mesh. This was a significant step forward: the vtk data format was perfectly compatible with the Visualisation Tool Kit, and the resulting mesh was the first 'real' connectome data visualised on the Rift.
 
-The vtk data format proved to be very suitable for this project for a number of reasons. On a practical basis, it was known to work with VTK, and so could provide the Rift with suitable content for demonstrations. Further research showed that it was a well established format \cite{VTK_file_formats}, and the it's wide support made it a suitable intermediate format. In addition to these points, the 'legacy' VTK format holds data in a simple, plain text structure. This was a very strong reason for using the format, as it allowed human inspection of the mesh data. 
+The vtk data format proved to be very suitable for this project for a number of reasons. On a practical basis, it was known to work with VTK, and so could provide the Rift with suitable content for demonstrations. Further research showed that it was a well established format \cite{VTK_file_formats}, and this wide support made it a suitable intermediate format. Additionally, the 'legacy' VTK format holds data in a simple, plain text structure. This was a strong reason for using the format, as it allowed human inspection of the mesh data. 
 
 \begin{lstlisting}[label=vtk_data_structure, caption=The structure of data in a legacy .vtk file.]
 # vtk DataFile Version 2.0  // # vtk DataFile Version 3.0
@@ -358,7 +358,7 @@ CELL_DATA n
 Listing shows the header specification from \cite{VTK_file_formats} with comments illustrating vtk parameter values in a real dataset. Information such as the number of points in the mesh proved to be very useful when debugging the VTK render output.
 
 \section{Data conversion using MITK}
-As mentioned in Section \ref{sec:choosing_an_intermediate_format}, MITK was used to export a region of a CIFTI cortical data file as a 3D mesh. This process is shown in Figure \ref{fig:MITK_conversion}. The process involved selecting a volume in the original data file using a thresholding function, and then creating a mesh from the selected region. Once that was done, the mesh could be exported as a vtk file.
+As mentioned in Section \ref{sec:choosing_an_intermediate_format}, MITK was used to export a region of a CIFTI cortical data file as a 3D mesh. This process is shown in Figure \ref{fig:MITK_conversion}. The process involved selecting a volume in the original data file using a thresholding function, and then creating a mesh from the selected region. The mesh could then be exported in vtk format.
 
 \begin{figure}[htbp!]
     \centering
@@ -367,10 +367,10 @@ As mentioned in Section \ref{sec:choosing_an_intermediate_format}, MITK was used
     \label{fig:MITK_conversion}
 \end{figure}
 
-This approach had two significant problems. Firstly, with little experience in working with this type of content it was difficult to choose a meaningful threshold and the resulting mesh was correspondingly arbitrary. Worse still, this approach produced a noisy, complex mesh that took approximately \SI{100}{MB} of ASCII vertex positions to fully express. Due to the noise in the image, the size of the mesh did not add any information, but it did cause significant problems with the render-speed. These problems are discussed in the Results Chapter.
+This approach had two significant problems. Firstly, with little experience in working with this type of content it was difficult to choose a meaningful threshold and the resulting mesh was correspondingly arbitrary. Worse still, this approach produced a noisy, complex mesh that took approximately \SI{100}{MB} of ASCII vertex positions to fully express. The mesh density mostly represented noise which did not add any information, and caused significant problems with the render-speed. These problems are discussed in the Results Chapter.
 
 \section{Data conversion using MATLAB}
-After learning more about the HCP data structure, it was understood that certain GIFTI files in the HCP data set already contained cortical surface representations. This would be perfect demonstration content and would have none of the size or noise issues of the MITK-converted data-set. 
+After learning more about the HCP data structure, it was understood that certain GIFTI files in the HCP data set already contained cortical surface representations. This would be ideal demonstration content with none of the size or noise issues of the MITK-converted data-set. 
 
 \begin{figure}[htbp!]
     \centering
@@ -379,12 +379,12 @@ After learning more about the HCP data structure, it was understood that certain
     \label{fig:MATLAB_conversion}
 \end{figure}
 
-Converting GIFTI format data to vtk proved to be a challenge. Shortly after the idea had been abandoned, Dr. Sarah Parisot returned from a vacation and insisted to me that such a conversion must be possible. With her support, and her access to MATLAB, we were able to use Professor Chris Rorden's MATcro conversion tools to convert the HCP GIFTI surface files into VTK polydata meshes. These mesh files were only \SI{6}{MB} in size, compared with the \SI{100}{MB} size of MITK-conversions, which translated into quick rendering and a high frame rate when displaying the content on the Rift.
+Converting GIFTI format data to vtk proved challenging. Shortly after the idea had been abandoned, Dr. Sarah Parisot returned from a vacation and insisted that such a conversion must be possible. With her support, and her access to MATLAB, Professor Chris Rorden's MATcro conversion tools were used to convert the HCP GIFTI surface files into VTK polydata meshes. These mesh files were only \SI{6}{MB} in size, compared with the \SI{100}{MB} size of MITK-conversions, which translated into quick rendering and a high frame rate when displaying the content on the Rift.
 
 \section{Data conversion using CAMINO}
 As mentioned in Chapter 2, the project had a particular interest in the tractography connectome representation. With this in mind, new tractographies were generated from NIfTI connectome data, and saved in vtk format for display on the Rift.
 
-The generating a tractography is more complex than converting a surface mesh from one format to another. It involves fitting a diffusion tensor to the NIfTI data, and filtering this by fractional anisotropy to bring out the connected nature of anisotropic, and hence fibrous regions. This is shown in Figure \ref{fig:CAMINO_tensors}. Once a structural connectivity is established, the connectivity of a region of interest can then be tracked throughout the connectome to generate a tractography.
+The generation of a tractography is more complex than converting a surface mesh from one format to another. It involves fitting a diffusion tensor to the NIfTI data, and filtering this by fractional anisotropy to bring out the connected nature of anisotropic, and hence fibrous regions. This is shown in Figure \ref{fig:CAMINO_tensors}. Once a structural connectivity is established, the connectivity of a region of interest can then be tracked throughout the connectome to generate a tractography.
 
 \begin{figure}[htbp!]
     \centering
@@ -393,7 +393,7 @@ The generating a tractography is more complex than converting a surface mesh fro
     \label{fig:CAMINO_tensors}
 \end{figure}
 
-Very fortunately, researchers at UCL have developed an open source toolkit called CAMINO that can perform most of these tasks. With some adjustments\footnote{The CAMINO cache needed to given \SI{10}{GB} of RAM!}, this process was used to generate vtk tractographes of HCP data. 
+Fortunately, researchers at UCL have developed an open source toolkit called CAMINO that can perform most of these tasks. With some adjustments\footnote{The CAMINO cache needed to given \SI{10}{GB} of RAM!}, this process was used to generate vtk tractographes of HCP data. 
 
 \begin{figure}[htbp!]
     \centering
@@ -437,10 +437,9 @@ This chapter introduces the Visualisation Tool Kit (VTK), explaining why VTK is 
 \section{Introducing VTK}
 VTK is a software system for 3D computer graphics, image processing, and visualisation. For the purpose of this project, it's defining characteristics are:
 \begin{enumerate}
-\item \textbf{It is an open source project, freely available via GitHub.} This proved to be very useful, as the software could be cloned and built immediately and without needing to pay any license fees. The C++ source code was a useful supplement to documentation and tutorials, since it allowed the source to be searched or 'grep-ed' and read. Access to the source code proved to essential when the project needed to extend VTK functionality via subclassing. 
+\item \textbf{It is an open source project, freely available via GitHub.} This proved to be very useful, as the software could be cloned and built immediately and without needing to pay any license fees. The C++ source code was a useful supplement to documentation and tutorials, since it allowed the source to be searched or 'grep-ed' and read. Access to the source code proved essential when the project needed to extend VTK functionality via subclassing. 
 \item \textbf{It is mainly written in C++.} This was useful at a practical level, as the MSc course had provided an introduction to C++. The development model of VTK is to provide core functionality in C++ and then support other languages such as Java and Python using wrappers. This model meant that any functionality added to VTK during this project could be extended to other languages through automatically generated wrapper code.
-\item \textbf{It is under active development, and used extensively by the medical imaging community.} The active development of VTK was useful as it meant that there was a substantial volume of documentation and forum material surrounding the software. This meant that it was often possible to learn from past examples and avoid well known problems. The development of VTK by the medical imaging community also meant that VTK could work with medical data formats (well... sort of. Only in 6.x, which I couldn't use) and that there was a known user group who would be interested in any useful developments.
-\item 
+\item \textbf{It is under active development, and used extensively by the medical imaging community.} The active development of VTK was useful as it meant that there was a substantial volume of documentation and forum material surrounding the software. This meant that it was often possible to learn from past examples and avoid well known problems. The development of VTK by the medical imaging community also meant that VTK could work with medical data formats \footnote{well... sort of. This functionality was only available in VTK 6.x, which couldn't be used as it deprecated feature central to the render implementatino.} and that there was a known user group who would be interested in any useful developments.
 \end{enumerate}
 
 Developed by Kitware Inc., VTK works well with CMake, and can run on all of the major OS platforms. VTK is also used to do all of the Visualisation work inside Paraview, as well as other notable open-source projects including 3DSlicer.
@@ -505,7 +504,7 @@ Virtual Reality (VR) refers to the visualisation of an artificial environment. T
 
 VR is an attractive way of getting stereoscopic 3D. The current generation of virtual reality hardware offers high-resolution, immersive, stereoscopic 3D performance at a price of a high-end LCD monitor. 
 
-Various VR and AR systems were investigated, as shown in the Mind Map below. Many of the products investigated have been designed for consumers to watch films or play games. These systems do not include any positional feedback, since they are not designed to give an immersive experience but rather to act as a personal cinema screen. Another sub-set of the systems were designed for industrial or military use. These systems would potentially provide the desired performance, but were either prohibitively expensive or completely unavailable for purchase. 
+Various VR and AR systems were investigated, as shown in Figure \ref{fig:vr_headsets}. Many of these have been designed for consumers to watch films or play games. These systems do not include any positional feedback, since they are not designed to give an immersive experience but rather to act as a personal cinema screen. Another sub-set of these systems were designed for industrial or military use. Although military or industrial systems could provide the desired performance, they were either prohibitively expensive or unavailable for purchase. 
 
 \begin{figure}[htbp!]
     \centering
@@ -514,7 +513,7 @@ Various VR and AR systems were investigated, as shown in the Mind Map below. Man
     \label{fig:vr_headsets}
 \end{figure}
 
-The OculusRift DK1 was found to offer the highest performance at the lowest cost. The DK1 is also a suitable system due to the active development of the SDK, and large open source community surrounding the project. Future development of the SDK and the forthcoming release of the compatible DK2 should enable the project to be forward compatible with future hardware, if that is required.
+The Oculus Rift DK1 was found to offer acceptable performance at a reasonable cost. The DK1 is also a suitable system due to the active development of the SDK, and large open source community surrounding the project. Future development of the SDK and the forthcoming release of the compatible DK2 should enable the project to be forward compatible with future hardware, if that is required.
 \section{Related Projects}
 There is no other known project using an Oculus Rift for the visualisation of connectome data. There have been a small number of projects on using Virtual Reality for connectome visualisation. 
 
@@ -527,10 +526,9 @@ The most similar known projects are:
   \item \textbf{Brainder} \cite{brainder2014}, Dr Anderson Winkler’s excellent blog on FMRI and Blender rendering.
 \end{itemize}
 
+The Glass Brain Project uses a Unity 3D model of the brain, though it subsequently renders a 2D image from the model for display on LCD monitors. As such it does not obtain many of the benefits of the 3D model, nor face the challenges of displaying images in 3D.
 
-The Glass Brain Project uses a Unity 3D model of the brain, though it subsequently renders a 2D image from the model for display on LCD monitors. As such it does not obtain many of the benefits of the 3D model, nor have to face the challenges of displaying images in 3D.
-
-The Dynamic Connectome project and the Aachen University and Purdue University projects use computer assisted virtual environment (CAVE) virtual reality rooms with multiple projectors rather than a head mounted display (HMD) system as proposed here. Such a system removes the requirement to wear bulky headgear, but instead requires a multi-projector system and dedicated room of projection screens. In addition to these requirements, the CAVE systems do not typically show 3D, nor do they update the view based on the user’s precise head position.
+The Dynamic Connectome project and the Aachen University and Purdue University projects use computer assisted virtual environment (CAVE) virtual reality rooms with multiple projectors rather than a head mounted display (HMD) system as proposed here. Such a system removes the need for bulky headgear, but instead requires a multi-projector system and dedicated room of projection screens. Additionally, the CAVE systems do not typically show 3D, nor do they update the view based on the user’s precise head position.
 
 The Brainder project uses the open source ‘Blender’ 3D modeling software to ray trace brain models, primarily for use as 2D illustrations. Although the goals of Brainder are different from this project, the existence of (relatively) simple 3D brain models may be a useful asset. 
 
@@ -617,7 +615,7 @@ Listing \ref{simple_vert} shows the most basic vertex shader, where vertices are
 \lstinputlisting
   [label=simple_vert, caption=A Simple Vertex Shader]{code/my_first_shader.vs}
 
-Listing \ref{simple_frag} is almost as simple as the example vertex shader. It sets the colour of every fragment to red. If this fragment shader works, every polygon in the rendered object should be bright red and the background should not be altered. This sort of shader may seem excessively simple, but lots of simple checks were necessary to confirm that basic OpenGL functionality was achievable before moving on to more complicated things.
+Listing \ref{simple_frag} is almost as simple as the example vertex shader. It sets the colour of every fragment to red. If this fragment shader works, every polygon in the rendered object should be bright red and the background should not be altered. This sort of shader may seem excessively simple, but several basic checks were necessary to confirm fundamental OpenGL functionality worked before moving on to more complicated goals.
 
 \lstinputlisting
   [label=simple_frag, caption=A Simple Frament Shader]{code/my_first_shader.fs}
@@ -709,7 +707,7 @@ Listing \ref{gl_check_error} shows how a simple helper function can be used to r
 %Do you suffer from premature optimisation?
 
 
-
+\todo{finish}
 derived shader class could be built. Modifications to the derived class involved working with OpenGL functionality,  Development got a little more difficult as the 
 
 
@@ -929,7 +927,7 @@ A user survey was conducted in the Biomedical Image Analysis department. Sevente
 The most important metrics for the Rift display system are the resolution of the display, and the render speed of the image processing.
 
 \subsection{Effective Resolution}
-The resolution of the display is a little more complex an issue than it may at first appear. The Rift DK1 display is 1280 pixels wide, by 800 pixels high and each pixel is comprised of red, green and blue subpixels in an RGB stripe format\footnote{The DK2 uses Samsung's proprietary PenTile pixel layout, which complicates the issue of effective resolution even further}. The screen is \SI{149.76}{cm} by \SI{93.6}{cm} in size\footnote{or \SI{7}{inches} diagnonal} meaning that the pixel size is \SI{117}{\um} square. The results in a resolution of \SI{217}{pixels per inch}\footnote{Again, display dimensions are measured in inches. It is a strange industry.}
+The the display resolution is more complex an issue than it may at first appear. The Rift DK1 display is 1280 pixels wide, by 800 pixels high and each pixel is comprised of red, green and blue subpixels in an RGB stripe format\footnote{The DK2 uses Samsung's proprietary PenTile pixel layout, which complicates the issue of effective resolution even further}. The screen is \SI{149.76}{cm} by \SI{93.6}{cm} in size\footnote{or \SI{7}{inches} diagnonal} meaning that the pixel size is \SI{117}{\um} square. The results in a resolution of \SI{217}{pixels per inch}\footnote{Again, display dimensions are measured in inches. It is a strange industry.}
 
 There is some debate over the resolution required to be 'better' than the human eye can perceive, but if the 
 
@@ -1096,331 +1094,6 @@ The success of this project will ultimately be measured in terms of its impact o
 \Qitem{ \Qq{Other comments:}
 \hskip0.5cm\ldots }
 
-\chapter{Survey Results}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%01
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/1-status}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	MSc      & 4 & 22\% \\
-  	PhD      & 6 & 33\% \\
-	Post Doc	 & 8 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%02
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/2-vtk_experience}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	VTK 			& 8 & 44\% \\
-  	Paraview 	& 9 & 50\% \\
-	ITK 			& 8 & 44\% \\
-	3D Slicer 	& 2 & 11\% \\
-	Other 		&  1 & 6\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%03
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/3-medical_imaging_packages}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-	VTK					&7&39\% \\
-	ITK					&8&44\% \\
-	IRTK					&3&17\% \\
-	ITK-SNAP				&9&50\% \\
-	MITK					&1&6\% \\
-	DTI-TK				&1&6\% \\
-	Paraview				&9&50\% \\
-	RView				&4&22\% \\
-	CAMINO				&2&11\% \\
-	XMedcon				&2&11\% \\
-	ImageJ				&7&39\% \\
-	Amide				&1&6\% \\
-	3D Slicer			&1&6\% \\
-	OSIRIX				&4&22\% \\
-	imagemagick			&7&39\% \\
-	SimpleDICOM			&1&6\% \\
-	Connectome Workbench	&5&28\% \\
-	Other				&3&17\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%04
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/4-vr_experience}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%05
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/5-immediate_reactino}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%06
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/6-lens_problems}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%07
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/7-can_see_3D}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%08
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/8-demonstration_experience}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%09
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/9-overall_experience}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%10
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/10-latency}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%11
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/11-screen_resolution}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%12
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/12-interaction_tools}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%13
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/13-stereoscopic_depth}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%14
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/14-image_artefacts}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%15
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/15-preferred_use_type}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%16
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{resources/16-want_cues}
-\end{subfigure}%
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-   	A & 1 & 22\% \\
-  	B & 2 & 33\% \\
-	C & 3 & 44\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{CAPTION}
-    \label{fig:FIGURE}
-\end{figure}
 
 \chapter{Rift Distortion Shaders}
 
@@ -1475,6 +1148,444 @@ The success of this project will ultimately be measured in terms of its impact o
     \caption{A comparison of the effect of the Rift distortion shader on cone content.}
     \label{fig:cone_distortion_comparison}
 \end{figure}
+
+\chapter{Survey Results}
+
+\definecolor{light-gray}{gray}{0.95}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%01
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\linewidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/1-status}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+   	MSc      & 4 & 22\% \\
+  	PhD      & 6 & 33\% \\
+	Post Doc	 & 8 & 44\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Participant background}
+    \label{fig:1-status}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[htbp!]
+\fcolorbox{black}{light-gray}{Ability to interact in 3D: select ROI and seed tracts} \par
+\fcolorbox{black}{light-gray}{Viewer must respect original acquisition planes, world coordinates}\par
+\fcolorbox{black}{light-gray}{Viewer should show image segmentation and display heatmaps}\par
+\fcolorbox{black}{light-gray}{Viewer should handle DTI images and Paraview surface meshes}\par
+\fcolorbox{black}{light-gray}{Viewer should show axial, coronal, sagittal and volume rendered views.}\par
+\fcolorbox{black}{light-gray}{Viewer should handle NIfTI format.}\par
+\fcolorbox{black}{light-gray}{Viewer should show volumetric differences between images.}\par
+\fcolorbox{black}{light-gray}{Ability to do 3D visualization of brain lesions.}\par
+\fcolorbox{black}{light-gray}{Ability to interact with object at different depths}\par
+\fcolorbox{black}{light-gray}{Ability to display clusters and dense data.}\par
+\fcolorbox{black}{light-gray}{Ability to handle graphs like Gephi or GraphViz.}\par
+\fcolorbox{black}{light-gray}{Cross modality display: functional and structural, like Con. Workbench.}\par
+\fcolorbox{black}{light-gray}{Ability to display surface rendering. Ability to look along fibre tracts.}\par
+\fcolorbox{black}{light-gray}{Display segmentation. Colour code surface registration differences.}\par
+\fcolorbox{black}{light-gray}{Viewer should be comfortable to look at!}\par
+\fcolorbox{black}{light-gray}{Fast tracking and screen update needed to handl real time data.}\par
+\fcolorbox{black}{light-gray}{Viewer should be able to  display 3D ultrasound, false colour, heart data.}\par
+\fcolorbox{black}{light-gray}{Good colour overlays wanted.}\par
+\fcolorbox{black}{light-gray}{Viewer should handle DTI data, regions selection}\par
+	\caption{Functionality desired in a visualisation tool.}
+    \label{fig:desired_functionality}
+\end{figure}
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%02
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/2-vtk_experience}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+   	VTK 			& 8 & 44\% \\
+  	Paraview 	& 9 & 50\% \\
+	ITK 			& 8 & 44\% \\
+	3D Slicer 	& 2 & 11\% \\
+	Other 		&  1 & 6\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Experience with VTK or VTK based software}
+    \label{fig:2-vtk_experience}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%03
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/3-medical_imaging_packages}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c p{4cm} }
+	VTK					&7&39\% \\
+	ITK					&8&44\% \\
+	IRTK					&3&17\% \\
+	ITK-SNAP				&9&50\% \\
+	MITK					&1&6\% \\
+	DTI-TK				&1&6\% \\
+	Paraview				&9&50\% \\
+	RView				&4&22\% \\
+	CAMINO				&2&11\% \\
+	XMedcon				&2&11\% \\
+	ImageJ				&7&39\% \\
+	Amide				&1&6\% \\
+	3D Slicer			&1&6\% \\
+	OSIRIX				&4&22\% \\
+	imagemagick			&7&39\% \\
+	SimpleDICOM			&1&6\% \\
+	Connectome Workbench	&5&28\% \\
+	Other				&3&17\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Experience with medical imaging software}
+    \label{fig:3-medical_imaging_packages}
+\end{figure}
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%04
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/4-vr_experience}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+None&12&67\% \\
+A little&6&33\% \\
+A lot&0&0\% \\
+Developer&0&0\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Previous experience with Virtual Reality}
+    \label{fig:4-vr_experience}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%05
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/5-immediate_reactino}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+Enthusiastic&9&50\% \\
+Positive&7&39\% \\
+Indifferent&2&11\% \\
+Hated it&0&0\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Immediate reaction}
+    \label{fig:5-immediate_reactino}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%06
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/6-lens_problems}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+None&10&56\% \\
+Some&6&33\% \\
+Significant&2&11\% \\
+Intolerable&0&0\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Problems specific to the lenses}
+    \label{fig:6-lens_problems}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%07
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/7-can_see_3D}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+Yes&14&78\% \\
+No&0&0\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Can the user see stereo 3D?}
+    \label{fig:7-can_see_3D}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%08
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/8-demonstration_experience}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+Enjoyable&4&22\% \\
+Fun&10&56\% \\
+Disorienting&3&17\% \\
+Nauseating&1&6\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Virtual Reality experience rating}
+    \label{fig:8-demonstration_experience}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%09
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/9-overall_experience}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+1 = Ouch&0&0\% \\
+2&0&0\% \\
+3&1&6\% \\
+4&0&0\% \\
+5&0&0\% \\
+6&3&17\% \\
+7&4&22\% \\
+8&2&11\% \\
+9&6&33\% \\
+10 = Wow&2&11\% \\
+
+\end{tabular}
+\end{subfigure} 
+    \caption{Overall demo experience}
+    \label{fig:9-overall_experience}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[htbp!]
+\fcolorbox{black}{light-gray}{Fast spinning of camera} \par
+\fcolorbox{black}{light-gray}{Fast pitch and yaw jumps} \par
+\fcolorbox{black}{light-gray}{Constant drift} \par
+\fcolorbox{black}{light-gray}{Drift problems, stereo divergence} \par
+\fcolorbox{black}{light-gray}{Lack of reference points} \par
+\fcolorbox{black}{light-gray}{Random rotations, drift} \par
+\fcolorbox{black}{light-gray}{Fast rotations when camera looking along axis} \par
+	\caption{Causes of disorientation}
+    \label{fig:disorientation_causes}
+\end{figure}
+
+\begin{figure}[htbp!]
+\fcolorbox{black}{light-gray}{Acclimatisation} \par
+\fcolorbox{black}{light-gray}{Using the reset button} \par
+\fcolorbox{black}{light-gray}{Resetting the view, complaining.} \par
+\fcolorbox{black}{light-gray}{Keeping the head still, moving with arrow keys.} \par
+	\caption{Coping mechanisms to deal with disorientation}
+    \label{fig:disorientation_coping}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%10
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/10-latency}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+1 = fine&4&22\% \\
+2&6&33\% \\
+3&5&28\% \\
+4&0&0\% \\
+5&0&0\% \\
+6&2&11\% \\
+7&0&0\% \\
+8&1&6\% \\
+9&0&0\% \\
+10 = unusable&0&0\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Latency}
+    \label{fig:10-latency}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%11
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/11-screen_resolution}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+1 = fine&2&11\% \\
+2&3&17\% \\
+3&2&11\% \\
+4&0&0\% \\
+5&4&22\% \\
+6&1&6\% \\
+7&0&0\% \\
+8&4&22\% \\
+9&1&6\% \\
+10 = unusable&1&6\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Screen resolution}
+    \label{fig:11-screen_resolution}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%12
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/12-interaction_tools}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+1 = fine&2&11\% \\
+2&4&22\% \\
+3&5&28\% \\
+4&2&11\% \\
+5&0&0\% \\
+6&1&6\% \\
+7&1&6\% \\
+8&3&17\% \\
+9&0&0\% \\
+10 = unusable&0&0\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Interaction tools}
+    \label{fig:12-interaction_tools}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%13
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/13-stereoscopic_depth}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+1 = fine&2&11\% \\
+2&2&11\% \\
+3&7&39\% \\
+4&2&11\% \\
+5&4&22\% \\
+6&0&0\% \\
+7&0&0\% \\
+8&1&6\% \\
+9&0&0\% \\
+10 = unusable&0&0\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Stereoscopic depth}
+    \label{fig:13-stereoscopic_depth}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%14
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/14-image_artefacts}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+1 = fine&6&33\% \\
+2&4&22\% \\
+3&0&0\% \\
+4&0&0\% \\
+5&2&11\% \\
+6&2&11\% \\
+7&1&6\% \\
+8&3&17\% \\
+9&0&0\% \\
+10 = unusable&0&0\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Image artefacts}
+    \label{fig:14-image_artefacts}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%15
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/15-preferred_use_type}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+Stereo&17&94\% \\
+Mono&0&0\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Preferred rendering style}
+    \label{fig:15-preferred_use_type}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%16
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/16-want_cues}
+\end{subfigure}%
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+1 = undesirable&4&22\% \\
+2&2&11\% \\
+3&2&11\% \\
+4&1&6\% \\
+5&1&6\% \\
+6&0&0\% \\
+7&0&0\% \\
+8&4&22\% \\
+9&2&11\% \\
+10 = essential&2&11\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Desirability of environment cues in scene}
+    \label{fig:16-want_cues}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \end{document}
