@@ -491,7 +491,7 @@ Some important components are hidden in this basic pipeline: neither the light n
 
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=1\textwidth]{resources/vtk_pipeline}
+    \includegraphics[width=0.8\textwidth]{resources/vtk_pipeline}
     \caption{The Basic VTK Pipeline for a cone primitive.}
     \label{fig:vtk_pipeline}
 \end{figure}
@@ -519,21 +519,38 @@ Loading and rendering data can be relatively straightforward. Compatibility with
     \label{fig:data_sources}
 \end{figure}
 
-VTK can read in a large number of file formats including  VTK's own `.vtk' format. NIfTI (.nii) may be loaded in recent versions of VTK but is in nature volumetric and so must be processed differently. The rendering pipeline in the project was developed using mesh data, and has not yet been tested with volumetric data -- implementing this is suggested in the Further Work section.. 
+VTK can read in a large number of file formats including  VTK's own `.vtk' format. The rendering pipeline in the project was developed using mesh data, and has not yet been tested with volumetric data -- implementing this is suggested in the Further Work section.
 
 \section{Interaction and Callbacks}
-Rendering a scene in a continuous loop is a very computationally inefficient technique. It is much better to only re-render the scene in response to a trigger such as a keypress or mouse movement event. Mouse movement is such a common interaction style that it is implemented in VTK using the vtkInteractor object, and even comes with a number of default styles including `trackball' and `joystick' modes. Responding to key presses was implemented using a listener  / callback paradigm. VTK conveniently deals with all aspects of logging and queuing the key press, and can trigger a function in response to the event. 
+Rendering a scene in a continuous loop is a very computationally inefficient technique. It is much better to only re-render the scene in response to a trigger such as a keypress or mouse movement event. Mouse movement is such a common interaction style that it is implemented in VTK using the vtkInteractor object, and even comes with a number of default styles including `trackball' and `joystick' modes. Responding to key presses was implemented using a listener  / callback paradigm. VTK conveniently deals with all aspects of logging and queuing the key press, and can trigger a function in response to the event The structure of the callback system is illustrated in Listing \ref{callbacks}. 
 
-A virtual reality system is a little more demanding than a normal 2D interface since the viewpoint may be continuously moving as the user's head changes position. Ideally the scene would be re-rendered in response to very small changes in head position. The sensors in the HMD report the head position in floating point units, and the precision is so high that any two position queries show some difference. It would be trivial to set thresholds for the pitch, roll, and yaw that would trigger a re-render of the viewpoint but this solution contains it's own problems. Most significantly, if a \SI{5}{\degree} change in head pitch is required to trigger a re-render of the scene, then the scene is always going to jump a minimum of \SI{5}{\degree} in response to changing head position. An attractive alternative solution is to use a clock timer in order to re-render at a fixed frame rate, irrespective of the user's head position. If the system can cope with rendering imagery at \SI{60}{\Hz} then a \SI{16}{\ms} timer should result in smooth scene movements independent of the user's movements.
+\lstinputlisting
+  [label=callbacks, caption=Callback functionality in VTK]{code/callback.cpp}
 
-Interaction for a naive stereo system holds one additional terror. VTK's automatic mouse interactors operate per-renderer, but a the stereo cameras need to be updated simultaneously to prevent the user going cross-eyed. Fortunately, VTK provide a snippet of Python code illustrating how to work around this restriction. The trick is to ensure that the active mouse interaction affects all cameras in the scene, using temporary variables to store each interactor id. 
+A virtual reality system is more demanding than a 2D interface as the viewpoint may be continuously moving in response to small changes of the user's head position. The scene would ideally be re-rendered whenever the head position changes. Sensors in the HMD report the head position in floating point units, of sufficiently high precision that any two queries show some difference.
 
+Thresholds for the pitch, roll, and yaw could be set above which to re-render the viewpoint, but this solution contains it's own problems. For example, if a \SI{5}{\degree} change in head pitch is required to trigger a re-render of the scene, then the scene is always going to jump a minimum of \SI{5}{\degree} in response to changing head position. Instead, a clock timer was used to re-render the scene at a fixed frame rate, irrespective head movement. A \SI{16}{\ms} timer triggered refresh \SI{60}{\Hz}  giving good performance. 
+
+\lstinputlisting
+  [label=mouse_callback, caption=Sharing mouse control between two adjacent renderers.]{code/mouse_callback.cpp}
+  
+Interaction for a naive stereo system holds one additional terror. VTK's automatic mouse interactors operate per-renderer, but a the stereo cameras need to be updated simultaneously to prevent the user going cross-eyed. The trick to solving this problem is to ensure that the active mouse interaction affects all cameras in the scene, using temporary variables to store each interactor id. This system is illustrated in Listing \ref{mouse_callback}.
+
+
+
+\clearpage
 \section{Rendering Stereo Images}
-Rendering stereo images is beautifully intuitive. Stereoscopic 3D involves viewing different images with each eye in order to get an impression of depth. Using VTK, it is possible to create two cameras and position them as if they were eyes viewing objects in the scene. For comfort, the images should be generated using a camera spacing similar to that of the user's Inter-Pupillary Distance (IPD)\footnote{for most of the population this can be safely approximated as \SI{62}{\mm}} although nearby objects in a scene can cause discomfort even when the camera separation is set correctly. The reason for this is that the human visual system copes badly with extreme vergence - it is difficult to focus on an object very close between the eyes\footnote{and for exactly the same reason it is uncomfortable when 3D movies insist on bringing things too close to the audience!}. 
+Rendering stereo images is beautifully intuitive. Stereoscopic 3D involves viewing different images with each eye in order to get an impression of depth. Using VTK, it is possible to create two cameras and position them as if they were eyes viewing objects in the scene. This is illustrated in Figure \ref{fig:simple_scene}, showing how multiple cameras can be positioned relative to a single object and light source in order to generate left and right eye images. For comfort, the images should be generated using a camera spacing similar to that of the user's Inter-Pupillary Distance (IPD)\footnote{for most of the population this can be safely approximated as \SI{62}{\mm}} although nearby objects in a scene can cause discomfort even when the camera separation is set correctly. The reason for this is that the human visual system copes badly with extreme vergence - it is difficult to focus on an object very close between the eyes\footnote{and for exactly the same reason it is uncomfortable when 3D movies insist on bringing things too close to the audience!}. 
 
-VTK does contain a `stereo camera' class, but the documentation for this is rare, and implementation usually involves colour anaglyph or interlaced stereographic image systems. The rift needs stereo input to be available in a `side-by-side' format, and the most basic method of implementing this was to use two separate renderers, each of which was associated with an independent monoscopic camera 
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/simple_scene}
+    \caption{A Blender scene showing stereo cameras.}
+    \label{fig:simple_scene}
+\end{figure}
 
-\todo{blender scene image of the stereo rendering layout}
+
+VTK does contain a `stereo camera' class, but the documentation for this is rare\footnote{Like Bigfoot, or the Loch Ness Monster.}, and implementation usually involves colour anaglyph or interlaced stereographic image systems. The rift needs stereo input to be available in a `side-by-side' format, and the most basic method of implementing this was to use two separate renderers, each of which was associated with an independent monoscopic camera 
 
 \chapter{Displaying Images on the Rift DK1}
 This chapter provides a very short introduction to the concept of virtual reality in order to provide context for the Oculus Rift DK1. The hardware of the DK1 is introduced and then the key areas are examined. The first of these is the head-mounted sensors, which enable position tracking and viewpoint interaction. The second key area is the lens system, and the optical deformation that must be corrected for during the render process in order to display content to the user. 
