@@ -145,9 +145,9 @@ Mapping the structure of the human brain is key to understanding its function. T
 
 These Connectome projects produce very large datasets giving information about the structural and functional connectivity of neurons in the brain. Multi-gigabyte datasets are common, as of June 2014 the Human Connectome Project has generated over 20 terrabytes of data. The volume of data produced, and 3D nature of the data make it difficult to visualise in 2D form. A typical functional connectome matrix, for example, may have 3,000 by 3,000 elements and in 2D form bears no resemblance to the physical shape of the fibres.
 
-Advances in computing power and display technology offer the capability to visualise these data sets in new ways. The dominant display technology today is the LCD computer monitor: large, high resolution, but a 2D format. Recent developments in virtual reality technology, in particular the mass-market launch of Oculus Rift development kits, offer new and exciting opportunities.
+Advances in computing power and display technology offer the capability to visualise these data sets in new ways. The dominant display technology today is the LCD computer monitor: large, high resolution, and a 2D format. Recent developments in virtual reality technology, in particular the mass-market launch of Oculus Rift development kits, offer new and exciting opportunities.
 
-But, do researchers want to view data in 3D? What data is suited to this type of display? Is the performance of current VR display systems adequate for practical purposes? This project has sought to answer these questions by developing a demonstration system for the virtual reality display of medical image data. The demonstration system was used to conduct a survey in the Biomedical Image Analysis Group, and gather expert feedback. Results showed a significant interest in the use of Virtual Reality visualisation tools, and suggestions provided ideas for further development.
+Do researchers want to view data in 3D? What data is suited to this type of display? Is the performance of current VR display systems adequate for practical use? This project has sought to answer these questions by developing a demonstration system for the virtual reality display of medical image data. The demonstration system was used to conduct a survey in the Biomedical Image Analysis Group, and gather expert feedback. Results showed a significant interest in the use of Virtual Reality visualisation tools, and suggestions provided ideas for further development.
 
 \newpage
 \section{Contributions}
@@ -155,9 +155,9 @@ This project has investigated the use of consumer grade virtual reality hardware
 
 \begin{itemize}
   \item Source code was ported from Paraview with encouragement from lead developer Aashish Chaudhary in order to bring Rift functionality to VTK.
-  \item A plug-in was developed for Blender in order to allow the import of legacy\footnote{Although technically a 'legacy' format, plain text vtk files are as widely used as their 'modern' XML format counterparts.} .vtk format data.
+  \item A plug-in was developed for Blender in order to allow the import of plain text\footnote{Also known as `legacy' VTK format, it is used as widely as `modern' XML format.} .vtk format data.
   \item A number of bugs were identified and fixed in the Linux version of the excellent Oculus Rift in Action (ORIA) project. The project was forked on GitHub, at the suggestion of the project owner Brad Davis, to share these bug-fixes with the community.
-  \item When relevant, assorted software problems were documented on Stack Overflow in 'Question and Answer' format. The response to these posts has been very positive, bumping my account "\textit{GnomeDePlume}" to the top quartile of contributors in 2014.  
+  \item When relevant, assorted software problems were documented on Stack Overflow in `Question and Answer' format. The response to these posts has been very positive, bumping my account ``\textit{GnomeDePlume}'' to the top quartile of contributors in 2014.  
 \end{itemize}
 
 In comparison to the size and scope of the VTK, Blender and ORIA projects, the contributions to these projects have been very small. Nevertheless, contributions were made in the spirit of open source collaboration and have have incrementally advanced the state-of-the-art.
@@ -340,9 +340,9 @@ Following widespread adoption and success of the NIfTI format, the Geometry Info
 
 \section{Choosing an Intermediate Format}
 \label{sec:choosing_an_intermediate_format}
-Before an intermediate format had been chosen, a number of 3rd party programs were investigated for reading and converting HCP data. MeshLab \cite{MeshLab2014} was found to be an excellent mesh conversion tool, but could not load any of the GIFTI or NIFTI data sets. Medinria \cite{MedInria2014} could work with the available data sets but was better suited to viewing content than converting it. With assistance from Dr Kainz, MITK \cite{MITK2014} was used to select a region in a CIFTI file using an image intensity threshold, and then outputting the selection as a vtk mesh. This was a significant step forward: the vtk data format was perfectly compatible with the Visualisation Tool Kit, and the resulting mesh was the first 'real' connectome data visualised on the Rift.
+Before an intermediate format had been chosen, a number of 3rd party programs were investigated for reading and converting HCP data. MeshLab \cite{MeshLab2014} was found to be an excellent mesh conversion tool, but could not load any of the GIFTI or NIFTI data sets. Medinria \cite{MedInria2014} could work with the available data sets but was better suited to viewing content than converting it. With assistance from Dr Kainz, MITK \cite{MITK2014} was used to select a region in a CIFTI file using an image intensity threshold, and then outputting the selection as a vtk mesh. This was a significant step forward: the vtk data format was perfectly compatible with the Visualisation Tool Kit, and the resulting mesh was the first `real' connectome data visualised on the Rift.
 
-The vtk data format proved to be very suitable for this project for a number of reasons. On a practical basis, it was known to work with VTK, and so could provide the Rift with suitable content for demonstrations. Further research showed that it was a well established format \cite{VTK_file_formats}, and this wide support made it a suitable intermediate format. Additionally, the 'legacy' VTK format holds data in a simple, plain text structure. This was a strong reason for using the format, as it allowed human inspection of the mesh data. 
+The vtk data format proved to be very suitable for this project for a number of reasons. On a practical basis, it was known to work with VTK, and so could provide the Rift with suitable content for demonstrations. Further research showed that it was a well established format \cite{VTK_file_formats}, and this wide support made it a suitable intermediate format. Additionally, the `legacy' VTK format holds data in a simple, plain text structure. This was a strong reason for using the format, as it allowed human inspection of the mesh data. 
 
 \begin{lstlisting}[label=vtk_data_structure, caption=The structure of data in a legacy .vtk file.]
 # vtk DataFile Version 2.0  // # vtk DataFile Version 3.0
@@ -402,7 +402,7 @@ Fortunately, researchers at UCL have developed an open source toolkit called CAM
     \label{fig:CAMINO_roi_selection}
 \end{figure}
 
-Figure \ref{fig:CAMINO_roi_selection} illustrates how a region of interest\footnote{I'm no neurosurgeon, but I think that I mostly managed to hit the corpus callosum.} can be 'painted' onto a GIfTI dataset, and the selected volume can then be saved in GIfTI format.
+Figure \ref{fig:CAMINO_roi_selection} illustrates how a region of interest\footnote{I'm no neurosurgeon, but I think that I mostly managed to hit the corpus callosum.} can be `painted' onto a GIfTI dataset, and the selected volume can then be saved in GIfTI format.
 
 The final tractography, in vtk format, can be viewed in Paraview, as shown in Figure \ref{fig:CAMINO_paraview}. This visualisation is reassuring, as Paraview uses VTK to manipulate and render the tractography. If it works in Paraview, it must be feasible to display it directly in VTK and, hence, on the Rift!
 
@@ -437,7 +437,7 @@ This chapter introduces the Visualisation Tool Kit (VTK), explaining why VTK is 
 \section{Introducing VTK}
 VTK is a software system for 3D computer graphics, image processing, and visualisation. For the purpose of this project, it's defining characteristics are:
 \begin{enumerate}
-\item \textbf{It is an open source project, freely available via GitHub.} This proved to be very useful, as the software could be cloned and built immediately and without needing to pay any license fees. The C++ source code was a useful supplement to documentation and tutorials, since it allowed the source to be searched or 'grep-ed' and read. Access to the source code proved essential when the project needed to extend VTK functionality via subclassing. 
+\item \textbf{It is an open source project, freely available via GitHub.} This proved to be very useful, as the software could be cloned and built immediately and without needing to pay any license fees. The C++ source code was a useful supplement to documentation and tutorials, since it allowed the source to be searched or `grep-ed' and read. Access to the source code proved essential when the project needed to extend VTK functionality via subclassing. 
 \item \textbf{It is mainly written in C++.} This was useful at a practical level, as the MSc course had provided an introduction to C++. The development model of VTK is to provide core functionality in C++ and then support other languages such as Java and Python using wrappers. This model meant that any functionality added to VTK during this project could be extended to other languages through automatically generated wrapper code.
 \item \textbf{It is under active development, and used extensively by the medical imaging community.} The active development of VTK was useful as it meant that there was a substantial volume of documentation and forum material surrounding the software. This meant that it was often possible to learn from past examples and avoid well known problems. The development of VTK by the medical imaging community also meant that VTK could work with medical data formats \footnote{well... sort of. This functionality was only available in VTK 6.x, which couldn't be used as it deprecated feature central to the render implementatino.} and that there was a known user group who would be interested in any useful developments.
 \end{enumerate}
@@ -480,10 +480,10 @@ Loading and rendering connectome data can be relatively straightforward. Compati
 \end{figure}
 
 
-VTK can read in a large number of file formats including NIfTI (.nii) and VTK's own '.vtk' extension. During testing, a cortical surface data set was used, stored as a \SI{107}{\mebi\byte} '.vtk' file. This was easily read with a vtkReader object and mapped in as polydata. The impact of the large file size, or more accurately the complexity of the object to render, on rendering speed should not have been sufficient to cause visible latency.
+VTK can read in a large number of file formats including NIfTI (.nii) and VTK's own `.vtk' extension. During testing, a cortical surface data set was used, stored as a \SI{107}{\mebi\byte} `.vtk' file. This was easily read with a vtkReader object and mapped in as polydata. The impact of the large file size, or more accurately the complexity of the object to render, on rendering speed should not have been sufficient to cause visible latency.
 
 \section{Interaction and Callbacks}
-Rendering a scene in a continuous loop is a very computationally inefficient technique. It is much better to only re-render the scene in response to a trigger such as a keypress or mouse movement event. Mouse movement is such a common interaction style that it is implemented in VTK using the vtkInteractor object, and even comes with a number of default styles including 'trackball' and 'joystick' modes. Responding to key presses was implemented using a listener  / callback paradigm. VTK conveniently deals with all aspects of logging and queuing the key press, and can trigger a function in response to the event. 
+Rendering a scene in a continuous loop is a very computationally inefficient technique. It is much better to only re-render the scene in response to a trigger such as a keypress or mouse movement event. Mouse movement is such a common interaction style that it is implemented in VTK using the vtkInteractor object, and even comes with a number of default styles including `trackball' and `joystick' modes. Responding to key presses was implemented using a listener  / callback paradigm. VTK conveniently deals with all aspects of logging and queuing the key press, and can trigger a function in response to the event. 
 
 A virtual reality system is a little more demanding than a normal 2D interface since the viewpoint may be continuously moving as the user's head changes position. Ideally the scene would be re-rendered in response to very small changes in head position. The sensors in the HMD report the head position in floating point units, and the precision is so high that any two position queries show some difference. It would be trivial to set thresholds for the pitch, roll, and yaw that would trigger a re-render of the viewpoint but this solution contains it's own problems. Most significantly, if a \SI{5}{\degree} change in head pitch is required to trigger a re-render of the scene, then the scene is always going to jump a minimum of \SI{5}{\degree} in response to changing head position. An attractive alternative solution is to use a clock timer in order to re-render at a fixed frame rate, irrespective of the user's head position. If the system can cope with rendering imagery at \SI{60}{\Hz} then a \SI{16}{\ms} timer should result in smooth scene movements independent of the user's movements.
 
@@ -492,7 +492,7 @@ Interaction for a naive stereo system holds one additional terror. VTK's automat
 \section{Rendering Stereo Images}
 Rendering stereo images is beautifully intuitive. Stereoscopic 3D involves viewing different images with each eye in order to get an impression of depth. Using VTK, it is possible to create two cameras and position them as if they were eyes viewing objects in the scene. For comfort, the images should be generated using a camera spacing similar to that of the user's Inter-Pupillary Distance (IPD)\footnote{for most of the population this can be safely approximated as \SI{62}{\mm}} although nearby objects in a scene can cause discomfort even when the camera separation is set correctly. The reason for this is that the human visual system copes badly with extreme vergence - it is difficult to focus on an object very close between the eyes\footnote{and for exactly the same reason it is uncomfortable when 3D movies insist on bringing things too close to the audience!}. 
 
-VTK does contain a 'stereo camera' class, but the documentation for this is rare, and implementation usually involves colour anaglyph or interlaced stereographic image systems. The rift needs stereo input to be available in a 'side-by-side' format, and the most basic method of implementing this was to use two separate renderers, each of which was associated with an independent monoscopic camera 
+VTK does contain a `stereo camera' class, but the documentation for this is rare, and implementation usually involves colour anaglyph or interlaced stereographic image systems. The rift needs stereo input to be available in a `side-by-side' format, and the most basic method of implementing this was to use two separate renderers, each of which was associated with an independent monoscopic camera 
 
 \todo{blender scene image of the stereo rendering layout}
 
@@ -597,7 +597,7 @@ The image processing required for this geometric correction can be done pixel-by
 \subsection{Using shaders to correct for distortions}
 Modern 3D computer graphics make heavy use of Graphical Processor Units (GPUs), processors designed especially for the parallel execution of thousands or millions of independent calculations on pixel data. The image deformation problem is perfectly suited to be solved with a GPU. 
 
-Two companies dominate the market for graphics cards: Nvidia and ATI. Graphics drivers are notorious for driver problems \footnote{When discussing problems in the department, the first question was frequently "What graphics card are you using". Using a moderately powerful Nvidia card with the latest drivers was a pragmatic way to avoid exotic hardware issues.}. The project chose to use a NVidia GeForce GTX 480 graphics card on the basis that it would support the most recent version of OpenGL (4.4 at the time of writing). Nvidia provide good driver support, and have created the CUDA parallel computing platform in case it was necessary to use the graphics hardware directly for calculations.
+Two companies dominate the market for graphics cards: Nvidia and ATI. Graphics drivers are notorious for driver problems \footnote{When discussing problems in the department, the first question was frequently ``What graphics card are you using''. Using a moderately powerful Nvidia card with the latest drivers was a pragmatic way to avoid exotic hardware issues.}. The project chose to use a NVidia GeForce GTX 480 graphics card on the basis that it would support the most recent version of OpenGL (4.4 at the time of writing). Nvidia provide good driver support, and have created the CUDA parallel computing platform in case it was necessary to use the graphics hardware directly for calculations.
 
 Similar to the division of the graphics card market, two main application programming interfaces (APIs) exist to make use of graphics hardware. These are Direct3D and OpenGL. The project chose to use OpenGL as it had previously been used in the MSC Graphics lectures, it is an open standard, and it is cross platform. By contrast, Direct3D appeared to be unfamiliar and would lock the project to the Windows operating system.
 
@@ -626,7 +626,7 @@ As might be expected from the C-like form of GLSL, shaders need to be compiled b
 
 Three different methods for using GLSL shaders were tried during the project. 
 \begin{itemize}
-\item Shaders can be written a separate plain text file and given an extension that helps to explain their content. It is conventional to give a vertex shader a .vs extension, and a fragment shader a .fs extension\footnote{or sometimes a .ps extension for 'pixel shader', as used in the ORIA project}. The shader file can then be opened and loaded at runtime. This is convenient as it means that altering the shader does not require re-compilation of the main body of source code. It also means that errors in the shader code do not generate compile errors and may only appear at runtime. 
+\item Shaders can be written a separate plain text file and given an extension that helps to explain their content. It is conventional to give a vertex shader a .vs extension, and a fragment shader a .fs extension\footnote{or sometimes a .ps extension for `pixel shader', as used in the ORIA project}. The shader file can then be opened and loaded at runtime. This is convenient as it means that altering the shader does not require re-compilation of the main body of source code. It also means that errors in the shader code do not generate compile errors and may only appear at runtime. 
 \item In a similar way to reading in a plain text file, the shader may be defined as a string inside the source code. This can be useful for testing purposes, when checking that the program does indeed have access to the shader source at runtime. It also cuts down the number of files in the project, though at the expense of clarity! As the shader code is in string format, it is still not checked by the debugger and so is equally liable to runtime problems as if it were a separate file.
 \item A sophisticated\footnote{translation: terrifying} third option is to load a compiled shader program as a binary file. This approach means that no shader compilation is required, but it means that the shader is no longer human-readable. Given the simplicity of the shaders in this project, and the need to frequently adjust their contents, this optimisation was unnecessary.
 \end{itemize}
@@ -641,12 +641,12 @@ Using a basic test shader, the next step was to use it in the VTK image processi
 \subsection{Applying GLSL Shaders to Materials}
 Investigation revealed that applying GLSL Shaders to VTK scenes via material properties is not feasible in current versions of VTK.
 
-One drawback of large open source projects is that the most widely available documentation may be severely out of date. In this regard, VTK is a victim of it's own success. A lot of documentation \cite{Seip2005}, \cite{OBrien2009} suggests that the GLSL shaders can be encapsulated within XML and applied to a VTK object as a material. This is also the approach of the official documentation \cite{VTK_XML_shaders}, where "To Do" and "In progress" comments create the deceptive appearance that these features are cutting edge. \textbf{Do not be fooled!} This use of shaders is deprecated, and has not been possible in 'recent' VTK versions for some time. Due to the size of the project it can be difficult to find documentation for every feature of interest, and confirming VTK feature deprecation was to become a reoccurring problem during the project\footnote{If there is one thing harder than finding a needle in a haystack, it is finding a needle in a haystack when the needle was quietly removed back in 2008.}.
+One drawback of large open source projects is that the most widely available documentation may be severely out of date. In this regard, VTK is a victim of it's own success. A lot of documentation \cite{Seip2005}, \cite{OBrien2009} suggests that the GLSL shaders can be encapsulated within XML and applied to a VTK object as a material. This is also the approach of the official documentation \cite{VTK_XML_shaders}, where ``To Do'' and ``In progress'' comments create the deceptive appearance that these features are cutting edge. \textbf{Do not be fooled!} This use of shaders is deprecated, and has not been possible in `recent' VTK versions for some time. Due to the size of the project it can be difficult to find documentation for every feature of interest, and confirming VTK feature deprecation was to become a reoccurring problem during the project\footnote{If there is one thing harder than finding a needle in a haystack, it is finding a needle in a haystack when the needle was quietly removed back in 2008.}.
 
 \subsection{Applying GLSL Shaders to Objects}
 Having learned to ignore VTK shader documentation pre-dating 2008, certain tutorials it transpired that shaders can be applied directly to VTK objects. This option, though initially promising, contained critical flaws. 
 
-Firstly, the approach meant that the project had to switch from Python to C++. VTK is developed in C++ and other languages are supported via wrapper code. The wrapping does not always expose the full functionality of the source code, and in this case the functionality of the Shader2 class was discovered to be only partially exposed in Python. Although it should be possible to edit the VTK source and coax the parser into generating more complete Python wrappers, even the VTK authors at Kitware admit that this process can be "a bloody pain" \cite{VTK_Wrapper_FAQ}. With this warning in mind, it was decided to use C++ in order to get full access to the VTK classes.
+Firstly, the approach meant that the project had to switch from Python to C++. VTK is developed in C++ and other languages are supported via wrapper code. The wrapping does not always expose the full functionality of the source code, and in this case the functionality of the Shader2 class was discovered to be only partially exposed in Python. Although it should be possible to edit the VTK source and coax the parser into generating more complete Python wrappers, even the VTK authors at Kitware admit that this process can be ``a bloody pain'' \cite{VTK_Wrapper_FAQ}. With this warning in mind, it was decided to use C++ in order to get full access to the VTK classes.
 
 Secondly, the documentation on this approach was very scarce. Another VTK user had recently raised this on a the VTK mailing list \cite{vtk_shader_actor}, and with this expert assistance a working solution was found. Listing \ref{object_shader} shows a functional implementation which was contributed to Stack Overflow in order to help document the process \cite{SO_shader_actor}. Note that unlike the test shader in Listing \ref{simple_frag} this shader cannot have a \texttt{main()} function, since that would cause a name conflict with other parts of the VTK render process. 
 
@@ -680,7 +680,7 @@ Several problems were overcome as these classes were adapted to work in the desi
 
 Firstly, the \texttt{vtkRenderer->SetPass()} method, central to the entire approach, was quietly deprecated in VTK 6.x. Once identified,  the decision was made to work VTK 5.10, on the basis that it was the latest, and best version of VTK to be released where the \texttt{SetPass} could be found.
 
-Next, the \texttt{SaliencyPass} code made use of a \textbf{glsl} library to load, compile and run \textbf{GLSL} shaders. This library worked with GLSL \texttt{\#version 110} but was incompatible with recent versions of GLSL. Certain functions in OpenGL 4.4 required GLSL \texttt{\#version 440} compatibility, and this in turn required that the glsl shader management class be updated. Fortunately, many of the deprecated functions had been implemented in recent OpenGL versions, and so many of the previously "experimental" ARB-functions could simply be replaced by modern "core" functions.
+Next, the \texttt{SaliencyPass} code made use of a \textbf{glsl} library to load, compile and run \textbf{GLSL} shaders. This library worked with GLSL \texttt{\#version 110} but was incompatible with recent versions of GLSL. Certain functions in OpenGL 4.4 required GLSL \texttt{\#version 440} compatibility, and this in turn required that the glsl shader management class be updated. Fortunately, many of the deprecated functions had been implemented in recent OpenGL versions, and so many of the previously ``experimental'' ARB-functions could simply be replaced by modern ``core'' functions.
 
 \begin{figure}[htbp!]
     \centering
@@ -689,7 +689,7 @@ Next, the \texttt{SaliencyPass} code made use of a \textbf{glsl} library to load
     \label{fig:cpu_gpu_domains}
 \end{figure}
 
-Once the derived class could compile, a number of OpenGL problems needed to be solved. OpenGL appears to follow the "Silence is golden" design philosophy \cite{the_art_of_unix_programming}, and a programmer query OpenGL state to discover GLErrors. In the absence of diligent checks, these errors otherwise manifest themselves in terms of a blank render screen or segmentation fault at runtime. 
+Once the derived class could compile, a number of OpenGL problems needed to be solved. OpenGL appears to follow the ``Silence is golden'' design philosophy \cite{the_art_of_unix_programming}, and a programmer query OpenGL state to discover GLErrors. In the absence of diligent checks, these errors otherwise manifest themselves in terms of a blank render screen or segmentation fault at runtime. 
 
 \lstinputlisting
   [label=gl_check_error, caption=Checking OpenGL error state]{code/gl_check_error.cpp}
@@ -733,7 +733,7 @@ The Saliency pass is derived from previous work by Dr Bernhard Kainz, and uses r
     \label{fig:vtk_saliency}
 \end{figure}
 
-TODO: This high-level description neatly side-steps the various issues of loading shaders, upgrading from glARB classes to modern glCore functions, ensuring that GLSL 440 was supported, upgrading the drivers, and the operating system, in order to get sufficiently recent NVIDIA support, and then dealing with the OpenGL bugs that recent versions of the NVIDIA drivers contain!! Though none of that was 'news-worthy', it took a great deal of time and patience to identify and fix. 
+TODO: This high-level description neatly side-steps the various issues of loading shaders, upgrading from glARB classes to modern glCore functions, ensuring that GLSL 440 was supported, upgrading the drivers, and the operating system, in order to get sufficiently recent NVIDIA support, and then dealing with the OpenGL bugs that recent versions of the NVIDIA drivers contain!! Though none of that was `news-worthy', it took a great deal of time and patience to identify and fix. 
 
 \section{Rift Deformation Shaders}
 GLSL shaders are (ab)used to perform three functions in this project. They shift the image in order to align the camera viewpoint centre with the lens centre. They apply a barrel deformation of the entire image in order to compensate for the pincushion deformation of the Rift's lenses.  They also mask the edges of the screen where the OpenGL 340.x drivers leave image artefacts. 
@@ -770,7 +770,7 @@ After correcting for the lens distortion, it is desirable to apply a chromatic a
   [label=distortion_debugging, caption=Useful Code for Debugging Fragment Shaders]
   {code/Debugging.fs}
   
-I *want* to complain here about how frustrating some of the driver problems were. Particularly the bug in NVIDIA 331.32 that "could prevent OpenGL Framebuffer Objects (FBOs) from being properly redrawn after a modeswitch.". Yes, NVIDIA, that bug certainly could! It took a long time to confirm that the problem was not due to my FBO rendering process, but rather due to driver problems.
+I *want* to complain here about how frustrating some of the driver problems were. Particularly the bug in NVIDIA 331.32 that ``could prevent OpenGL Framebuffer Objects (FBOs) from being properly redrawn after a modeswitch.''. Yes, NVIDIA, that bug certainly could! It took a long time to confirm that the problem was not due to my FBO rendering process, but rather due to driver problems.
 
 
 \section{Other Approaches}
@@ -834,13 +834,13 @@ In practical terms, the user uses the software through a command line interface 
 
 Once the software is running, the user can interact with content in the following ways:
 \begin{itemize}
-\item Pressing 'space' to reset the camera view
+\item Pressing `space' to reset the camera view
 \item Pressing arrow keys to move the object
-\item Pressing 'r' to clear the OpenGL buffers
-\item Pressing '+' and '-' to zoom the camera
-\item Pressing '[' and ']' to vary the camera separation
-\item Pressing 'p' to print the rendering time taken for each frame.
-\item Pressing 'q' to quit the program.
+\item Pressing `r' to clear the OpenGL buffers
+\item Pressing `+' and '-' to zoom the camera
+\item Pressing `[' and ']' to vary the camera separation
+\item Pressing `p' to print the rendering time taken for each frame.
+\item Pressing `q' to quit the program.
 \item Moving the middle mouse button to zoom.
 \item Moving the left mouse button to rotate the camera.
 \item Moving the right mouse button to move the object.
@@ -849,7 +849,7 @@ Once the software is running, the user can interact with content in the followin
 
 Short videos demonstrating the content, and the different types of interaction, have been uploaded to YouTube: \texttt{http://youtu.be/g7fnqqwHRRo} and \texttt{http://youtu.be/BbOImsBzAVM}. A video showing some of the unresolved interaction problems is accessible: \texttt{http://youtu.be/NXLSy5pZiz8}.
 
-In technical terms, the software consists of a C++ project requiring CMake, CTest, VTK5.10, GLEW and OpenGL \footnote{In addition, using the Rift requires linking with the GL, GLU, pthread, udev, rt, ncurses and X-Windows management libraries (Xinerama, Xrandr, Xxf86vm, Xi, X11) libraries.}. The project directory structure is shown in Figure \ref{fig:project_directory_structure}. The project structure uses an out-of-source build, all compiled files are in the 'build' directory and kept separate from source files. In addition to generating a Makefile, the CMake process also copies shader and data files from the resources directory into the executable directory so that they can be accessed at runtime.
+In technical terms, the software consists of a C++ project requiring CMake, CTest, VTK5.10, GLEW and OpenGL \footnote{In addition, using the Rift requires linking with the GL, GLU, pthread, udev, rt, ncurses and X-Windows management libraries (Xinerama, Xrandr, Xxf86vm, Xi, X11) libraries.}. The project directory structure is shown in Figure \ref{fig:project_directory_structure}. The project structure uses an out-of-source build, all compiled files are in the `build' directory and kept separate from source files. In addition to generating a Makefile, the CMake process also copies shader and data files from the resources directory into the executable directory so that they can be accessed at runtime.
 
 \begin{figure}
 \centering
@@ -929,13 +929,13 @@ The most important metrics for the Rift display system are the resolution of the
 \subsection{Effective Resolution}
 The the display resolution is more complex an issue than it may at first appear. The Rift DK1 display is 1280 pixels wide, by 800 pixels high and each pixel is comprised of red, green and blue subpixels in an RGB stripe format\footnote{The DK2 uses Samsung's proprietary PenTile pixel layout, which complicates the issue of effective resolution even further}. The screen is \SI{149.76}{cm} by \SI{93.6}{cm} in size\footnote{or \SI{7}{inches} diagnonal} meaning that the pixel size is \SI{117}{\um} square. The results in a resolution of \SI{217}{pixels per inch}\footnote{Again, display dimensions are measured in inches. It is a strange industry.}
 
-There is some debate over the resolution required to be 'better' than the human eye can perceive, but if the 
+There is some debate over the resolution required to be `better' than the human eye can perceive, but if the 
 
 
 \todo{Retina Rift calculations}
 \todo{Suggest super-resolution / sub-sampling image}
 
-Quantifying display technology performance of high-quality displays is notoriously difficult and leads to the development of remarkable metrics such as "Just noticeable difference"\cite{Zhang2008} \footnote{Or manufacturing claims about "Retina" displays...}. The most important objective there are often easily quantifiable metrics to measure, in this case the render time and display resolution.
+Quantifying display technology performance of high-quality displays is notoriously difficult and leads to the development of remarkable metrics such as ``Just noticeable difference'' \cite{Zhang2008} \footnote{Or manufacturing claims about ``Retina'' displays...}. The most important objective there are often easily quantifiable metrics to measure, in this case the render time and display resolution.
 
 Early testing involved a Brain Surface object created from  
 
@@ -1088,7 +1088,7 @@ The success of this project will ultimately be measured in terms of its impact o
 \vskip0.1cm \QO{} Monoscopic. \hskip0.5cm \QO{} Stereoscopic.
 }
 
-\Qitem{ \Qq{Would 'real world' cues be useful in the scene?} 
+\Qitem{ \Qq{Would `real world' cues be useful in the scene?} 
 	\vskip0.1cm undesirable \Qrating{10} essential}
 
 \Qitem{ \Qq{Other comments:}
