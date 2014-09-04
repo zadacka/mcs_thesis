@@ -100,7 +100,7 @@
 % Optional
 \supervisor{Professor Daniel Rueckert} 
 \dedication{
-My thanks to: 
+\textbf{\huge Acknowledgements and thanks:}
 \newline
 \newline
 Dr Paul Gass and Dr Ian Thompson, my bosses at Sharp Laboratories of Europe Ltd., for arranging for my funded sabbatical year at Imperial College London. 
@@ -110,15 +110,16 @@ Colleagues 	Dr Nathan Smith, Dr Graham Jones, Dr Jon Mather, and Dr Andrew Kay f
 \newline
 \newline
 Supporters Aashish Chaudhary at Kitware, and Brad Davis at ORIA for providing insight into VTK and the Oculus Rift SDK respectively.
-\newline\
-\newline
-Friends in the MCS Program, in particular coffee-break-buddies Moritz Schrenk and Tereza Drskova. 
 \newline
 \newline
-And last, but not least, I am indebted to my supervisors Professor Daniel Ruckert and Dr Bernhard Kainz. You have provided freedom when I wanted it, and guidance when I needed it. I am deeply grateful to you both. 
+Local Biomedical Image Analysis experts Kevin Kerdauren, Lisa Koch, Dr Sarah Parisot, and especially Dr Bernhard Kainz for help and advice.
+\newline
+\newline
+Last, but not least, my supervisor Professor Daniel Ruckert. I am deeply grateful for your guidance and the opportunity to run this project. 
 }
 
 \begin{document}
+
 \maketitle
 
 \begin{abstract}
@@ -135,9 +136,8 @@ A new pipeline is implemented for the visualisation of Human Connectome Project 
 %\iffalse
 \tableofcontents
  
-\listoftables
+%\listoftables
 \listoffigures
-
 
 \chapter{Introduction}
 \section{Context}
@@ -169,27 +169,27 @@ The academic impact of this work has been modest: demonstrations within the Biom
 \label{sec:structure_of_the_report}
 As the project dealt with implementing a pipeline, illustrated in Figure~\ref{fig:the_full_pipeline}, it seems natural for the report to follow the process from raw data acquisition to the final display image. 
 
-Following this logic, Chapter~2 discusses the how the Human Connectome Project (HCP) maps human brain structures using DTI and fMRI imaging, and discusses existing visualisation techniques. Chapter~3 discusses the HCP data structure, and how it may be converted to intermediate formats. Chapter~4 shows how a Visualisation Tool Kit (VTK) pipeline can be constructed and HCP data can be processed for interaction and display on a standard 2D computer monitor. 
-
-Chapter~5 breaks away from the sequential structure in order to introduce the Oculus Rift hardware, and shows how the collimating optics in the headset will deform images unless extra distortion shaders are used. The report then returns to the VTK pipeline in Chapter~6 to discuss the good, the bad and the ugly ways to apply shaders so that images can be rendered correctly to the Rift Virtual Reality (VR) headset. 
-
 \begin{figure}[htbp!]l
     \centering
     \includegraphics[scale=0.5]{resources/data_pipeline_overview}
-    \caption{The Full Pipeline}
+    \caption{An overview of the project pipeline.}
     \label{fig:the_full_pipeline}
 \end{figure}
 
-With a complete pipeline for VR, Chapter~7 discusses how the system was evaluated. This evaluation identified strengths and weaknesses, and suggestions for further work are explored.
+Following this logic, Chapter~2 discusses the how the Human Connectome Project (HCP) maps human brain structures using DTI and fMRI imaging, and discusses existing visualisation techniques. Chapter~3 discusses the HCP data structure, and how it may be converted to intermediate formats. Chapter~4 shows how a Visualisation Tool Kit (VTK) pipeline can be constructed and HCP data can be processed for interaction and display on a standard 2D computer monitor. 
+
+Chapter~5 breaks away from the sequential structure in order to introduce the Oculus Rift hardware, and shows how the collimating optics in the headset will deform images unless extra distortion shaders are used. The report then returns to the VTK pipeline in Chapter~6 to discuss the good, the bad and the ugly ways to apply shaders in VTK. 
+
+With a complete pipeline for converting and displaying content, Chapter~7 discusses how the system was tested and evaluated. Results from the user study are summarised, and suggestions for further work are explored.
 
 Finally, Chapter~8 concludes by synthesizing findings from each stage in the project, and reviewing interesting learning outcomes.
 
 \chapter{Connectome Data}
 
-This chapter discusses why visualising brain data is important, and the suitability of connectome data for this project. Different experimental techniques for gathering data are compared, with particular attention paid to the type of data that each technique produces. Current data visualisation systems are introduced, with the conclusion that the tractography is particularly well suited to be displayed in 3D. 
+This chapter discusses why visualising brain data is important, and the suitability of HCP connectome data for this project. Different experimental techniques for gathering data are compared, with particular attention paid to the type of data that each technique produces. Current data visualisation systems are introduced, with the conclusion that the tractography is particularly well suited to be displayed in 3D. 
 
 \section{Motivation for using Connectome Data}
-Mapping and visualising the brain is of considerable academic and practical interest. The brain is thought to be composed of motor, sensory, behavioural state, and cognitive systems \cite{Swanson2003}. Better knowledge about the physiology of the brain can help in understanding these systems. Knowledge of the structure of an individual brain can be helpful when diagnosing medical conditions, or planning a surgical procedure \cite{Golby2011}. In either case, the interested parties need to have data, and be able to draw useful inferences from this data. This project aims to work on the second of these challenges: developing new ways of displaying and interacting with existing connectome data. 
+Mapping and visualising the brain is of considerable academic and practical interest. The map or ``wiring diagram'' of neurones in a brain is called a \textit{connectome}. The brain is thought to be composed of motor, sensory, behavioural state, and cognitive systems \cite{Swanson2003}. Better knowledge about the physiology of the brain can help in understanding these systems. Knowledge of the structure of an individual brain can be helpful when diagnosing medical conditions, or planning a surgical procedure \cite{Golby2011}. In either case, the interested parties need to have data, and be able to draw useful inferences from this data. This project aims to work on the second of these challenges: developing new ways of displaying and interacting with existing data. 
 
 The high quality and availability of connectome data makes it an excellent source of content for visualisation. The Human Connectome Project is a world-class source of data, and thanks to the Open Access Data license terms \cite{HCPAccess2014} all of this content can be obtained free of charge. Imperial College has an active research program in the medical imaging field, and the project has benefited greatly from access to friendly local expertise. As an illustration of this good fortune, Imperial College is one of only four UK universities involved in the Developing Human Connectome Project \cite{DHCPPartners2014}, and numerous experts\footnote{Kevin Kerdauren, Lisa Koch, Dr Sarah Parisot, and especially Dr Bernhard  Kainz} from the Imperial College team have directly assisted this project. 
 
@@ -235,7 +235,7 @@ Tractography is the process of visualising nerve tracts, bundles of nerve cells.
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/tractography}
-    \caption{Fibre Tractography. \cite{Odonnell2006}}
+    \caption{Fibre tractography. \cite{Odonnell2006}}
     \label{fig:tractography}
 \end{figure}
 
@@ -334,7 +334,7 @@ Following widespread adoption and success of the NIfTI format, the Geometry Info
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/connectome_gifti}
-    \caption{Components of a sample HCP Data Set.}
+    \caption{Components of a sample HCP data set.}
     \label{fig:connectome_gifti}
 \end{figure}
 
@@ -409,7 +409,7 @@ The final tractography, in vtk format, can be viewed in Paraview, as shown in Fi
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/CAMINO_paraview}
-    \caption{Viewing the tractography in Paraview}
+    \caption{Viewing a tractography using Paraview.}
     \label{fig:CAMINO_paraview}
 \end{figure}
 
@@ -419,7 +419,7 @@ Previous experience with the open source Blender 3D software made it an tempting
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/blender_brain}
-    \caption{The remarkably dense btain.vtk mesh, in blender.}
+    \caption{The remarkably dense btain.vtk mesh, in Blender.}
     \label{fig:blender_brain}
 \end{figure}
 
@@ -452,7 +452,7 @@ Some important components are hidden in this basic pipeline: neither the light n
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=1\textwidth]{resources/vtk_pipeline}
-    \caption{The Basic VTK Pipeline for a Cone Primitive}
+    \caption{The Basic VTK Pipeline for a cone primitive.}
     \label{fig:vtk_pipeline}
 \end{figure}
 
@@ -475,7 +475,7 @@ Loading and rendering connectome data can be relatively straightforward. Compati
     \caption{Cortical Surface}
 	\label{fig:sub2}
 \end{subfigure}    
-    \caption{HCP Data Rendered Using VTK}
+    \caption{HCP data rendered using VTK.}
     \label{fig:data_sources}
 \end{figure}
 
@@ -509,7 +509,7 @@ Various VR and AR systems were investigated, as shown in Figure \ref{fig:vr_head
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/vr_headsets}
-    \caption{AR and VR Products (an incomplete set)}
+    \caption{AR and VR Products (an incomplete set).}
     \label{fig:vr_headsets}
 \end{figure}
 
@@ -565,7 +565,7 @@ These solutions would be appropriate for high-end camera lenses, as shown in Fig
     \caption{Rift lens, front and back views}
 	\label{fig:rift_lens}
 \end{subfigure}    
-    \caption{Comparison of lens complexity.}
+    \caption{A comparison of lens complexity.}
     \label{fig:lens_comparison}
 \end{figure}
 
@@ -672,7 +672,7 @@ Given the requirement to apply a deformation across an entire screen, the the VT
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.5\textwidth]{resources/placeholder}
-    \caption{Flow diagram showing the multipass framework}
+    \caption{A flow diagram showing the multipass framework.}
     \label{fig:multipass_rendering}
 \end{figure}
 
@@ -718,7 +718,7 @@ In order to achieve the desired shader deformation, two different approaches nee
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=1\textwidth]{resources/vtk_extended_pipeline}
-    \caption{The Extended VTK Pipeline}
+    \caption{The extended VTK pipeline.}
     \label{fig:vtk_extended_pipeline}
 \end{figure}
 
@@ -729,7 +729,7 @@ The Saliency pass is derived from previous work by Dr Bernhard Kainz, and uses r
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.4\textwidth]{resources/vtk_saliency}
-    \caption{The New VTK Saliency Pass}
+    \caption{The new VTK saliency pass.}
     \label{fig:vtk_saliency}
 \end{figure}
 
@@ -747,7 +747,7 @@ Figure~\ref{fig:rift_screen} shows how the lens positions, aligned with the user
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/rift_screen}
-    \caption{Lens and Screen Centres on the Rift Display}
+    \caption{Lens and screen centres on the Rift display.}
     \label{fig:rift_screen}
 \end{figure}
 
@@ -828,7 +828,7 @@ In practical terms, the user uses the software through a command line interface 
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/command_line_interface}
-    \caption{Starting the visualisation software from the command line.}
+    \caption{Starting the project demo software from the command line.}
     \label{fig:command_line_interface}
 \end{figure}
 
@@ -910,7 +910,7 @@ In technical terms, the software consists of a C++ project requiring CMake, CTes
 	}
 \end{minipage}
 }
-\caption{Project directory content and structure}
+\caption{Project directory content and structure.}
 \label{fig:project_directory_structure}
 \end{figure}
 
@@ -943,7 +943,7 @@ Early testing involved a Brain Surface object created from
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/render_times}
-    \caption{Times to render a primitive and \SI{100}{\mega\byte} Connectome Mesh.}
+    \caption{Times to render a primitive and \SI{100}{\mega\byte} connectome mesh.}
     \label{fig:render_times}
 \end{figure}
 
