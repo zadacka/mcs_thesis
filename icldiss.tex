@@ -440,7 +440,7 @@ CAMINO was then used to fit a diffusion tensor to the NIfTI data, and filter the
     \label{fig:CAMINO_roi_selection}
 \end{figure}
 
-Figure \ref{fig:CAMINO_roi_selection} illustrates how a region of interest\footnote{Mostly the corpus callosum, though a neurosurgeon might argue.} can be `painted' onto a NIfTI dataset, and the selected volume can then be saved in NIfTI format.
+Figure \ref{fig:CAMINO_roi_selection} illustrates how a region of interest\footnote{Mostly the corpus callosum, though it isn't brain surgery.} can be `painted' onto a NIfTI dataset, and the selected volume can then be saved in NIfTI format.
 
 Once structural connectivity was established and a region of interest specified, tracts were traced throughout the connectome to generate a tractography. The final tractography, exported in vtk format, could be viewed in Paraview, as shown in Figure \ref{fig:CAMINO_paraview}. This visualisation is reassuring, as Paraview uses VTK to manipulate and render the tractography. If it works in Paraview, it must be feasible to display it directly in VTK and, hence, on the Rift!
 
@@ -552,51 +552,151 @@ Rendering stereo images is beautifully intuitive. Stereoscopic 3D involves viewi
 
 VTK does contain a `stereo camera' class, but the documentation for this is rare\footnote{Like Bigfoot, or the Loch Ness Monster.}, and implementation usually involves colour anaglyph or interlaced stereographic image systems. The rift needs stereo input to be available in a `side-by-side' format, and the most basic method of implementing this was to use two separate renderers, each of which was associated with an independent monoscopic camera 
 
-\chapter{Displaying Images on the Rift DK1}
-This chapter provides a very short introduction to the concept of virtual reality in order to provide context for the Oculus Rift DK1. The hardware of the DK1 is introduced and then the key areas are examined. The first of these is the head-mounted sensors, which enable position tracking and viewpoint interaction. The second key area is the lens system, and the optical deformation that must be corrected for during the render process in order to display content to the user. 
+\chapter{Virtual Reality and the Oculus Rift DK1}
+This chapter provides a very short introduction to virtual reality, and describes related projects using virtual reality to view medical data. The Rift Development Kit (DK1) hardware is then described. Key hardware features are the head-mounted sensors, and the lens system which deforms image content on the Rift display. The chapter concludes by mentioning the Oculus Rift In Action project, and the issues associated with early stage software development.
 
 \clearpage
 \section{An Introduction to Virtual Reality}
 Virtual Reality (VR) refers to the visualisation of an artificial environment. This distinguishes it from Augmented Reality (AR) where the user simultaneously experiences real and virtual environments. The Oculus Rift is a VR device since it completely shuts out any view of the real world, whilst Google Glass is an AR device since it shows information as an overlay of the real world.
 
-VR is an attractive way of getting stereoscopic 3D. The current generation of virtual reality hardware offers high-resolution, immersive, stereoscopic 3D performance at a price of a high-end LCD monitor. 
-
 Various VR and AR systems were investigated, as shown in Figure \ref{fig:vr_headsets}. Many of these have been designed for consumers to watch films or play games. These systems do not include any positional feedback, since they are not designed to give an immersive experience but rather to act as a personal cinema screen. Another sub-set of these systems were designed for industrial or military use. Although military or industrial systems could provide the desired performance, they were either prohibitively expensive or unavailable for purchase. 
 
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=0.8\textwidth]{resources/vr_headsets}
+    \includegraphics[width=1\textwidth]{resources/vr_headsets}
     \caption{AR and VR Products (an incomplete set).}
     \label{fig:vr_headsets}
 \end{figure}
 
+VR is an attractive way of getting stereoscopic 3D. The current generation of virtual reality hardware offers high-resolution, immersive, stereoscopic 3D performance at a price of a high-end LCD monitor. 
+
 The Oculus Rift DK1 was found to offer acceptable performance at a reasonable cost. The DK1 is also a suitable system due to the active development of the SDK, and large open source community surrounding the project. Future development of the SDK and the forthcoming release of the compatible DK2 should enable the project to be forward compatible with future hardware, if that is required.
+
+
 \section{Related Projects}
-There is no other known project using an Oculus Rift for the visualisation of connectome data. There have been a small number of projects on using Virtual Reality for connectome visualisation. 
+There have been a small number of projects on using Virtual Reality for connectome visualisation, but the use of a head mounted display for this application appears to be new. The most similar known projects listed in the following sub-sections.
 
-The most similar known projects are:
-\begin{itemize}
-  \item \textbf{The Dynamic Connectome}, part of the CEEDS project: real time, visualisation of neural activity \cite{ceeds2014}.
-  \item \textbf{The Glass Brain Project}: real time, visualisation of neural activity \cite{GlassBrain2014}.
-  \item Project work at Aachen University \cite{Rick2011}: using MOCAP and a CAVE virtual environment to interactively view a connectome with dynamic clipping \cite{ceeds2014}.
-  \item Project work at Purdue University \cite{Chen2011}: using a CAVE virtual environment to view a connectome.
-  \item \textbf{Brainder} \cite{brainder2014}, Dr Anderson Winkler’s excellent blog on FMRI and Blender rendering.
-\end{itemize}
+\subsection{The Glass Brain project} 
+The Glass Brain project aims to do real time visualisation of neural activity \cite{GlassBrain2014}. The Glass Brain Project uses a Unity 3D model of the brain, though it subsequently renders a 2D image from the model for display on LCD monitors. As such it does not obtain many of the benefits of the 3D model, nor face the challenges of displaying images in 3D.
 
-The Glass Brain Project uses a Unity 3D model of the brain, though it subsequently renders a 2D image from the model for display on LCD monitors. As such it does not obtain many of the benefits of the 3D model, nor face the challenges of displaying images in 3D.
+\subsection{Brainder}
+Brainder\cite{brainder2014} is Dr Anderson Winkler’s excellent blog on FMRI and Blender rendering. The Brainder project uses the open source ‘Blender’ 3D modeling software to ray trace brain models, primarily for use as 2D illustrations. Although the goals of Brainder are different from this project, the existence of (relatively) simple 3D brain models may be a useful asset. 
 
-The Dynamic Connectome project and the Aachen University and Purdue University projects use computer assisted virtual environment (CAVE) virtual reality rooms with multiple projectors rather than a head mounted display (HMD) system as proposed here. Such a system removes the need for bulky headgear, but instead requires a multi-projector system and dedicated room of projection screens. Additionally, the CAVE systems do not typically show 3D, nor do they update the view based on the user’s precise head position.
+\subsection{The Dynamic Connectome}
+The Dynamic Connectome is part of the CEEDS project: real time, visualisation of neural activity \cite{ceeds2014}.
 
-The Brainder project uses the open source ‘Blender’ 3D modeling software to ray trace brain models, primarily for use as 2D illustrations. Although the goals of Brainder are different from this project, the existence of (relatively) simple 3D brain models may be a useful asset. 
+\subsection{Aachen University Project work} 
+Project work at Aachen University \cite{Rick2011} uses MOCAP and a CAVE virtual environment to interactively view a connectome with dynamic clipping \cite{ceeds2014}.
+
+\subsection{Purdue University project work}
+Project work at Purdue University \cite{Chen2011} uses a CAVE virtual environment to view a connectome.
+\\
+\\
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/yview_cave}
+    \caption{A CAVE virtual reality system, by AntyCip.}
+    \label{fig:yview_cave}
+\end{figure}
+
+The Dynamic Connectome project and the Aachen University and Purdue University projects use computer assisted virtual environment (CAVE) virtual reality rooms with multiple projectors rather than a head mounted display (HMD) system as proposed here. Figure \ref{fig:yview_cave}	
+shows a modern CAVE system. Such a system removes the need for bulky headgear, but instead requires a multi-projector system and dedicated room of projection screens. Additionally, the CAVE systems do not typically show 3D, nor do they update the view based on the user’s precise head position.
 
 
 
-\section{Introducing the Rift DK1}
+\clearpage
+\section{Introducing the Oculus Rifts}
+At the time of writing, two Rift headsets had been released. The first, shown in Figure \ref{fig:dk1} was no longer sold by Oculus but readily available on eBay. The second, shown in Figure \ref{fig:dk2}, was released mid-way through the project and proved popular and Oculus quickly ran out of stock. This project used the DK1 for pragmatic reasons.
+
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/dk1}
+\end{subfigure}%
+\centering
+\begin{subfigure}{0.5\textwidth}
+    \centering
+   	\begin{tabular}{ l r }
+   	Price:      		& \$300 \\
+  	Display size:	& 1280x800 \\
+  	Display type:	& LCD \\
+	Sensors:			& gyroscope,\\
+					& accelerometer,\\
+					& magnetometer\\
+\end{tabular}
+\end{subfigure} 
+    \caption{Rift DK1}
+    \label{fig:dk1}
+\end{figure}
+
+Both headsets function in a similar way. They contain one main display, part of which is viewable by each of the user's two eyes. Lenses distort the display, making it appear to extend further across the user's field of vision, in order to provide `immersion'. 
+
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/dk2}
+\end{subfigure}%
+\centering
+\begin{subfigure}{0.5\textwidth}
+    \centering
+   	\begin{tabular}{ l r }
+   	Price:      		& \$350 \\
+  	Display size:	& 1920x1080 \\
+  	Display type:	& OLED \\
+	Sensors:			& gyroscope,\\
+					& accelerometer,\\
+					& magnetometer,\\	
+					& IR Camera\\
+\end{tabular}
+\end{subfigure} 
+    \caption{Rift DK2}
+    \label{fig:dk2}
+\end{figure}
+
+Comparing DK1 and DK2 headsets is useful, as it helps understand what performance problems may be `fixed' by buying new hardware. User survey feedback, as discussed later, shows that many users are unhappy with the current screen resolution. This problem may be mitigated by using a DK2 headset. This allows the project to anticipate which problems the hardware improvements may fix, and to focus on the remaining challenges.
+
+\clearpage
 \section{Collimating Optics and Software Compensation}
+
+As illustrated in Figure \ref{fig:rift_display_1}, each of the user's eyes sees a different part of the Rift display. A central division prevents the right eye seeing content on the left side of the display, and vice versa.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{resources/rift_display_1}
+    \caption{Eye position relative to the Rift display}
+    \label{fig:rift_display_1}
+\end{figure}
+
+Collimating lenses are positioned in front of each eye, as shown in \ref{fig:rift_display_2}. These lenses distort the screen, so that it appears to extend to cover between \SI{90}{\degree} and \SI{110}{\degree} of the user's field of view. A useful side effect of the collimation is that a `sweet spot' exists, tolerating some movement of the eye position relative to the lens. This is very useful, each user is likely to have a slightly eye spacing -- the sweet spot means that they can all use the same headset without needing to calibrate the lens position. 
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{resources/rift_display_2}
+    \caption{Lens position relative to the eye.}
+    \label{fig:rift_display_2}
+\end{figure}
+
+The drawback of the lenses is that they apply a pincushion deformation to the image shown on the Rift display, as well as. Further implications of this are discussed in Section \ref{sec:need_for_shaders}.
+
 \section{Integrated Sensors and the HMD}
+The Rift contains accelerometer and gyroscope sensors that measure the position of the user's head. These are abstracted by the SDK in such a way that the user can query for pitch, yaw or roll values and be returned an Euler angle in degrees. Figure \ref{fig:pitch_yaw_roll} illustrates the meaning of pitch, yaw and roll in the context of a user's head.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{resources/pitch_yaw_roll}
+    \caption{Head movements measured by the Rift \cite{Thompson2001}.}
+    \label{fig:pitch_yaw_roll}
+\end{figure}
+
+These sensors are precise, in that they return floating point values, but they are not accurate. They are updated so frequently that minute amounts of systematic bias can quickly accumulate into noticeable sensor `drift'. The Rift SDK attempts to correct for this by using a magnetometer, essentially a compass, in order to provide a reference direction against which to calibrate the sensor positions. In the electrical noise of a university office this is not effective, and drift remains a significant problem. 
+\\
+\\
+The DK2 appears to acknowledge the drift problem, and adds a user-facing external camera to the tracking system. With an external reference point, drift may be easily corrected for. Given this development in the DK2, user feedback gathered during this project about the `drift' problem of the DK1 can be identified as a hardware-specific issue.
 
 \chapter{Extending VTK}
-At the end of Chapter 4, the VTK pipeline had been configured so that connectome data could be loaded, manipulated using interactors, and rendered as a stereo-pair. Chapter 5 then noted that the collimating lenses in the Rift would distort any images sent to the rift. This chapter describes how image processing in software can be used to compensate for optical artefacts, and how GLSL shaders can be used with VTK in order to apply the image correction in real time. 
+At the end of Chapter 4, the VTK pipeline had been configured so that connectome data could be loaded, manipulated using interactors, and rendered as a stereo-pair. Chapter 5 then noted that the collimating lenses in the Rift headset would distort any images output to the Rift display. This chapter describes how image processing in software can be used to compensate for optical artefacts, and how GLSL shaders can be used with VTK in order to apply the image correction in real time. 
 
 \clearpage
 \section{The Need for Shaders}
@@ -604,7 +704,11 @@ At the end of Chapter 4, the VTK pipeline had been configured so that connectome
 Before diving into the details of implementation, it is useful to understand the motivation for using image processing, and shaders in particular. 
 
 \subsection{Using optics to correct for distortions}
-The undesirable deformations introduced by the Rift lenses could be corrected by using additional optics. Two corrections would be required: firstly to compensate for the pincushion deformation whilst maintaining the extended field of view, and secondly to reduce the chromatic aberrations caused by dispersion of light in the lens glass. The pincushion distortion could be eliminated by using a lens doublet, and a central aperture \cite{Brainerd2004}. The problem of chromatic aberration could be dealt with by means of achromatic lenses or by using extra-low (EL) dispersion glass in the lens system \cite{Davis2014}. 
+The undesirable deformations introduced by the Rift lenses could be compensated for by using additional optics. Two corrections would be required: 
+\begin{enumerate}
+\item Compensating for the pincushion deformation whilst maintaining the extended field of view. The pincushion distortion could be eliminated by using a lens doublet, and a central aperture \cite{Brainerd2004}.
+\item Reducing the chromatic aberrations caused by dispersion of light in the lens glass. The problem of chromatic aberration could be dealt with by means of achromatic lenses or by using extra-low (EL) dispersion glass in the lens system \cite{Davis2014}.
+\end{enumerate}
 
 These solutions would be appropriate for high-end camera lenses, as shown in Figure \ref{fig:camera_lens}, but are completely impractical for the Rift headset. The lenses in the Rift, shown in Figure \ref{fig:rift_lens}, are designed to be small, cheap and robust. Any optical correction system would involve multiple lenses (increased weight), spacing (increased size), require rigid positioning (increased fragility) and require expensive EL glass (cost).
 
@@ -627,24 +731,22 @@ These solutions would be appropriate for high-end camera lenses, as shown in Fig
     \label{fig:lens_comparison}
 \end{figure}
 
+\clearpage
 \subsection{Using software to correct for distortions}
-By comparison with an optical distortion correction system, software offers the attractive property of requiring no additional physical components, and so no additional hardware cost\footnote{Experience working for a consumer electronics company strongly suggests to me that this exact argument was used.}. A remarkable property of barrel and pincushion distortions is that the geometric shape has been distorted but \textit{the image is still in perfect focus}. This means that the distortion can be corrected for by moving pixel data around in the original image. The amount of movement required is a function of the radial distance from the optic axis \cite{Brunelli2009}. The barrel distortion in Figure \ref{fig:appearance_unprocessed} could be corrected by re-arranging pixel data, moving each pixel towards the centre of the lens to achieve the result shown in Figure \ref{fig:appearance_processed}.
-
-The image processing required for this geometric correction can be done pixel-by-pixel. Given the size of the rift display, it must be computed for $1280 \times 800 = 1,024,000$ times per frame. If content is to be rendered at \SI{60}{Hz} then the total render time, of which the distortion step is only part, needs to take place in less than \SI{16}{ms}. Fortunately, the individual pixel calculations are entirely independent of one another, making the operation perfectly suited to parallel processing on a graphics card. 
-
+By comparison with an optical distortion correction system, software offers the attractive property of requiring no additional physical components, and so no additional hardware cost\footnote{The cost of buying a powerful graphics card falls to the consumer!}. A remarkable property of barrel and pincushion distortions is that the geometric shape has been distorted but \textit{the image is still in perfect focus}. This means that the distortion can be corrected for by moving pixel data around in the original image. The amount of movement required is a function of the radial distance from the optic axis \cite{Brunelli2009}. The barrel distortion in Figure \ref{fig:appearance_unprocessed} could be corrected by re-arranging pixel data, moving each pixel towards the centre of the lens to achieve the result shown in Figure \ref{fig:appearance_processed}.
 
 \begin{figure}[htbp!]
 \centering
-\begin{subfigure}{0.8\textwidth}
+\begin{subfigure}{0.9\textwidth}
     \centering
-    \includegraphics[width=0.8\linewidth]{resources/appearance_unprocessed}
+    \includegraphics[width=0.9\linewidth]{resources/appearance_unprocessed}
     \caption{The appearance of native content to the Rift's user.}
 	\label{fig:appearance_unprocessed}
 \end{subfigure}
 \centering
-\begin{subfigure}{0.8\textwidth}
+\begin{subfigure}{0.9\textwidth}
     \centering
-    \includegraphics[width=0.8\linewidth]{resources/appearance_processed}
+    \includegraphics[width=0.9\linewidth]{resources/appearance_processed}
     \caption{The appearance of processed content to the Rift's user.}
 	\label{fig:appearance_processed}
 \end{subfigure}    
@@ -652,17 +754,22 @@ The image processing required for this geometric correction can be done pixel-by
     \label{fig:processing_content}
 \end{figure}
 
+\clearpage
+
 \subsection{Using shaders to correct for distortions}
+The image processing required for this geometric correction can be done pixel-by-pixel. Given the size of the rift display, it must be computed for $1280 \times 800 = 1,024,000$ times per frame. If content is to be rendered at \SI{60}{Hz} then the total render time, of which the distortion step is only part, needs to take place in less than \SI{16}{ms}. Fortunately, the individual pixel calculations are entirely independent of one another, making the operation perfectly suited to parallel processing. 
+
 Modern 3D computer graphics make heavy use of Graphical Processor Units (GPUs), processors designed especially for the parallel execution of thousands or millions of independent calculations on pixel data. The image deformation problem is perfectly suited to be solved with a GPU. 
 
-Two companies dominate the market for graphics cards: Nvidia and ATI. Graphics drivers are notorious for driver problems \footnote{When discussing problems in the department, the first question was frequently ``What graphics card are you using''. Using a moderately powerful Nvidia card with the latest drivers was a pragmatic way to avoid exotic hardware issues.}. The project chose to use a NVidia GeForce GTX 480 graphics card on the basis that it would support the most recent version of OpenGL (4.4 at the time of writing). Nvidia provide good driver support, and have created the CUDA parallel computing platform in case it was necessary to use the graphics hardware directly for calculations.
+\subsection{Practical aspects to using a GPU}
+Two companies dominate the market for graphics cards: Nvidia and ATI. Graphics drivers are notorious for driver problems \footnote{When discussing problems in the department, the first question was frequently ``What graphics card are you using''.}, so using a moderately powerful Nvidia card with the latest drivers was a pragmatic way to avoid exotic hardware issues. The project chose to use a Nvidia GeForce GTX 480 graphics card on the basis that it would support the most recent version of OpenGL \footnote{OpenGL 4.4, at the time of writing}. Nvidia provide good driver support, and have created the CUDA parallel computing platform in case it was necessary to use the graphics hardware directly for calculations.
 
 Similar to the division of the graphics card market, two main application programming interfaces (APIs) exist to make use of graphics hardware. These are Direct3D and OpenGL. The project chose to use OpenGL as it had previously been used in the MSC Graphics lectures, it is an open standard, and it is cross platform. By contrast, Direct3D appeared to be unfamiliar and would lock the project to the Windows operating system.
 
 Once the pragmatic decisions regarding the choice of hardware and API were made, the practical work could begin: designing and implementing a graphics shader program to perform pixel-wise calculations.
 
 \section{Designing a Test Shader}
-Graphics shaders are executed on graphics hardware, not on the CPU. OpenGL shaders are written in the Graphics Library Shader Language (GLSL), a C-like language with the occasional surprise. They are massively parallel and difficult to debug, though some third party debugging tools do exist \cite{glslDevil}. There are no ways to print statements in GLSL \footnote{And in any case, if a per-pixel shader script is executed over a million times per frame, and at sixty frames per second, then print statements would not be a practical debugging tool}. For these reasons, the chosen approach for shader development was to start with a very simple shader, and gradually add complexity in a series of iterative steps. 
+Graphics shaders are executed on graphics hardware, not on the CPU. OpenGL shaders are written in the Graphics Library Shader Language (GLSL), a C-like language with the occasional surprise. They are massively parallel and difficult to debug, though some third party debugging tools do exist \cite{glslDevil}. There are no ways to print statements in GLSL \footnote{If a per-pixel shader script is executed over a million times per frame, and at sixty frames per second, then print statements would not be a practical debugging tool}. For these reasons, the chosen approach for shader development was to start with a very simple shader, and gradually add complexity in a series of iterative steps. 
 
 \subsection{Vertex and Fragment Shaders}
 In a graphics pipeline there are vertex shaders and fragment shaders \footnote{Geometry shaders were added in OpenGL3.2 and and tessellation shaders added in OpenGL4, but these shaders are mainly intended to do geometric mesh adjustments and aren't relevant to the processing pipeline in this project.}. Vertex shaders are executed at every vertex in a scene, approximately thirty two thousand vertices in the case of the cortical surface content. Fragment shaders are executed at every fragment, the projection of an area of an object polygon onto a pixel in the screen. The final value of one screen pixel may be the combination of values of a number of fragments, combined as a function of their depth, opacity and position.
@@ -686,7 +793,7 @@ Three different methods for using GLSL shaders were tried during the project.
 \begin{itemize}
 \item Shaders can be written a separate plain text file and given an extension that helps to explain their content. It is conventional to give a vertex shader a .vs extension, and a fragment shader a .fs extension\footnote{or sometimes a .ps extension for `pixel shader', as used in the ORIA project}. The shader file can then be opened and loaded at runtime. This is convenient as it means that altering the shader does not require re-compilation of the main body of source code. It also means that errors in the shader code do not generate compile errors and may only appear at runtime. 
 \item In a similar way to reading in a plain text file, the shader may be defined as a string inside the source code. This can be useful for testing purposes, when checking that the program does indeed have access to the shader source at runtime. It also cuts down the number of files in the project, though at the expense of clarity! As the shader code is in string format, it is still not checked by the debugger and so is equally liable to runtime problems as if it were a separate file.
-\item A sophisticated\footnote{translation: terrifying} third option is to load a compiled shader program as a binary file. This approach means that no shader compilation is required, but it means that the shader is no longer human-readable. Given the simplicity of the shaders in this project, and the need to frequently adjust their contents, this optimisation was unnecessary.
+\item A sophisticated\footnote{terrifying} third option is to load a compiled shader program as a binary file. This approach means that no shader compilation is required, but it means that the shader is no longer human-readable. Given the simplicity of the shaders in this project, and the need to frequently adjust their contents, this optimisation was unnecessary.
 \end{itemize}
 
 All three approaches to the use of GLSL shaders were used during the project. In-line shader code was used during early stage testing, whilst the libglsl shader was being upgraded to work with GLSL 440. Some publicly available Rift deformation shaders were in binary format, and were tested but could not be subsequently modified. The preferred approach, for elegance and practicality, was to have fragment and vertex shader files and load these at run-time.
@@ -725,14 +832,10 @@ The third and most significant problem of the per-object shader approach can als
 These problems, in particular the third problem, led to the conclusion that object-shaders would not provide a viable method for performing image distortion suitable for Rift display.
 
 \subsection{Applying GLSL Shaders to Buffers}
-Given the requirement to apply a deformation across an entire screen, the the VTK multipass-rendering framework looked to be a good place to start. This framework allows users to specify custom rendering passes to a vtk renderer. Even better, Dr Bernhard Kainz, one of the members of the Biomedical Image Analysis Group, had previously written a custom rendering pass that could apply saliency filtering to image data.
+Given the requirement to apply a deformation across an entire screen, the the VTK multipass-rendering framework looked to be a good place to start. This framework allows users to specify custom rendering passes to a vtk renderer, as is illustrated in Listing \ref{multi_pass}. Even better, Dr Bernhard Kainz, one of the members of the Biomedical Image Analysis Group, had experience writing custom rendering passes to filter image data.
 
-\begin{figure}[htbp!]
-    \centering
-    \includegraphics[width=0.5\textwidth]{resources/placeholder}
-    \caption{A flow diagram showing the multipass framework.}
-    \label{fig:multipass_rendering}
-\end{figure}
+\lstinputlisting
+  [label=multi_pass, caption=Using the VTK MultiPass Rendering framework]{code/multi_pass.cpp}
 
 Several problems were overcome as these classes were adapted to work in the desired fashion.
 
@@ -740,12 +843,13 @@ Firstly, the \texttt{vtkRenderer->SetPass()} method, central to the entire appro
 
 Next, the \texttt{SaliencyPass} code made use of a \textbf{glsl} library to load, compile and run \textbf{GLSL} shaders. This library worked with GLSL \texttt{\#version 110} but was incompatible with recent versions of GLSL. Certain functions in OpenGL 4.4 required GLSL \texttt{\#version 440} compatibility, and this in turn required that the glsl shader management class be updated. Fortunately, many of the deprecated functions had been implemented in recent OpenGL versions, and so many of the previously ``experimental'' ARB-functions could simply be replaced by modern ``core'' functions.
 
-\begin{figure}[htbp!]
-    \centering
-    \includegraphics[width=0.5\textwidth]{resources/placeholder}
-    \caption{CPU and GPU domains, and methods of communication.}
-    \label{fig:cpu_gpu_domains}
-\end{figure}
+%TODO: CPU / GPU domains
+%\begin{figure}[htbp!]
+%    \centering
+%    \includegraphics[width=0.5\textwidth]%{resources/placeholder}
+%    \caption{CPU and GPU domains, and methods of communication.}
+%    \label{fig:cpu_gpu_domains}
+%\end{figure}
 
 Once the derived class could compile, a number of OpenGL problems needed to be solved. OpenGL appears to follow the ``Silence is golden'' design philosophy \cite{the_art_of_unix_programming}, and a programmer query OpenGL state to discover GLErrors. In the absence of diligent checks, these errors otherwise manifest themselves in terms of a blank render screen or segmentation fault at runtime. 
 
