@@ -169,7 +169,7 @@ The academic impact of this work has been modest: demonstrations within the Biom
 \label{sec:structure_of_the_report}
 As the project dealt with implementing a pipeline, illustrated in Figure~\ref{fig:the_full_pipeline}, it seems natural for the report to follow the process from raw data acquisition to the final display image. 
 
-\begin{figure}[htbp!]l
+\begin{figure}[htbp!]
     \centering
     \includegraphics[scale=0.5]{resources/data_pipeline_overview}
     \caption{An overview of the project pipeline.}
@@ -188,33 +188,47 @@ Finally, Chapter~8 concludes by synthesizing findings from each stage in the pro
 
 This chapter discusses why visualising brain data is important, and the suitability of HCP connectome data for this project. Different experimental techniques for gathering data are compared, with particular attention paid to the type of data that each technique produces. Current data visualisation systems are introduced, with the conclusion that the tractography is particularly well suited to be displayed in 3D. 
 
+\clearpage
 \section{Motivation for using Connectome Data}
 Mapping and visualising the brain is of considerable academic and practical interest. The map or ``wiring diagram'' of neurones in a brain is called a \textit{connectome}. The brain is thought to be composed of motor, sensory, behavioural state, and cognitive systems \cite{Swanson2003}. Better knowledge about the physiology of the brain can help in understanding these systems. Knowledge of the structure of an individual brain can be helpful when diagnosing medical conditions, or planning a surgical procedure \cite{Golby2011}. In either case, the interested parties need to have data, and be able to draw useful inferences from this data. This project aims to work on the second of these challenges: developing new ways of displaying and interacting with existing data. 
 
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/hcp_logo}
+    \caption{The Human Connectome Project logo}
+    \label{fig:hcp_logo}
+\end{figure}
+
 The high quality and availability of connectome data makes it an excellent source of content for visualisation. The Human Connectome Project is a world-class source of data, and thanks to the Open Access Data license terms \cite{HCPAccess2014} all of this content can be obtained free of charge. Imperial College has an active research program in the medical imaging field, and the project has benefited greatly from access to friendly local expertise. As an illustration of this good fortune, Imperial College is one of only four UK universities involved in the Developing Human Connectome Project \cite{DHCPPartners2014}, and numerous experts\footnote{Kevin Kerdauren, Lisa Koch, Dr Sarah Parisot, and especially Dr Bernhard  Kainz} from the Imperial College team have directly assisted this project. 
 
+\clearpage
 \section{Sources of Connectome Data}
-An understanding of the processes for generating connectome data is useful, as it influences the resolution and format of the data obtained. 
+The process used to generate connectome data determines the resolution and format of the data obtained. 
 
 \subsection{Electron microscopy (EM)} 
-EM gives nanometer resolution images of neural structure. This is an ex vivo process, samples must be taken from the brain. EM techniques can give a resolution of \SI{5}{\nm} in the x-y plane, with a \SI{30}{\nm} slice thickness and generate an enormous amount of raw data, of the order of \SI{1}{\pebi\byte\per\mm\cubed} \cite{Jeong2010}.\footnote{That data density is greater than two hundred thousand DVDs per cubic milimeter or, in old money, more than eleven \textit{billion} floppy disks per cubic inch} Due to the high resolution and small sample sizes accommodated by EM techniques, the only connectome to have been completely mapped out using this technique is that of the nematode c.elegans \cite{White1986}.
+EM gives nanometer resolution images of neural structure. This is an ex vivo process, samples must be taken from the brain. EM techniques can give a resolution of \SI{5}{\nm} in the x-y plane, with a \SI{30}{\nm} slice thickness and generate an enormous amount of raw data, of the order of \SI{1}{\pebi\byte\per\mm\cubed} \cite{Jeong2010}.\footnote{A data density greater than two hundred thousand DVDs per cubic milimeter or, in old money, eleven \textit{billion} floppy disks per cubic inch} Due to the high resolution and small sample sizes accommodated by EM techniques, the only connectome to have been completely mapped out using this technique is that of the nematode c.elegans \cite{White1986}.
 
 \subsection{Optical microscopy (OM)} 
-OM techniques can be used in conjunction with fluorescent markers to selectively tag and examine brain matter. As with EM, this is done ex-vivo. This approach allows for much larger samples to be analysed, at a resolution of approximately \SI{0.35}{\um} in the x-y plane\footnote{Fluorescent markers allow resolution beyond the Abbe limit without needing metamaterial lenses.}, and with a slice thickness of \SI{100}{\um}. This approach has recently been used to map the entire mouse connectome \cite{Oh2014}. 
+OM techniques can be used in conjunction with fluorescent markers to selectively tag and examine brain matter. As with EM, this is done ex-vivo. This approach allows for much larger samples to be analysed, at a resolution of approximately \SI{0.35}{\um} in the x-y plane\footnote{Fluorescent markers allow resolution beyond the Abb\'{e} limit.}, and with a slice thickness of \SI{100}{\um}. This approach has recently been used to map the entire mouse connectome \cite{Oh2014}. 
 
 \subsection{Magnetic Resonance Imaging (MRI)} 
-MRI scans may be used in combination with Diffusion Tensor Imaging (DTI-MRI) as an in-vivo technique for determining larger scale structure. Diffusion of water within the brain is influenced by the structure of the brain matter, since water can diffuse more easily along bundles of nerves than perpendicular to them, and so the diffusion patterns allow local structure to be inferred. The resolution of this technique is typically low, approximately \SI{1}{\mm} in the x-y plane \cite{Westin2002}. A related technique is to detect neural activity, determined as a function MRI measurements of blood-oxygen changes in the brain (fMRI) \cite{Huettel2004}. MRI techniques have been used to map hundreds of human connectomes. 
+MRI scans may be used in combination with Diffusion Tensor Imaging (DTI-MRI) as an in-vivo technique for determining larger scale structure. Diffusion of water within the brain is influenced by the structure of the brain matter, since water can diffuse more easily along bundles of nerves than perpendicular to them, and so the diffusion patterns allow local structure to be inferred. The resolution of this technique is typically low, approximately \SI{1}{\mm} in the x-y plane \cite{Westin2002}. A related technique is to detect neural activity, determined as a function MRI measurements of blood-oxygen changes in the brain (fMRI) \cite{Huettel2004}.The HCP and DHCP projects have used MRI techniques to map hundreds of human connectomes. 
 
 
 \section{Storing Connectome Data}
-There are no standardised formats for storing raw connectome data, as the form of the data depends on the experimental technique used to obtain it (EM, OM, MRI) and the specific equipment used. For this reason, many imaging tools such as NeuroneJ \cite{NeuronJ2014}, Imaris \cite{Imaris2014}, and Amia \cite{Amira2014} have been developed to work with specific input data formats. Although there is some inter-operability, there is no universal standard data format for imaging data. 
+There are no standardised formats for storing raw connectome data, as the form of the data depends on the experimental technique used to obtain it (EM, OM, MRI) and the specific equipment used. Thankfully the HCP project does have a set of data format and structure conventions. The HCP includes DT-MRI and fMRI measurements from multiple institutions and multiple different scanners, and has been careful to ensure that different data samples may be compared in a valid way \cite{HCP_Logistics_2014}. This subject is covered in more depth in Section~\ref{sec:the_structure_of_hcp_data}.
 
-Fortunately, the HCP project does have a set of conventions as to the format and structure of their data. The HCP includes DT-MRI and fMRI measurements from multiple institutions and multiple different scanners, and has been careful to ensure that different data samples may be compared in a valid way \cite{HCP_Logistics_2014}.  In addition to a standard format and organizational structure, the HCP runs de-noising and normalising algorithms on the data. The topic of HCP data is covered in more depth in Section~\ref{sec:the_structure_of_hcp_data}.
+Fast access to connectome data is essential when working interactively with high resolution images, and custom data structures have been developed to support this. Previous publications \cite{Jeong2010} have discussed working with a 75GB connectome dataset, stored as an octree in order to enable fast access to the desired parts of the dataset. This concept is illustrated in Figure \ref{fig:octtree}. They also store sub-sampled data at various resolutions in order to allow responsive zooming into the data set and cache data at GPU, CPU and process levels. 
 
-Given the large size of connectome datasets, it is sometimes necessary to implement a custom data structure to support certain visualisations. In particular, fast access to the data is essential when working interactively with high resolution images. Previous publications \cite{Jeong2010} have discussed working with a 75GB connectome dataset, stored as an octree in order to enable fast access to the desired parts of the dataset. They also store sub-sampled data at various resolutions in order to allow responsive zooming into the data set and cache data at GPU, CPU and process levels. 
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{resources/octtree}
+    \caption{An octree corresponding to a subdivided cube.\cite{octtree2010}}
+    \label{fig:octtree}
+\end{figure}
 
-Fortunately, the pre-processing techniques described in Chapter 3 could be used to produce structures with simple geometric structures, and consequently small file sizes. With file sizes less than \SI{10}{\mega\byte}, it is possible to store the structure in RAM or even in video memory. In the future it may be necessary to investigate more exotic dataset options in order to support more complex content and higher-resolution VR displays.
-
+The pre-processing techniques described in Chapter 3 were used to produce simple geometric structures with correspondingly small file sizes. These simple structure, with file sizes less than \SI{10}{\mega\byte}, could be stored in RAM or even in video memory. Exotic data structures may be required in the future to support more complex content and higher-resolution VR displays.
+\clearpage
 
 \section{Visualising Connecome Data}
 A number of common visualisations exist for connectome data. Visualisations can be divided into three types: structural, functional and multimodal. Some visualisations, connectivity matrices for example, are equally well suited to display structural or functional information. Other visualisations, such as tractographies, are best suited to displaying structural information. Multimodal visualisations show elements of both structural and functional data. Virtual reality is well suited to display structural information, and so the following visualisations discussed are primarily those for structural or multimodal data.
@@ -224,17 +238,18 @@ A connectivity matrix shows the physical or functional connectivity between diff
 
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=0.5\textwidth]{resources/connectivity_matrix}
+    \includegraphics[width=0.8\textwidth]{resources/connectivity_matrix}
     \caption{An alphabetically ordered connectivity matrix. \cite{Wang2011}}
     \label{fig:connectivity_matrix}
 \end{figure}
 
+\clearpage
 \subsection{Tractography}
-Tractography is the process of visualising nerve tracts, bundles of nerve cells. It can provide a very intuitive way of looking at nerve data. It can can require considerable manual editing of opacity, colour and shading in order to bring out the desired features in a tractography image. Without such editing, tractography images suffer from a surfeit of information and can obscure features of interest.
+Tractography is the process of visualising nerve tracts, bundles of nerve cells. It can provide a very intuitive way of looking at nerve data, as seen in Figure \ref{fig:tractography}, although considerable editing of opacity, colour and shading may be needed in order to bring out the desired features in a tractography image. Without such editing, tractography images suffer from a surfeit of information and can obscure features of interest.
 
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=0.8\textwidth]{resources/tractography}
+    \includegraphics[width=0.6\textwidth]{resources/tractography}
     \caption{Fibre tractography. \cite{Odonnell2006}}
     \label{fig:tractography}
 \end{figure}
@@ -243,15 +258,16 @@ Various techniques have been developed for fibre tractography, including the use
 
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=0.8\textwidth]{resources/tuboids}
+    \includegraphics[width=0.6\textwidth]{resources/tuboids}
     \caption{A tractography image using tuboids. \cite{Petrovic2007}}
     \label{fig:tuboids}
 \end{figure}
 
+\clearpage
 \subsection{Glyph Images}
 Glyphs can be used to represent local diffusion tensors in DT-MRI data. The goal of glyph images is to show local diffusion properties as well as larger macroscopic structure. Various systems have been proposed to do this: using ellipsoids \cite{Pierpaoli1996}, colour coded arrows \cite{Peled1998}, opacity mapping \cite{Westin1997}, and hybrid geometric shapes \cite{Westin2002}. 
 
-A spherical glyph represents isotropic diffusion properties, whereas various ellipsoids can represent a local bias towards linear or planar diffusion. Local diffusion can be represented as an ellipsoid or, due to the ambiguity in representing a 3D ellipsoid in a 2D image, as a hybrid shape.
+A spherical glyph represents isotropic diffusion properties, whereas various ellipsoids can represent a local bias towards linear or planar diffusion. Figure \ref{fig:hybrid_glyphs} illustrates how a hybrid shape may be less ambiguous than a 2D rendering of a 3D ellipsoid.
 
 \begin{figure}[htbp!]
     \centering
@@ -260,7 +276,7 @@ A spherical glyph represents isotropic diffusion properties, whereas various ell
     \label{fig:hybrid_glyphs}
 \end{figure}
 
-The ordered placement of glyphs can introduce patterns not present in the data, prompting research into the positioning of the glyphs, and the use of particle systems to re-position glyphs as a function of interparticle forces \cite{Kindlmann2006}. The benefit of this approach is that the sampling artefacts may be greatly reduced or completely removed from the final image. As can be seen from the figure below, this approach is not without drawbacks, new image artefacts, such at the hexagonal close packing structure, may be introduced by the particle field. 
+The ordered placement of glyphs can introduce patterns not present in the data, prompting research into the positioning of the glyphs, and the use of particle systems to re-position glyphs as a function of interparticle forces \cite{Kindlmann2006}. The benefit of this approach is that the sampling artefacts may be greatly reduced or completely removed from the final image. As can be seen from Figure \ref{fig:glyph_packing}, this approach is not without drawbacks, new image artefacts, such at the hexagonal close packing structure, may be introduced by the particle field. 
 
 \begin{figure}[htbp!]
     \centering
@@ -269,8 +285,9 @@ The ordered placement of glyphs can introduce patterns not present in the data, 
     \label{fig:glyph_packing}
 \end{figure}
 
+\clearpage
 \subsection{Other Techniques}
-In addition to connection matrices, tractographies and glyph images there are many other ways to display connectome data. Graph-based representations can present functional connectivity \cite{Hagmann2008}, but may do so at the cost of reduced anatomical accuracy \cite{Margulies2013}. 
+In addition to connection matrices, tractographies and glyph images there are many other ways to display connectome data. Graph-based representations can present functional connectivity \cite{Hagmann2008} as shown in Figure \ref{fig:connectome_graphs}, but may do so at the cost of reduced anatomical accuracy \cite{Margulies2013}. 
 
 \begin{figure}[htbp!]
     \centering
@@ -289,12 +306,12 @@ The Glass Brain project has developed a multimodal technique for combining struc
 \end{figure}
 
 \section{Summary}
-Human DTI-MRI data from the Human Connectome Project was chosen for use in this project due to it's availability, quality, and the importance of the subject matter \footnote{With apologies to the nematode c.elegans, and the various mouse-brain connectomes that were candidates for this role.}. 
+Human DTI-MRI data from the Human Connectome Project was chosen for use in this project due to it's availability, quality, and the importance of the subject matter.
 
-The choice of visualisation system was a more complex issue. For the purpose of this project, it is useful to note that, with the exception of the connection matrix, all of the visualisation techniques for connectome data attempt to represent 3D (or greater dimensionality) information in a 2D image. This is has two important consequences:
+The choice of visualisation system was a more complex issue. For the purpose of this project, it is useful to note that, with the exception of the connection matrix, all of the visualisation techniques for connectome data attempt to represent 3D (or greater dimensionality) information in a 2D image. This is has two important consequences as it shows:
 \begin{enumerate}
-\item It shows that there is a need to display 3D data.
-\item It shows that, in many cases, three dimensional processing and rendering is already being carried out.
+\item there is a need to display 3D data.
+\item three dimensional image processing is already being carried out.
 \end{enumerate}
 
 2D representations have a number of advantages. The sampling methods used in measuring the connectome data gather 2D data, the full connectome structure being reconstructed from many planar slices. Relatively little processing is needed in order to convert an array of data into a viewable image, and so a 2D visualisation can be a very fast way to look at raw data. The ‘flat’ nature of 2D images is convenient for printing, transportation, and storage. 
@@ -305,13 +322,23 @@ Full 3D images seem well suited to visualising connectome data. Given that there
 
 Given these considerations, all of the 3D visualisation styles were candidates for the project. The tractography was selected due to it's intuitive and elegant nature. Of all of the styles discussed, it is the one most easily understood by non-experts, and so suitable content for a wide target audience.
 
-\chapter{Post-Processing}
+\chapter{Data Conversion}
 
-This chapter discusses the the data-wrangling necessary to convert HCP data into a suitable input format for the VTK pipeline. The HCP dataset is examined using ITK-SNAP, and the DTI-MRI data selected as a starting point. The format of the HCP data is explained, and an intermediate data format (legacy vtk) is chosen. The HCP data is then processed using Camino, ITK-SNAP, MITK, and MATLAB in order to obtain a tractography, and a cortical surface and dense surface mesh. A Blender plugin is developed in order to import and examine the VTK mesh, and the relative benefits of each post-processed content are discussed.  
+This chapter discusses the the data-wrangling necessary to convert HCP data into suitable content for display on the Rift. 
 
+Structural MRI data in the HCP is stored in NIfTI, CIFTI and GIFTI formats, incompatible with the VTK render pipeline used here. Legacy VTK is chosen as a suitable intermediate format, and three types of image content are generated: 
 
+\begin{enumerate}
+\item \textbf{btain}\footnote{An initial misspelling, this name became a useful way of differentiating this content from the various brain data files.}, a cortical surface represented by a dense mesh. Btain is generated using MITK to select a region within a CIFTI file and save it as a mesh.
+\item \textbf{surface}, a simple cortical surface generated from GIFTI data. Surface is generated from a HCP GIFTI file using MATLAB.
+\item \textbf{CCTracts}, a tractography. CCTracts is generated using Camino and ITK-SNAP.
+\end{enumerate}
+
+In addition, a Blender plugin is developed to import and examine the VTK mesh.
+
+\clearpage
 \section{The Structure of HCP Data} \label{sec:the_structure_of_hcp_data}
-HCP data is intended to be a standard format, allowing for comparison between hundreds, eventually thousands, of individual human connectomes. Chapter 2 discussed the different types of connectome data, and concluded that the project should use MRI-DTI data. Figure~\ref{fig:hcp_full_data_set} shows that much of the HCP dataset contains a wide variety of different experimental data, and that the decision to focus on MRI data narrows the search space down considerably.
+HCP data is intended to be a standard format allowing for comparison between hundreds, eventually thousands, of individual human connectomes. Figure~\ref{fig:hcp_full_data_set} shows that the HCP dataset contains a wide variety of experimental data. As discussed in Chapter 2, the decision was made to use structural DTI-MRI.
 
 \begin{figure}[htbp!]
     \centering
@@ -320,8 +347,9 @@ HCP data is intended to be a standard format, allowing for comparison between hu
     \label{fig:hcp_full_data_set}
 \end{figure}
 
-The project needs access to structural information in a format that can be imported in VTK. The MRI data in the HCP dataset cannot be directly imported as desired. The following section describes how the HCP data is stored, and consequently how it can be processed into a useful intermediate format. This is done in two ways: a tractography is generated from the structural MRI-DTI CIFTT data, and a cortical surface is obtained by converting a GIFTI surface file. 
+Having identified a source of structural data, it was discovered that the native storage formats could not be read by a basic VTK rendering pipeline. The following paragraphs describe the HCP data formats, and the subsequent search for a useful intermediate format.
 
+\clearpage
 \subsection{NIfTI Data}
 The main format of the HCP data is Neuroimaging Informatics Technology Initiative (NIfTI) format. Recent data is in the NIfTI-2 format, an extension that uses \SI{64}{bit} storage and addressing to allow for larger data sets with greater precision. To the explorer browsing an HCP data set, these are the $\ast.nii$ files \footnote{or sometimes compressed (gnu-zipped) $\ast.nii.gz$ or tar-archived $\ast.nii.tar$ files.}. The NIfTI format holds data as a 4D matrix (x, y, z and time), as well as containing meta-data in a header. Conceptually, data can be extracted from NIfTI format by taking a 3D matrix `slice' out of the set, to get voxel data for a specific point in time. 
 
@@ -340,10 +368,13 @@ Following widespread adoption and success of the NIfTI format, the Geometry Info
 
 \section{Choosing an Intermediate Format}
 \label{sec:choosing_an_intermediate_format}
-Before an intermediate format had been chosen, a number of 3rd party programs were investigated for reading and converting HCP data. MeshLab \cite{MeshLab2014} was found to be an excellent mesh conversion tool, but could not load any of the GIFTI or NIFTI data sets. Medinria \cite{MedInria2014} could work with the available data sets but was better suited to viewing content than converting it. With assistance from Dr Kainz, MITK \cite{MITK2014} was used to select a region in a CIFTI file using an image intensity threshold, and then outputting the selection as a vtk mesh. This was a significant step forward: the vtk data format was perfectly compatible with the Visualisation Tool Kit, and the resulting mesh was the first `real' connectome data visualised on the Rift.
+Before an intermediate format had been chosen, a number of programs were investigated for reading and converting HCP data. MeshLab \cite{MeshLab2014} was found to be an excellent mesh conversion tool, but could not load any of the GIFTI or NIFTI data sets. Medinria \cite{MedInria2014} could work with the available data sets but was better suited to viewing content than converting it. MITK \cite{MITK2014} was used to select a region in a CIFTI file using an image intensity threshold, and then output the selection as a vtk mesh. This was a significant step forward: the vtk data format was perfectly compatible with the Visualisation Tool Kit, and the resulting mesh was the first `real' connectome data visualised on the Rift.
+\\ \\
+At this point it becomes convenient to adopt the convention of referring to the for distinguishing between the Visualisation Tool Kit (\textbf{VTK}), and the Visualisation Tool Kit file format (henceforth \textbf{vtk}). 
+\\\\
+The vtk data format proved to be very suitable for this project for a number of reasons. On a practical basis, it was known to work with VTK, and so could provide the Rift with suitable content for demonstrations. Further research showed that it was a well established format \cite{VTK_file_formats}, and this wide support made it a suitable intermediate format. Additionally, `legacy' vtk holds data in a simple, plain text structure allowing human inspection of the mesh data. 
 
-The vtk data format proved to be very suitable for this project for a number of reasons. On a practical basis, it was known to work with VTK, and so could provide the Rift with suitable content for demonstrations. Further research showed that it was a well established format \cite{VTK_file_formats}, and this wide support made it a suitable intermediate format. Additionally, the `legacy' VTK format holds data in a simple, plain text structure. This was a strong reason for using the format, as it allowed human inspection of the mesh data. 
-
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[label=vtk_data_structure, caption=The structure of data in a legacy .vtk file.]
 # vtk DataFile Version 2.0  // # vtk DataFile Version 3.0
 Really cool data            // vtk output
@@ -354,8 +385,8 @@ POINT_DATA n                // POINTS <number> float
 ...
 CELL_DATA n
 \end{lstlisting}
-
-Listing shows the header specification from \cite{VTK_file_formats} with comments illustrating vtk parameter values in a real dataset. Information such as the number of points in the mesh proved to be very useful when debugging the VTK render output.
+\end{minipage}
+Listing \ref{vtk_data_structure} shows the header specification from \cite{VTK_file_formats} with comments illustrating vtk parameter values in a real dataset. Information such as the number of points in the mesh proved to be very useful when debugging the VTK render output.
 
 \section{Data conversion using MITK}
 As mentioned in Section \ref{sec:choosing_an_intermediate_format}, MITK was used to export a region of a CIFTI cortical data file as a 3D mesh. This process is shown in Figure \ref{fig:MITK_conversion}. The process involved selecting a volume in the original data file using a thresholding function, and then creating a mesh from the selected region. The mesh could then be exported in vtk format.
@@ -977,6 +1008,14 @@ CTest allows the creation of automatic test scripts that can be configured to ru
     \caption{Daily testing results via the CDash web interface.}
     \label{fig:cdash_testing}
 \end{figure}
+
+\section{Further Work}
+
+\subsection{Exploring tracts}
+Allow the user to look along and down tracts by either tracking the head position (DK2), or moving the view location with some interaction tools like a gamepad. This would allow useful tractography interaction not possible with a 2D display.
+
+\subsection{Viewing functional data}
+Multiple users requested the ability to view functional, time dependent, datasets. Seeing neural activity in real time or at an artificial time rate could be very interesting.
 
 \chapter{Conclusion}
 The project fulfilled its goal of providing a full content conversion and rendering pipeline for medical image content. A number of significant technical challenges were encountered, but with the support of experienced computer graphics and medical imaging experts all of these were overcome. The final implementation generated cortical surface and tractography models from a Human Connectome Project dataset and displayed these models in a 3D virtual reality environment. 
