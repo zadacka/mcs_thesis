@@ -106,7 +106,7 @@
 Dr Paul Gass and Dr Ian Thompson, my bosses at Sharp Laboratories of Europe Ltd., for arranging for my funded sabbatical year at Imperial College London. 
 \newline
 \newline
-Colleagues 	Dr Nathan Smith, Dr Graham Jones, Dr Jon Mather, and Dr Andrew Kay for sharing their passion for 3D display systems. Especial thanks to John Nonweiler, for setting an example of how development software \textit{should} be done.
+Colleagues 	Dr Nathan Smith, Dr Graham Jones, Dr Jon Mather, and Dr Andrew Kay for sharing their passion for 3D display systems. Especial thanks to John Nonweiler, for setting an example of how development  \textit{should} be done.
 \newline
 \newline
 Supporters Aashish Chaudhary at Kitware, and Brad Davis at ORIA for providing insight into VTK and the Oculus Rift SDK respectively.
@@ -357,12 +357,12 @@ The main format of the HCP data is Neuroimaging Informatics Technology Initiativ
 CIFTI is a related data format to NIfTI, more of a \textit{flavour} of NIfTI than a separate file format and so has the same file extensions. CIFTI files reference other files, frequently GIFTI surfaces, to specify relative vertex and voxel positions. CIFTI files can contain dense or sparse matrices, and are often used to store many different volumes that each correspond to a different anatomical region \cite{WorkbenchGlossary2014}. 
 
 \subsection{GIFTI Data}
-Following widespread adoption and success of the NIfTI format, the Geometry Informatics Technology Initiative were set up to create a new standard format to store geometrical surfaces. The result was the GIFTI format, designed to store a variety of data types including surfaces, measurements and labels \cite{Harwell2011}. These are the $\ast.gii$ files in the HCP dataset, and they mostly represent surfaces. Figure~\ref{fig:connectome_gifti} shows the native, midthickness, inflated and very inflated cortical GIFTI surface files from HCP data, viewed in The Connectome Workbench.
+Following widespread adoption and success of the NIfTI format, the Geometry Informatics Technology Initiative were set up to create a new standard format to store geometrical surfaces. The result was the GIFTI format, designed to store a variety of data types including surfaces, measurements and labels \cite{Harwell2011}. These are the $\ast.gii$ files in the HCP dataset, and they mostly represent surfaces. Figure~\ref{fig:connectome_gifti} shows the native, midthickness, inflated and very inflated cortical GIFTI surface files from HCP data, viewed using Connectome Workbench.
 
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=0.8\textwidth]{resources/connectome_gifti}
-    \caption{Components of a sample HCP data set.}
+    \includegraphics[width=\textwidth]{resources/connectome_gifti}
+    \caption{GIFTI surfaces from a HCP data set.}
     \label{fig:connectome_gifti}
 \end{figure}
 
@@ -374,7 +374,6 @@ At this point it becomes convenient to adopt the convention of referring to the 
 \\\\
 The vtk data format proved to be very suitable for this project for a number of reasons. On a practical basis, it was known to work with VTK, and so could provide the Rift with suitable content for demonstrations. Further research showed that it was a well established format \cite{VTK_file_formats}, and this wide support made it a suitable intermediate format. Additionally, `legacy' vtk holds data in a simple, plain text structure allowing human inspection of the mesh data. 
 
-\begin{minipage}{\linewidth}
 \begin{lstlisting}[label=vtk_data_structure, caption=The structure of data in a legacy .vtk file.]
 # vtk DataFile Version 2.0  // # vtk DataFile Version 3.0
 Really cool data            // vtk output
@@ -385,7 +384,7 @@ POINT_DATA n                // POINTS <number> float
 ...
 CELL_DATA n
 \end{lstlisting}
-\end{minipage}
+
 Listing \ref{vtk_data_structure} shows the header specification from \cite{VTK_file_formats} with comments illustrating vtk parameter values in a real dataset. Information such as the number of points in the mesh proved to be very useful when debugging the VTK render output.
 
 \section{Data conversion using MITK}
