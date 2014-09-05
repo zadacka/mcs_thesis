@@ -9,7 +9,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \documentclass[MSc,paper=a4,pagesize=auto]{icldt}
-\usepackage{showframe}
+%\usepackage{showframe}
 %\usepackage{cleveref} % lets us use chapter references
 \usepackage{graphicx}  % lets us import graphics nicely
 \usepackage{caption}   % to go with lstlisting
@@ -160,7 +160,7 @@ This project has investigated the use of consumer grade virtual reality hardware
   \item When relevant, assorted software problems were documented on Stack Overflow in `Question and Answer' format. The response to these posts has been very positive, bumping my account ``\textit{GnomeDePlume}'' to the top quartile of contributors in 2014.  
 \end{itemize}
 
-In comparison to the size and scope of the VTK, Blender and ORIA projects, the contributions to these projects have been very small. Nevertheless, contributions were made in the spirit of open source collaboration and have have incrementally advanced the state-of-the-art.
+In comparison to the size and scope of the VTK, Blender and ORIA projects, the contributions to these projects have been very small. Nevertheless, contributions were made in the spirit of open source collaboration and have have incrementally advanced the state-of-the-art. All software can be accessed from my GitHub account: \texttt{github.com/zadacka}.
 
 The academic impact of this work has been modest: demonstrations within the Biomedical Image Analysis Group, and a formal presentation to my employers at Sharp Laboratories of Europe\footnote{Following which they offered me a raise, so some good has come of it.}. This MCS thesis will be the main academic publication resulting from the project, and it is hoped that the documented source code, image content and demonstration system will be a useful resource for future project work.
 
@@ -1166,57 +1166,31 @@ These techniques proved very useful. The image shown in Figure \ref{fig:distorti
 \section{User Survey of the Biomedical Image Analysis Group}
 
 \subsection{Study methodology}
-A user survey was conducted in the Biomedical Image Analysis department. Eighteen  participants were given a demonstration of the Rift displaying:
-
-\begin{itemize}
-\item a simple object (the VTK cone primitive)
-\item the cortical surface object
-\item the Corpus Callosum tractography. 
-\end{itemize}
-
-Participants were then asked a series of questions, as shown in Appendix A, and submitted responses using a Google Form and recorded in a spreadsheet. The full results of the survey are shown in Appendix B.
-
-When easily implemented changes to the demonstration were suggested by study participants, they were promptly made. As a result of this, the first participants experienced a different\footnote{better!} demonstration from the final ones. This defies the conventional, rigorous, approach to running a scientific study but fits perfectly with the goal of gathering feedback in relation to the best possible demonstration system.
-
-\subsection{Study findings}
-Full results of the survey are given in Appendix B. 
-
-\begin{itemize}
-\item Very few of the users had any pre
-\item 
-\item 
-\item 
-\item 
-\end{itemize}
+A user survey was conducted in the Biomedical Image Analysis department. Eighteen  participants were given a demonstration of the Rift displaying simple object (the VTK cone primitive), cortical surface object, and Corpus Callosum tractography content. Participants were asked a series of questions, as shown in Appendix A, and submitted responses using a Google Form and recorded in a spreadsheet. The full results of the survey are shown in Appendix B.
 
 \begin{figure}[htbp!]
-\centering
-\begin{subfigure}{0.4\textwidth}
     \centering
-    \includegraphics[width=1\linewidth]{resources/5-immediate_reactino}
-\end{subfigure}%
-\centering
-\begin{subfigure}{0.5\textwidth}
-    \centering
-   	\begin{tabular}{ l c r }
-Enthusiastic&9&50\% \\
-Positive&7&39\% \\
-Indifferent&2&11\% \\
-Hated it&0&0\% \\
-\end{tabular}
-\end{subfigure} 
-    \caption{Immediate reaction}
-    \label{fig:5-immediate_reactino}
+    \includegraphics[width=0.6\textwidth]{resources/stefan}
+    \caption{A study participant.}
+    \label{fig:stefan}
 \end{figure}
 
+When easily implemented changes to the demonstration were suggested by study participants, they were promptly made. As a result of this, the final participants experienced a different demonstration from the first ones. This defies the conventional, rigorous, approach to running a scientific study but fits perfectly with the goal of gathering feedback in relation to the best possible demonstration system.
 
+\subsection{Study findings}
+Full results of the survey are given in Appendix B. Key findings are summarised as follows:
 
+\begin{itemize}
+\item Very few of the users had any previous experience with virtual reality: 67\% had no previous experience at all.
+\item The immediate reaction to the technology was very positive: 89\% were enthusiastic or positive.
+\item The overall demo experience was rated highly: 7.7 out of 10.
+\item The vast majority of participants wanted stereoscopic 3D: 94\% wanted stereo 3D whilst one person was indifferent.
+\item A significant number of participants rated the screen resolution as `fine'. This was a considerable surprise, as a background in display technology had made me very critical of the low perceived screen resolution.
+\item Users were similarly tolerant of the limited interaction tools although 29\% of users showed mild or strong objections to using a keyboard and mouse with the content.
+\item The question of whether to add environmental reference cues\footnote{such as a virtual desk relative to which content would be displayed} split the participants into two groups: one group strongly desired cues whilst another strongly objected to them.
+\end{itemize}
 
-
-
-
-
-
+The most valuable feedback during the study resulted from an active discussion of the suitability of the vr system to different types of medical image content, and possible developments that might improve the experience. The majority of suggestions in the `Further Work' section derive from conversations with study participants.
 %\section{Objective Performance Metrics}
 %
 %The most important metrics for the Rift display system are the resolution of the display, and the render speed of the image processing.
@@ -1242,17 +1216,33 @@ Hated it&0&0\% \\
 %    \label{fig:render_times}
 %\end{figure}
 
-
-
-
-
 \section{Further Work}
 
-\subsection{Exploring tracts}
-Allow the user to look along and down tracts by either tracking the head position (DK2), or moving the view location with some interaction tools like a gamepad. This would allow useful tractography interaction not possible with a 2D display.
+\subsection{Application: A teaching aid}
+Dr Katherine Gray suggested that the VR system could be a useful teaching aid for introducing students to anatomy of the brain. Students sometimes struggle with axial, sagittal and coronal viewpoints, and a VR rendering could be a useful way to bridge the gap between 3D plastic models and 2D computer renderings. In this application, it would be useful to have content displaying the segmentation of the brain into different regions, and have interaction tools that would allow these regions to be highlighted or disabled. 
 
-\subsection{Viewing functional data}
-Multiple users requested the ability to view functional, time dependent, datasets. Seeing neural activity in real time or at an artificial time rate could be very interesting.
+\subsection{Application: A clinical tool}
+Stefan Pszczolkowski suggested that, on the basis of the demonstration, VR might be suitable for clinicians who need to relate to patient medical data. Stefan noted that the requirements of academic researchers and clinicians are quite different, and suggested that a survey of clinicians might reveal different preferences.
+
+
+\subsection{Application: Exploring tracts}
+Dr Emma Robinson suggested that it would be informative if the user could change their viewpoint to look along tracts in the tractography view. This could be accomplished by either tracking lateral head position (possible with a Rift DK2), or moving the view location using interaction. This tractography interaction is not possible with a conventional 2D display, and so would be a unique differentiator of a VR viewing system.
+
+\subsection{Application: Visualising time-series data}
+Xianliang Wu noted that much of the HCP data, and other data used in the Biomedical Image Analysis group, contained time series information. He registered an interest in using VR to visualise 3D ultrasound data in real time. Such an approach could also be used to view fMRI data from the HCP where brain activity is recorded in real time as a study subject performs tasks.
+
+\subsection{Application: 3D tract selection}
+Ira Ktena suggested that a 3D rendering of a connectome would be a very interesting way of dynamically generating tractography data. Specifically, Ira wanted to be able to select regions in a 3D brain representation and visualise the tracts connecting them. Lisa Koch added that 3D interaction hardware such as the LEAP Motion system could provide exactly the type of control necessary for 3D interaction.
+
+\subsection{Summary}
+Suggestions provided by researchers in the Biomedical Image Analysis group answer the questions originally posed in the introduction. It appears that, for specific tasks at least, researchers do want to view data in 3D. They wanted to view a wide range of different data types, and the majority considered the performance of the demonstration system sufficiently good to be a useful tool. In practical terms, it would seem sensible to explore:
+\begin{itemize}
+\item new interaction tools, such as LEAP motion or game-controller input.
+\item the capability to display a wider range of data formats, especially volumetric data.
+\item basic interaction with a 3D scene, starting with the simple ability to select different parts of a scene and display some evidence of that selection.
+\end{itemize}
+
+
 
 \chapter{Conclusion}
 The project fulfilled its goal of providing a full content conversion and rendering pipeline for medical image content. A number of significant technical challenges were encountered, but with the support of experienced computer graphics and medical imaging experts all of these were overcome. The final implementation generated cortical surface and tractography models from a Human Connectome Project dataset and displayed these models in a 3D virtual reality environment. 

@@ -11,8 +11,7 @@
 #include "vtkOpenGLRenderWindow.h"
 #include "vtkOpenGLProperty.h"
 
-int main()
-{
+int main(){
     vtkSmartPointer<vtkConeSource> cone = vtkConeSource::New();
 
     vtkSmartPointer<vtkPolyDataMapper> coneMapper = vtkPolyDataMapper::New();
@@ -37,7 +36,6 @@ int main()
     shader->SetType(VTK_SHADER_TYPE_FRAGMENT);
     shader->SetSourceCode(frag);
     shader->SetContext(pgm->GetContext());
-
     pgm->GetShaders()->AddItem(shader);
 
     vtkSmartPointer<vtkOpenGLProperty> openGLproperty = 
@@ -45,12 +43,9 @@ int main()
     openGLproperty->SetPropProgram(pgm);
     openGLproperty->ShadingOn();
 
-    int i;
-    for (i = 0; i < 360; ++i)
-    {
+    for (int i = 0; i < 360; ++i){
         renWin->Render();
         ren->GetActiveCamera()->Azimuth( 1 );
     }
-
     return 0;
 }
