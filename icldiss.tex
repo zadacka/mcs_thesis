@@ -772,7 +772,16 @@ Once the pragmatic decisions regarding the choice of hardware and API were made,
 Graphics shaders are executed on graphics hardware, not on the CPU. OpenGL shaders are written in the Graphics Library Shader Language (GLSL), a C-like language with the occasional surprise. They are massively parallel and difficult to debug, though some third party debugging tools do exist \cite{glslDevil}. There are no ways to print statements in GLSL \footnote{If a per-pixel shader script is executed over a million times per frame, and at sixty frames per second, then print statements would not be a practical debugging tool}. For these reasons, the chosen approach for shader development was to start with a very simple shader, and gradually add complexity in a series of iterative steps. 
 
 \subsection{Vertex and Fragment Shaders}
-In a graphics pipeline there are vertex shaders and fragment shaders \footnote{Geometry shaders were added in OpenGL3.2 and and tessellation shaders added in OpenGL4, but these shaders are mainly intended to do geometric mesh adjustments and aren't relevant to the processing pipeline in this project.}. Vertex shaders are executed at every vertex in a scene, approximately thirty two thousand vertices in the case of the cortical surface content. Fragment shaders are executed at every fragment, the projection of an area of an object polygon onto a pixel in the screen. The final value of one screen pixel may be the combination of values of a number of fragments, combined as a function of their depth, opacity and position.
+In a graphics pipeline there are vertex shaders and fragment shaders \footnote{Geometry shaders were added in OpenGL3.2 and and tessellation shaders added in OpenGL4, but these shaders are mainly intended to do geometric mesh adjustments and aren't relevant to the processing pipeline in this project.}. Vertex shaders are executed at every vertex in a scene. Fragment shaders are executed at every fragment, the projection of an area of an object polygon onto a pixel in the screen. Figure \ref{fig:vert_frag} shows a simple three vertex primitive affecting 70 fragments. By contrast, the cortical surface contained over 32 thousand vertices. The final value of one screen pixel may be the combination of values of a number of fragments, combined as a function of their depth, opacity and position. 
+
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{resources/vert_frag}
+    \caption{Fragments corresponding to a geometric primitive.}
+    \label{fig:vert_frag}
+\end{figure}
+
 
 \subsection{Simple test shader design}
 Listing \ref{simple_vert} shows the most basic vertex shader, where vertices are simply passed through the pipeline. The graphics pipeline is a state machine, so the variables \texttt{gl\_ModelViewProjectionMatrix} and \texttt{gl\_Vertex} are automatically set by the system, and the result of the calculation \texttt{gl\_Position} is automatically passed on to the next part of the pipeline.
@@ -780,24 +789,29 @@ Listing \ref{simple_vert} shows the most basic vertex shader, where vertices are
 \lstinputlisting
   [label=simple_vert, caption=A Simple Vertex Shader]{code/my_first_shader.vs}
 
-Listing \ref{simple_frag} is almost as simple as the example vertex shader. It sets the colour of every fragment to red. If this fragment shader works, every polygon in the rendered object should be bright red and the background should not be altered. This sort of shader may seem excessively simple, but several basic checks were necessary to confirm fundamental OpenGL functionality worked before moving on to more complicated goals.
+Listing \ref{simple_frag} is almost as simple as the example vertex shader. It sets the colour of every fragment to red. If this fragment shader works, every polygon in the rendered object should be bright red, as shown in Figure \ref{fig:object_shader}, without altering the background. This sort of shader may seem excessively simple, but several basic checks were necessary to confirm fundamental OpenGL functionality worked before moving on to more complicated goals.
 
 \lstinputlisting
   [label=simple_frag, caption=A Simple Frament Shader]{code/my_first_shader.fs}
 
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{resources/object_shader}
+    \caption{A VTK object with GLSL shading. \cite{dimrock2014}}
+    \label{fig:object_shader}
+\end{figure}
+
 \subsection{Including and compiling shaders}
 
-As might be expected from the C-like form of GLSL, shaders need to be compiled before they can be executed on the GPU. Martin Christian's libglsl library was used to manage shaders, though the library needed to be adjusted to allow compatibility with current OpenGL and GLSL. 
+As might be expected from the C-like form of GLSL, shaders must be compiled before they can be executed on the GPU. Martin Christian's libglsl shader management library was used, with adjustments to allow compatibility with OpenGL 4.4 and GLSL 440. Shaders were loaded in three different ways during the project:
 
-Three different methods for using GLSL shaders were tried during the project. 
-\begin{itemize}
-\item Shaders can be written a separate plain text file and given an extension that helps to explain their content. It is conventional to give a vertex shader a .vs extension, and a fragment shader a .fs extension\footnote{or sometimes a .ps extension for `pixel shader', as used in the ORIA project}. The shader file can then be opened and loaded at runtime. This is convenient as it means that altering the shader does not require re-compilation of the main body of source code. It also means that errors in the shader code do not generate compile errors and may only appear at runtime. 
-\item In a similar way to reading in a plain text file, the shader may be defined as a string inside the source code. This can be useful for testing purposes, when checking that the program does indeed have access to the shader source at runtime. It also cuts down the number of files in the project, though at the expense of clarity! As the shader code is in string format, it is still not checked by the debugger and so is equally liable to runtime problems as if it were a separate file.
-\item A sophisticated\footnote{terrifying} third option is to load a compiled shader program as a binary file. This approach means that no shader compilation is required, but it means that the shader is no longer human-readable. Given the simplicity of the shaders in this project, and the need to frequently adjust their contents, this optimisation was unnecessary.
-\end{itemize}
+\begin{enumerate}
+\item \textbf{The preferred method:} Shaders can be written as plain text files and given extensions to explain their content. It is conventional to give a vertex shader a .vs extension, and a fragment shader a .fs extension\footnote{or sometimes a .ps extension for `pixel shader', as used in the ORIA project}. The shader file can then be opened and loaded at runtime. This is convenient as it means that altering the shader does not require re-compilation of the main body of source code. It also means that errors in the shader code do not generate compile errors and may only appear at runtime.
 
-All three approaches to the use of GLSL shaders were used during the project. In-line shader code was used during early stage testing, whilst the libglsl shader was being upgraded to work with GLSL 440. Some publicly available Rift deformation shaders were in binary format, and were tested but could not be subsequently modified. The preferred approach, for elegance and practicality, was to have fragment and vertex shader files and load these at run-time.
+\item \textbf{The in-line approach:} A shader may be defined as a string in source code, as an alternative to being read in from an external file. This can be useful for testing purposes, to check that the program has access to the shader source at runtime. It also cuts down the number of files in the project, though at the expense of clarity! As the shader code is in string format, it is still not checked by the debugger and so is equally liable to runtime problems as if it were a separate file.
 
+\item \textbf{Loading a pre-compiled shader:} A sophisticated\footnote{terrifying} third option is to load a compiled shader program as a binary file. Some publicly available Rift deformation shaders were in binary format, and were tested using this approach but could not be subsequently modified. The precompiled approach means that no shader compilation is required at run time, but this comes at the cost of human readability. Given the frequent need to frequently adjust the contents of shaders in this project, such optimisation seemed unwise.
+\end{enumerate}
 
 \section{Applying Shaders in VTK}
 
@@ -809,84 +823,43 @@ Investigation revealed that applying GLSL Shaders to VTK scenes via material pro
 One drawback of large open source projects is that the most widely available documentation may be severely out of date. In this regard, VTK is a victim of it's own success. A lot of documentation \cite{Seip2005}, \cite{OBrien2009} suggests that the GLSL shaders can be encapsulated within XML and applied to a VTK object as a material. This is also the approach of the official documentation \cite{VTK_XML_shaders}, where ``To Do'' and ``In progress'' comments create the deceptive appearance that these features are cutting edge. \textbf{Do not be fooled!} This use of shaders is deprecated, and has not been possible in `recent' VTK versions for some time. Due to the size of the project it can be difficult to find documentation for every feature of interest, and confirming VTK feature deprecation was to become a reoccurring problem during the project\footnote{If there is one thing harder than finding a needle in a haystack, it is finding a needle in a haystack when the needle was quietly removed back in 2008.}.
 
 \subsection{Applying GLSL Shaders to Objects}
-Having learned to ignore VTK shader documentation pre-dating 2008, certain tutorials it transpired that shaders can be applied directly to VTK objects. This option, though initially promising, contained critical flaws. 
+Having learned to ignore VTK shader documentation pre-dating 2008, it transpired that shaders can be applied directly to VTK objects. This option, though initially promising, contained critical flaws. 
 
 Firstly, the approach meant that the project had to switch from Python to C++. VTK is developed in C++ and other languages are supported via wrapper code. The wrapping does not always expose the full functionality of the source code, and in this case the functionality of the Shader2 class was discovered to be only partially exposed in Python. Although it should be possible to edit the VTK source and coax the parser into generating more complete Python wrappers, even the VTK authors at Kitware admit that this process can be ``a bloody pain'' \cite{VTK_Wrapper_FAQ}. With this warning in mind, it was decided to use C++ in order to get full access to the VTK classes.
 
-Secondly, the documentation on this approach was very scarce. Another VTK user had recently raised this on a the VTK mailing list \cite{vtk_shader_actor}, and with this expert assistance a working solution was found. Listing \ref{object_shader} shows a functional implementation which was contributed to Stack Overflow in order to help document the process \cite{SO_shader_actor}. Note that unlike the test shader in Listing \ref{simple_frag} this shader cannot have a \texttt{main()} function, since that would cause a name conflict with other parts of the VTK render process. 
+Secondly, documentation for this approach was scarce. Another VTK user had raised related questions on the VTK mailing list \cite{vtk_shader_actor}, which provided sufficient hints and suggestions to implement a working solution. Listing \ref{object_shader} shows a functional implementation, contributed to Stack Overflow in order to help document the process \cite{SO_shader_actor}. Note that unlike the test shader in Listing \ref{simple_frag} this shader cannot have a \texttt{main()} function, since that would cause a name conflict with other parts of the VTK render process. 
 
 \lstinputlisting
   [label=object_shader, caption=Applying a Shader to a VTK Object]{code/vtk_object_shader.cpp}
 
-Figure \ref{fig:object_shader} shows the result of the working example: any fragment that represents part of the cone object gets coloured red. 
+Figure \ref{fig:object_shader} shows the result of the object shader approach using the test fragment shader: any fragment representing part of the cone object gets coloured red. 
 
-\begin{figure}[htbp!]
-    \centering
-    \includegraphics[width=0.5\textwidth]{resources/object_shader}
-    \caption{A VTK object with GLSL shading.}
-    \label{fig:object_shader}
-\end{figure}
-
-The third and most significant problem of the per-object shader approach can also be understood with reference to Figure \ref{fig:object_shader}. The target image deformation, as Figure \ref{fig:appearance_processed} showed earlier, is a barrel deformation. This means that pixel data must be radially displaced away from the optic axis. The cone shader does not, and cannot affect pixels beyond the surface of the cone, since the fragment shader is only executed for object object pixels, and default shaders are used to handle background pixels.  
+The third and most significant problem of the per-object shader approach can also be understood with reference to Figure \ref{fig:object_shader}. The target image deformation, as Figure \ref{fig:appearance_processed} showed earlier, is a barrel deformation. This means that pixel data must be radially displaced away from the optic axis. The cone shader does not -- and cannot -- affect pixels beyond the surface of the cone, since the fragment shader is only executed for object object pixels, and default shaders are used to handle background pixels.  
 
 These problems, in particular the third problem, led to the conclusion that object-shaders would not provide a viable method for performing image distortion suitable for Rift display.
 
 \subsection{Applying GLSL Shaders to Buffers}
-Given the requirement to apply a deformation across an entire screen, the the VTK multipass-rendering framework looked to be a good place to start. This framework allows users to specify custom rendering passes to a vtk renderer, as is illustrated in Listing \ref{multi_pass}. Even better, Dr Bernhard Kainz, one of the members of the Biomedical Image Analysis Group, had experience writing custom rendering passes to filter image data.
+Given the requirement to apply a deformation across an entire screen, the the VTK multipass-rendering framework looked to be a good place to start. This framework allows users to specify rendering passes to a vtk renderer, as is illustrated in Listing \ref{multi_pass}.
 
 \lstinputlisting
   [label=multi_pass, caption=Using the VTK MultiPass Rendering framework]{code/multi_pass.cpp}
 
-Several problems were overcome as these classes were adapted to work in the desired fashion.
+The VTK multipass framework proved to be the best way to use OpenGL shaders on the VTK scene.
 
-Firstly, the \texttt{vtkRenderer->SetPass()} method, central to the entire approach, was quietly deprecated in VTK 6.x. Once identified,  the decision was made to work VTK 5.10, on the basis that it was the latest, and best version of VTK to be released where the \texttt{SetPass} could be found.
-
-Next, the \texttt{SaliencyPass} code made use of a \textbf{glsl} library to load, compile and run \textbf{GLSL} shaders. This library worked with GLSL \texttt{\#version 110} but was incompatible with recent versions of GLSL. Certain functions in OpenGL 4.4 required GLSL \texttt{\#version 440} compatibility, and this in turn required that the glsl shader management class be updated. Fortunately, many of the deprecated functions had been implemented in recent OpenGL versions, and so many of the previously ``experimental'' ARB-functions could simply be replaced by modern ``core'' functions.
-
-%TODO: CPU / GPU domains
-%\begin{figure}[htbp!]
-%    \centering
-%    \includegraphics[width=0.5\textwidth]%{resources/placeholder}
-%    \caption{CPU and GPU domains, and methods of communication.}
-%    \label{fig:cpu_gpu_domains}
-%\end{figure}
-
-Once the derived class could compile, a number of OpenGL problems needed to be solved. OpenGL appears to follow the ``Silence is golden'' design philosophy \cite{the_art_of_unix_programming}, and a programmer query OpenGL state to discover GLErrors. In the absence of diligent checks, these errors otherwise manifest themselves in terms of a blank render screen or segmentation fault at runtime. 
-
-\lstinputlisting
-  [label=gl_check_error, caption=Checking OpenGL error state]{code/gl_check_error.cpp}
-
-Listing \ref{gl_check_error} shows how a simple helper function can be used to report error state. In order to pinpoint problems, the GL error state should be checked every time a non-trivial gl function call is made.
-
-
-
-%Implementing OpenGL
-%Fun with Uniforms
-%Viewport Sizes
-%Fun with transformation matrices
-%Matrix stacks, pushing and popping
-%FBOs, RBOs and textures (oh my!)
-%Do you suffer from premature optimisation?
-
-
-\todo{finish}
-derived shader class could be built. Modifications to the derived class involved working with OpenGL functionality,  Development got a little more difficult as the 
-
-
-
-
-In order to achieve the desired shader deformation, two different approaches need to be combined. Default rendering passes need to be defined explicitly and combined into a Sequence Pass, and then a new rendering pass needs to be derived to perform the desire deformation to the entire render scene at once. The full system is represented in Figure~\ref{fig:vtk_extended_pipeline}.
+\section{VTK MultiPass rendering in VTK}
+VTK's multipass rendering framework allows the user to set the rendering passes that are applied to a VTK scene. Using the framework disables the default render passes\footnote{ \texttt{vtkLightsPass}, \texttt{vtkDefaultPass}, and \texttt{vtkCameraPass}} so basic passes must be explicitly set before additional rendering passes can be applied. At the suggestion of Dr Bernhard Kainz, a derived VTK class was written to extend the multi-pass framework. Dr Kainz had previously developed an image processing pass which proved a useful starting point. The derived class used VTK methods to render the scene to an OpenGL texture (off screen rendering), then would render the image back to the screen using GLSL shaders. The resulting pipeline is shown in Figure \ref{fig:vtk_extended_pipeline} where `Saliency Pass' is the derived and extended pass.
 
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=1\textwidth]{resources/vtk_extended_pipeline}
+    \includegraphics[width=0.8\textwidth]{resources/vtk_extended_pipeline}
     \caption{The extended VTK pipeline.}
     \label{fig:vtk_extended_pipeline}
 \end{figure}
 
-Specifying the default rendering passes is necessary as VTK stops automatically defining them once the user manually configure any aspect of rendering. As shown in Figure~\ref{fig:vtk_extended_pipeline}, the default pass initializes the colour and depth buffers of the scene and the lighting pass sets up the scene lighting. VTK needs to apply these passes sequentially, and so they are grouped as a collection and then packaged into a Sequence Pass. The camera pass is applied after that sequence, and then the custom-made Saliency pass is applied. This is the point at which things start to get interesting.
+\clearpage
 
-The Saliency pass is derived from previous work by Dr Bernhard Kainz, and uses raw OpenGL code to perform off-screen rendering to a texture. This process, in effect, means that the scene is rendered to an area of memory on the graphics card instead of to pixels on the screen. The texture memory can be accessed very quickly by OpenGL functions, and is perfectly positioned for subsequent GLSL renderers.
+\subsection{OpenGL operations in the new rendering pass}
+The default pass, as shown in Figure~\ref{fig:vtk_extended_pipeline}, initializes the colour and depth buffers of the scene and the lighting pass sets up the scene lighting. VTK needs to apply these passes sequentially, and so they are grouped as a collection and then packaged into a Sequence Pass. The camera pass is applied after that sequence, and finally the custom-made Saliency pass is applied. This is the point at which things start to get interesting, as the Saliency pass works directly with OpenGL functions in order to pas commands to control the state of the GPU.
 
 \begin{figure}[htbp!]
     \centering
@@ -895,16 +868,31 @@ The Saliency pass is derived from previous work by Dr Bernhard Kainz, and uses r
     \label{fig:vtk_saliency}
 \end{figure}
 
-TODO: This high-level description neatly side-steps the various issues of loading shaders, upgrading from glARB classes to modern glCore functions, ensuring that GLSL 440 was supported, upgrading the drivers, and the operating system, in order to get sufficiently recent NVIDIA support, and then dealing with the OpenGL bugs that recent versions of the NVIDIA drivers contain!! Though none of that was `news-worthy', it took a great deal of time and patience to identify and fix. 
+Figure \ref{fig:vtk_saliency} shows the series of OpenGL operations taking place within the Saliency pass. Frame Buffer Objects (FBOs) are, essentially, areas of memory that can hold picture data. They act as staging areas between processor and display hardware. Off-screen rendering to a texture means rendering the scene to an area of memory on the graphics card instead of to the screen. The graphics card memory can be accessed very quickly by OpenGL functions, and is perfectly positioned for subsequent GLSL renderering steps.
+
+\subsection{Significant implementation challenges}
+Several problems needed to be overcome before this approach worked satisfactorily
+
+Firstly, the \texttt{vtkRenderer->SetPass()} method, central to the entire approach of delegating render passes, was quietly deprecated in VTK 6.x. Once identified\footnote{By carefully comparing different versions of the VTK documentation.},  the decision was made to work VTK 5.10, on the basis that it was the latest, and best version of VTK to be released where the \texttt{SetPass} could be found.
+
+Next, the \texttt{SaliencyPass} code made use of \textbf{libglsl} to load, compile, and generally manage \textbf{GLSL} shaders. This library worked with GLSL \texttt{\#version 110} but was incompatible with recent versions of GLSL. Certain functions in OpenGL 4.4 required GLSL \texttt{\#version 440} compatibility, and this in turn required that \textbf{libglsl} be updated. Fortunately, many of the deprecated functions had been implemented in recent OpenGL versions, and so many of the previously ``experimental'' ARB-functions could simply be replaced by modern ``core'' functions.
+
+Numerous OpenGL problems were encountered. OpenGL appears to follow the ``Silence is golden'' design philosophy \cite{the_art_of_unix_programming}, and it was necessary to query OpenGL state, as shown in Listing \ref{gl_check_error}, to reveal the origin of GLErrors. In the absence of diligent checks, errors manifest in terms of a blank screen or segmentation fault at runtime. 
+
+\lstinputlisting
+  [label=gl_check_error, caption=Checking OpenGL error state]{code/gl_check_error.cpp}
 
 \section{Rift Deformation Shaders}
-GLSL shaders are (ab)used to perform three functions in this project. They shift the image in order to align the camera viewpoint centre with the lens centre. They apply a barrel deformation of the entire image in order to compensate for the pincushion deformation of the Rift's lenses.  They also mask the edges of the screen where the OpenGL 340.x drivers leave image artefacts. 
+The final Rift Deformation shaders are shown in Listings \ref{distortion_vert} \& \ref{distortion_vert}. The vertex shader performs a simple pass through of vertex position, and all of the image processing occurs in the fragment shader. The shaders (ab)use GLSL to perform three functions. They shift the image in order to align the camera viewpoint centre with the lens centre. They apply a barrel deformation of the entire image in order to compensate for the pincushion deformation of the Rift's lenses.  They also mask the edges of the screen where the OpenGL 340.x drivers leave image artefacts\footnote{Nvidia note that a bug in recent drivers ``could prevent OpenGL Framebuffer Objects (FBOs) from being properly redrawn after a modeswitch''. This can lead to beautiful but undesirable render artefacts at the side of the screen.}. 
 
-\todo{discuss chroma issues}
+\lstinputlisting
+  [label=distortion_vert, caption=The Vertex Distortion Shader]
+  {code/Distortion.vs}
+  
 
-It is assumed that the reader is familiar with the nature of shaders, and so the discussion here will not introduce the concept but rather will focus on the unusual way in which they are being employed. 
-
-Figure~\ref{fig:rift_screen} shows how the lens positions, aligned with the user's eyes, are not aligned with the centre of the screen. This presents a problem, as the VTK cameras produce a viepoint that does not align with the user's eyes. The fragment shader code is executed for every pixel in the screen. Focussing first on the left-eye image, every fragment shader position is laterally offset by the lens centre to screen centre displacement. For the rift DK1 this involves a y-adjustment of 48 pixels. So when the shader is called for a pixel at (0, 0) the offset is applied and all subsequent calculations are made for a pixel at (48, 0). This is somewhat of a brute force solution, and will require revision for new hardware with different screen offsets. But given the hardware differences between the DK1 and DK2, it is likely that the shader code would need to be completely re-written.
+\lstinputlisting
+  [label=distortion_frag, caption=The Frament Distortion Shader]
+  {code/Distortion.fs}
 
 \begin{figure}[htbp!]
     \centering
@@ -913,9 +901,10 @@ Figure~\ref{fig:rift_screen} shows how the lens positions, aligned with the user
     \label{fig:rift_screen}
 \end{figure}
 
-After correcting for the lens centre displacement, the shader then needs to pre-emptively correct for the pincushion distortion of the Rift lenses. This is achieved using a polynomial function of the pixel's radial displacement from the lens centre. The polynomial function is based on reverse engineering of the Rift SDK TODO: cite shader forum, and with parameters obtained from Dr Stephan Rogge TODO: another citation. 
 
-TODO: Ask Daniel if there should be some maths in here. It all seems a little bland!
+Figure~\ref{fig:rift_screen} shows how the lens positions, aligned with the user's eyes, are \textit{not} aligned with the left or right screen centres. This causes a misalignment problem, since the VTK camera viewpoints are aligned with the screen centres. The fragment shader code fixes this problem by applying a lateral shift to each image. For example, when rendering the left-eye image every fragment value is laterally offset by the lens centre to screen centre displacement. With the rift DK1, this involves a y-adjustment of 48 pixels. So when the shader is called for a pixel at (0, 0) the offset is applied and all subsequent calculations are made for a pixel at (48, 0). This solution will require revision for new hardware with different screen offsets.
+
+After correcting for the lens centre displacement, the fragment shader applies a barrel distortion to the image. This distortion corrects for the pincushion distortion of the Rift lenses. The polynomial used to do this is based on Paraview distortion shaders developed by Dr Stephan Rogge
 
 \begin{figure}[htbp!]
     \centering
@@ -924,22 +913,58 @@ TODO: Ask Daniel if there should be some maths in here. It all seems a little bl
     \label{fig:distortions}
 \end{figure}
 
-After correcting for the lens distortion, it is desirable to apply a chromatic aberration factor in order to mitigate the dispersive effect of the Rift's lenses as mentioned in Section~\ref{sec:need_for_shaders}. The parameters for the chromatic aberration correction were not available, and so approximate parameters were chosen based on empirical testing. TODO: give this a go. 
+After correcting for the lens distortion, it would be desirable to apply a chromatic aberration factor in order to mitigate the dispersive effect of the Rift's lenses as mentioned in Section~\ref{sec:need_for_shaders}. This was not implemented because chromatic aberration parameters were unavailable, and there was insufficient time to determine parameters experimentally. 
 
-\section{Practical notes}
+\section{Rift SDK Deformations}
+In theory, an image texture can be passed to the Rift SDK which can then apply deformations directly. Since v0.3 Oculus have stated the SDK-rendering is the preferred approach. All example code for SDK-rendering was for a Windows system with DirectX rather than OpenGL. Oculus have not yet made Linux support available in the current SDK, and so it was decided that the `legacy' approach of using GLSL shaders would be sensible given objectives of the project. 
 
-\lstinputlisting
-  [label=distortion_debugging, caption=Useful Code for Debugging Fragment Shaders]
-  {code/Debugging.fs}
-  
-I *want* to complain here about how frustrating some of the driver problems were. Particularly the bug in NVIDIA 331.32 that ``could prevent OpenGL Framebuffer Objects (FBOs) from being properly redrawn after a modeswitch.''. Yes, NVIDIA, that bug certainly could! It took a long time to confirm that the problem was not due to my FBO rendering process, but rather due to driver problems.
+\section{Distorted images}
+Figures \ref{fig:undistorted_cone} \& \ref{fig:undistorted_surface} show the result of rendering content with a simple pass through shader. Figures \ref{fig:distorted_cone} \& \ref{fig:distorted_surface} show the result of the Distortion shaders developed in this chapter. The effects of the barrel deformation on the straight lines of the cone content are particularly marked.
+
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{resources/undistorted_surface}
+    \caption{Surface appearance using a pass-through shader.}
+	\label{fig:undistorted_surface}
+\end{subfigure}
+
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{resources/distorted_surface}
+    \caption{Surface appearance using the Rift distortion shader.}
+	\label{fig:distorted_surface}
+\end{subfigure}
+    
+    \caption{A comparison of the effect of the Rift distortion shader on surface content.}
+    \label{fig:surface_distortion_comparison}
+\end{figure}
 
 
-\section{Other Approaches}
-In theory, the Rift SDK can apply deformations directly, and since v0.3 Oculus have stated the SDK-rendering is the preferred approach. All of the example code for SDK-rendering was for a Windows system with DirectX rather than OpenGL, and it was decided that directly using GLSL shaders would be a more feasible approach given the project time frame. 
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{resources/undistorted_cone}
+    \caption{Cone appearance using a pass-through shader.}
+	\label{fig:undistorted_cone}
+\end{subfigure}
+
+\centering
+\begin{subfigure}{\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{resources/distorted_cone}
+    \caption{Cone appearance using the Rift distortion shader.}
+	\label{fig:distorted_cone}
+\end{subfigure}    
+    \caption{A comparison of the effect of the Rift distortion shader on cone content.}
+    \label{fig:cone_distortion_comparison}
+\end{figure}
 
 \chapter{Results}
-The results section describes the content generated during the project, the VR software developed during the project, and the outcome of a survey carried out using the demonstration system.
+The results section begins by describing the image content and the VR software developed during the project. Testing methodologies are mentioned, particularly the use of CDash and colourful shader debugging tools. A survey was carried out using the demonstration system, and the results of this are discussed. Drawing on comments from the survey, suggestions are made for further work.
 
 \clearpage
 \section{Final System Specification}
@@ -986,7 +1011,7 @@ In addition to providing 3D models for future project work, the established conv
 \subsection{Visualisation software}
 The visualisation software produced during this project imports image data and renders it using VTK and custom OpenGL image processing.
 
-In practical terms, the user uses the software through a command line interface (CLI). This is shown in Figure \ref{fig:command_line_interface}. The name of the vtk content to be loaded is supplied as a parameter to the binary file.
+In practical terms, the user starts the software through a command line interface (CLI). This is shown in Figure \ref{fig:command_line_interface}. The name of the vtk content to be loaded is supplied as a parameter to the binary file.
 
 \begin{figure}[htbp!]
     \centering
@@ -996,28 +1021,37 @@ In practical terms, the user uses the software through a command line interface 
 \end{figure}
 
 Once the software is running, the user can interact with content in the following ways:
-\begin{itemize}
-\item Pressing `space' to reset the camera view
-\item Pressing arrow keys to move the object
-\item Pressing `r' to clear the OpenGL buffers
-\item Pressing `+' and '-' to zoom the camera
-\item Pressing `[' and ']' to vary the camera separation
-\item Pressing `p' to print the rendering time taken for each frame.
-\item Pressing `q' to quit the program.
-\item Moving the middle mouse button to zoom.
-\item Moving the left mouse button to rotate the camera.
-\item Moving the right mouse button to move the object.
-\item Moving their head to change the viewpoint pitch, roll and yaw.
-\end{itemize}
+
+\begin{figure}[htbp!]
+\centering
+\begin{tabular}{ l l }
+Interaction	& Effect \\ \hline 
+`space'  	& reset the camera view \\
+arrow keys 	& rotate the object\\
+`r' 			& clear the OpenGL buffers\\
+`+' or '-'	& zoom the camera\\
+`[' or ']'	& vary the camera separation\\
+`p'			& print frame rendering time\\
+`q' 			& quit the program\\
+mouse, middle button & zoom the cameras\\
+mouse, left button & rotate the cameras\\
+mouse, right button & move the object\\
+head motion & change viewpoint pitch, roll and yaw\\
+\end{tabular}
+\caption{Participant background}
+\label{fig:Interaction }
+\end{figure}
 
 Short videos demonstrating the content, and the different types of interaction, have been uploaded to YouTube: \texttt{http://youtu.be/g7fnqqwHRRo} and \texttt{http://youtu.be/BbOImsBzAVM}. A video showing some of the unresolved interaction problems is accessible: \texttt{http://youtu.be/NXLSy5pZiz8}.
+
+\clearpage
 
 In technical terms, the software consists of a C++ project requiring CMake, CTest, VTK5.10, GLEW and OpenGL \footnote{In addition, using the Rift requires linking with the GL, GLU, pthread, udev, rt, ncurses and X-Windows management libraries (Xinerama, Xrandr, Xxf86vm, Xi, X11) libraries.}. The project directory structure is shown in Figure \ref{fig:project_directory_structure}. The project structure uses an out-of-source build, all compiled files are in the `build' directory and kept separate from source files. In addition to generating a Makefile, the CMake process also copies shader and data files from the resources directory into the executable directory so that they can be accessed at runtime.
 
 \begin{figure}
 \centering
 \framebox[\textwidth]{%
-\begin{minipage}{0.9\textwidth}
+\begin{minipage}{0.8\textwidth}
 	\dirtree{%
 	.1 vtkRift/.
  	.2 CmakeLists.txt.
@@ -1079,43 +1113,10 @@ In technical terms, the software consists of a C++ project requiring CMake, CTes
 
 The project has been kept as small and neat as possible in order to assist future development work. The Rift can run on Windows, MacOS or Linux, and so the makefile may be configured to change the dependencies depending on the target operating system. The remainder of the code is portable, with the exception of the rt timer dependency, used for latency measurements. During development, versions of the project have been run on both the Windows and MacOS platforms to debug OpenGL driver problems.
 
-\section{User Survey of the Biomedical Image Analysis Group}
-A user survey was conducted in the Biomedical Image Analysis department. Seventeen participants were given a demonstration of the Rift displaying a simple object (the VTK cone primitive), the cortical surface, and the Corpus Callosum tractography. 
-
-
-
-
-\section{Objective Performance Metrics}
-
-The most important metrics for the Rift display system are the resolution of the display, and the render speed of the image processing.
-
-\subsection{Effective Resolution}
-The the display resolution is more complex an issue than it may at first appear. The Rift DK1 display is 1280 pixels wide, by 800 pixels high and each pixel is comprised of red, green and blue subpixels in an RGB stripe format\footnote{The DK2 uses Samsung's proprietary PenTile pixel layout, which complicates the issue of effective resolution even further}. The screen is \SI{149.76}{cm} by \SI{93.6}{cm} in size\footnote{or \SI{7}{inches} diagnonal} meaning that the pixel size is \SI{117}{\um} square. The results in a resolution of \SI{217}{pixels per inch}\footnote{Again, display dimensions are measured in inches. It is a strange industry.}
-
-There is some debate over the resolution required to be `better' than the human eye can perceive, but if the 
-
-
-\todo{Retina Rift calculations}
-\todo{Suggest super-resolution / sub-sampling image}
-
-Quantifying display technology performance of high-quality displays is notoriously difficult and leads to the development of remarkable metrics such as ``Just noticeable difference'' \cite{Zhang2008} \footnote{Or manufacturing claims about ``Retina'' displays...}. The most important objective there are often easily quantifiable metrics to measure, in this case the render time and display resolution.
-
-Early testing involved a Brain Surface object created from  
-
-
-\begin{figure}[htbp!]
-    \centering
-    \includegraphics[width=0.8\textwidth]{resources/render_times}
-    \caption{Times to render a primitive and \SI{100}{\mega\byte} connectome mesh.}
-    \label{fig:render_times}
-\end{figure}
-
-
-
-\section{Automated Testing with CTest and CDash}
+\clearpage
+\section{Testing}
+\subsection{Automated Testing with CTest and CDash}
 Early in the project, the decision was made to postpone testing until the structure of the application was known. The project was frequently required to adapt to new constraints\footnote{The operating system used for development changed twice times and the main programming language changed three times}, so this was approach was pragmatic though inelegant approach. Once the rendering system was capable of generating content, an automated testing system was implemented.
-
-Of the non-imaging products developed by Kitware Inc, the most famous is probably CMake. This utility allows the automatic generation of configuration files like Makefiles and VisualStudio project files. It also allows automatic dependency management and smart configuration of common libraries and headers. A lesser known Kitware product is CDash, which works in conjunction with CMake to allow the automated testing, uploading of results and Dashboard display via a web-broswer. Listing \ref{configuring_ctest} shows the the simplicity of enabling CTest from within the project's top-level CMake file. Specific tests are configured as shown in Listing \ref{setting_a_test}, from the CMakeLists file containing the binary build settings.
 
 \begin{lstlisting}[label=configuring_ctest, caption=Enabling CTest in the CMakeLists]
 # Set up dashboard and testing
@@ -1130,9 +1131,12 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CTestConfig.cmake)
 add_test( test_cone cone )
 \end{lstlisting}
 
+Of the non-imaging products developed by Kitware Inc, the most famous is probably CMake. This utility allows the automatic generation of configuration files like Makefiles and VisualStudio project files. It also allows automatic dependency management and smart configuration of common libraries and headers. CDash works in conjunction with CMake to allow the automated testing, uploading of results and Dashboard display via a web-broswer. Listing \ref{configuring_ctest} shows the the simplicity of enabling CTest from within the project's top-level CMake file. Specific tests are configured as shown in Listing \ref{setting_a_test}, from the CMakeLists file containing the binary build settings.
+
+\clearpage
 Using CDash for a project of this size is, admittedly, overkill. The product is designed to be used with large, complex projects where small changes can cause unexpected and subtle bugs unless automated testing is used. The argument in favour of using CDash was the elegance of automatic testing, and given that CDash was the only Kitware platform that \textit{wasn't} already used in the project\footnote{Paraview was used to view tractographies during content conversion, and ITK was used indirectly by ITK-SNAP.}, it needed to be used to complete the set!
 
-CTest allows the creation of automatic test scripts that can be configured to run with command line parameters and options. These test scripts can be set to run at a pre-determined day, and can upload a log of test results to a remote server. For convenience, the kitware's free CDash server was used to receive and display the result of the testing. The results of one day's testing is shown in Figure \ref{fig:cdash_testing}. 
+CTest allowed the creation of automatic test scripts, configured to run with command line parameters and options. These test scripts could be run at a pre-determined times, and they upload a log of test results to a remote server. For convenience, the kitware's free CDash server was used to receive and display the result of the testing. The results of one day's testing is shown in Figure \ref{fig:cdash_testing}. 
 
 \begin{figure}[htbp!]
     \centering
@@ -1140,6 +1144,107 @@ CTest allows the creation of automatic test scripts that can be configured to ru
     \caption{Daily testing results via the CDash web interface.}
     \label{fig:cdash_testing}
 \end{figure}
+
+\clearpage
+\subsection{Visual debugging of GLSL shaders}
+As GLSL shaders are not easily debugged in a conventional way, novel methods were developed to get performance information at runtime. Listing \ref{distortion_debugging} shows some of these techniques. 
+
+\lstinputlisting
+  [label=distortion_debugging, caption=Useful Code for Debugging Fragment Shaders]
+  {code/Debugging.fs}
+
+These techniques proved very useful. The image shown in Figure \ref{fig:distortion_debugging_pic} encompasses two VTK renderers in a single render window. Each renderer is using the same shader code, but from a different render pass. As a result, the fragment shader in the left section of the screen has different uniform variable values than that in the right. 
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{resources/distortion_debugging_pic}
+    \caption{Colourful debugging information at runtime.}
+    \label{fig:distortion_debugging_pic}
+\end{figure}
+
+
+\section{User Survey of the Biomedical Image Analysis Group}
+
+\subsection{Study methodology}
+A user survey was conducted in the Biomedical Image Analysis department. Eighteen  participants were given a demonstration of the Rift displaying:
+
+\begin{itemize}
+\item a simple object (the VTK cone primitive)
+\item the cortical surface object
+\item the Corpus Callosum tractography. 
+\end{itemize}
+
+Participants were then asked a series of questions, as shown in Appendix A, and submitted responses using a Google Form and recorded in a spreadsheet. The full results of the survey are shown in Appendix B.
+
+When easily implemented changes to the demonstration were suggested by study participants, they were promptly made. As a result of this, the first participants experienced a different\footnote{better!} demonstration from the final ones. This defies the conventional, rigorous, approach to running a scientific study but fits perfectly with the goal of gathering feedback in relation to the best possible demonstration system.
+
+\subsection{Study findings}
+Full results of the survey are given in Appendix B. 
+
+\begin{itemize}
+\item Very few of the users had any pre
+\item 
+\item 
+\item 
+\item 
+\end{itemize}
+
+\begin{figure}[htbp!]
+\centering
+\begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/5-immediate_reactino}
+\end{subfigure}%
+\centering
+\begin{subfigure}{0.5\textwidth}
+    \centering
+   	\begin{tabular}{ l c r }
+Enthusiastic&9&50\% \\
+Positive&7&39\% \\
+Indifferent&2&11\% \\
+Hated it&0&0\% \\
+\end{tabular}
+\end{subfigure} 
+    \caption{Immediate reaction}
+    \label{fig:5-immediate_reactino}
+\end{figure}
+
+
+
+
+
+
+
+
+
+%\section{Objective Performance Metrics}
+%
+%The most important metrics for the Rift display system are the resolution of the display, and the render speed of the image processing.
+%
+%\subsection{Effective Resolution}
+%The the display resolution is more complex an issue than it may at first appear. The Rift DK1 display is 1280 pixels wide, by 800 pixels high and each pixel is comprised of red, green and blue subpixels in an RGB stripe format\footnote{The DK2 uses Samsung's proprietary PenTile pixel layout, which complicates the issue of effective resolution even further}. The screen is \SI{149.76}{cm} by \SI{93.6}{cm} in size\footnote{or \SI{7}{inches} diagnonal} meaning that the pixel size is \SI{117}{\um} square. The results in a resolution of \SI{217}{pixels per inch}\footnote{Again, display dimensions are measured in inches. It is a strange industry.}
+%
+%There is some debate over the resolution required to be `better' than the human eye can perceive, but if the 
+%
+%
+%\todo{Retina Rift calculations}
+%\todo{Suggest super-resolution / sub-sampling image}
+%
+%Quantifying display technology performance of high-quality displays is notoriously difficult and leads to the development of remarkable metrics such as ``Just noticeable difference'' \cite{Zhang2008} \footnote{Or manufacturing claims about ``Retina'' displays...}. The most important objective there are often easily quantifiable metrics to measure, in this case the render time and display resolution.
+%
+%Early testing involved a Brain Surface object created from  
+
+
+%\begin{figure}[htbp!]
+%    \centering
+%    \includegraphics[width=0.8\textwidth]{resources/render_times}
+%    \caption{Times to render a primitive and \SI{100}%{\mega\byte} connectome mesh.}
+%    \label{fig:render_times}
+%\end{figure}
+
+
+
+
 
 \section{Further Work}
 
@@ -1264,61 +1369,6 @@ The success of this project will ultimately be measured in terms of its impact o
 
 \Qitem{ \Qq{Other comments:}
 \hskip0.5cm\ldots }
-
-
-\chapter{Rift Distortion Shaders}
-
-\lstinputlisting
-  [label=distortion_vert, caption=The Vertex Distortion Shader]
-  {code/Distortion.vs}
-  
-
-\lstinputlisting
-  [label=distortion_frag, caption=The Frament Distortion Shader]
-  {code/Distortion.fs}
-
-\chapter{Pre and Post Distortion Images}
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{resources/undistorted_surface}
-    \caption{Surface appearance using a pass-through shader.}
-	\label{fig:undistorted_surface}
-\end{subfigure}
-
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{resources/distorted_surface}
-    \caption{Surface appearance using the Rift distortion shader.}
-	\label{fig:distorted_surface}
-\end{subfigure}
-    
-    \caption{A comparison of the effect of the Rift distortion shader on surface content.}
-    \label{fig:surface_distortion_comparison}
-\end{figure}
-
-
-\begin{figure}[htbp!]
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{resources/undistorted_cone}
-    \caption{Cone appearance using a pass-through shader.}
-	\label{fig:undistorted_cone}
-\end{subfigure}
-
-\centering
-\begin{subfigure}{\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{resources/distorted_cone}
-    \caption{Cone appearance using the Rift distortion shader.}
-	\label{fig:distorted_cone}
-\end{subfigure}    
-    \caption{A comparison of the effect of the Rift distortion shader on cone content.}
-    \label{fig:cone_distortion_comparison}
-\end{figure}
 
 \chapter{Survey Results}
 
@@ -1502,7 +1552,7 @@ Intolerable&0&0\% \\
 \begin{subfigure}{0.5\textwidth}
     \centering
    	\begin{tabular}{ l c r }
-Yes&14&78\% \\
+Yes&18&100\% \\
 No&0&0\% \\
 \end{tabular}
 \end{subfigure} 
@@ -1723,6 +1773,7 @@ Nauseating&1&6\% \\
    	\begin{tabular}{ l c r }
 Stereo&17&94\% \\
 Mono&0&0\% \\
+No preference &1&6\% \\
 \end{tabular}
 \end{subfigure} 
     \caption{Preferred rendering style}
